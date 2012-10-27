@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2012 Veniamin Isaias.
+  ~
+  ~ This file is part of web4thejob.
+  ~
+  ~ Web4thejob is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or any later version.
+  ~
+  ~ Web4thejob is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.web4thejob.orm.QueryImpl" schema="w4tj"
+           table="QUERY" entity-name="org.web4thejob.orm.query.Query" optimistic-lock="version">
+        <meta attribute="friendlyName">Query Definitions</meta>
+        <meta attribute="deny-add-new">true</meta>
+
+        <cache usage="nonstrict-read-write"/>
+
+        <id name="id" type="long">
+            <meta attribute="friendlyName">ID</meta>
+            <meta attribute="index">1</meta>
+            <column name="`ID`"/>
+            <generator class="native"/>
+        </id>
+        <version name="version" access="field" type="integer" column="VERSION"/>
+
+        <property name="name" type="string" unique-key="UQ_QUERY_NAME">
+            <meta attribute="friendlyName">Name</meta>
+            <meta attribute="index">2</meta>
+            <column name="`NAME`" length="255" not-null="true"/>
+        </property>
+        <property name="flatTargetType" type="string" unique-key="UQ_QUERY_NAME" update="false">
+            <meta attribute="friendlyName">Target Type</meta>
+            <meta attribute="disable-user-insert">true</meta>
+            <meta attribute="index">3</meta>
+            <column name="`TARGET_TYPE`" length="255" not-null="true"/>
+        </property>
+
+        <property name="cached" type="boolean">
+            <meta attribute="friendlyName">Cached</meta>
+            <meta attribute="index">4</meta>
+            <column name="`CACHED`" length="255" not-null="true"/>
+        </property>
+        <property name="cacheRegion" type="string">
+            <meta attribute="friendlyName">Cache Region</meta>
+            <meta attribute="index">5</meta>
+            <column name="`CACHE_REGION`" length="255" not-null="false"/>
+        </property>
+        <many-to-one name="owner" class="org.web4thejob.security.Identity"
+                     fetch="select" not-null="true">
+            <meta attribute="friendlyName">Owner</meta>
+            <meta attribute="index">6</meta>
+            <column name="OWNER_ID" not-null="true"/>
+        </many-to-one>
+
+
+        <list name="criteria" schema="w4tj" table="CRITERION" inverse="false"
+              lazy="false" fetch="select" cascade="all,delete-orphan">
+            <meta attribute="friendlyName">Criteria</meta>
+            <meta attribute="index">5</meta>
+            <cache usage="nonstrict-read-write"/>
+            <key column="QUERY_ID" not-null="true"/>
+            <list-index base="0" column="INDEXNO"/>
+            <one-to-many class="org.web4thejob.orm.query.Criterion"/>
+        </list>
+        <list name="orderings" schema="w4tj" table="ORDERBY" inverse="false"
+              lazy="false" fetch="select" cascade="all,delete-orphan">
+            <meta attribute="friendlyName">Orderings</meta>
+            <meta attribute="index">6</meta>
+            <cache usage="nonstrict-read-write"/>
+            <key column="QUERY_ID" not-null="true"/>
+            <list-index base="0" column="INDEXNO"/>
+            <one-to-many class="org.web4thejob.orm.query.OrderBy"/>
+        </list>
+
+
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,37 @@
+<?page title="web4thejob.org" contentType="text/html;charset=UTF-8"?>
+<?link rel="shortcut icon" type="image/x-icon" href="favicon.ico"?>
+<?script content="zk.useStackup = 'auto/gecko';"?>
+
+<zk>
+    <style>
+        <!-- achives a better visual effect on html text  -->
+        p {margin: 0px; padding: 0px; margin-bottom: 3px; }
+
+        <!-- fixes hidden content of notification messages -->
+        .z-notification-ref .z-notification-cl, .z-notification-ref .z-notification-cnt { display: table-cell; }
+
+        <!-- example of odd listbox row css
+        .w4tj-listbox-oddRow { background-color: rgb(235, 241, 228);}
+        -->
+
+        <!-- example of a simple style customization using css selectors -->
+        div[class~="w4tj-desktop-menu"] > div[class="z-tree-body"] {background-color: rgb(245,245,245);}
+    </style>
+
+        <window border="normal" width="100%" height="100%">
+
+            <borderlayout width="100%" height="100%">
+
+                <north border="normal" height="40px" splittable="false" collapsible="false" style="border-style: solid;
+                        border-bottom-width: 4px; border-color: rgb(245,245,245); background-image:url('img/home_header.png');">
+                </north>
+
+                <center border="normal">
+                    <window border="none" width="100%" height="100%"
+                        apply="org.web4thejob.web.composer.HostWindow" sclass="w4tj-desktop">
+                    </window>
+                 </center>
+            </borderlayout>
+
+        </window>
+</zk>

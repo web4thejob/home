@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2012 Veniamin Isaias.
+  ~
+  ~ This file is part of web4thejob.
+  ~
+  ~ Web4thejob is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or any later version.
+  ~
+  ~ Web4thejob is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.web4thejob.orm.AbstractIdentityImpl"
+           schema="w4tj" table="`IDENTITY`" entity-name="org.web4thejob.security.Identity" optimistic-lock="version">
+        <meta attribute="friendlyName">Identities</meta>
+
+        <cache usage="nonstrict-read-write"/>
+
+        <id name="id" type="long">
+            <meta attribute="friendlyName">ID</meta>
+            <meta attribute="index">1</meta>
+            <column name="ID"/>
+            <generator class="native"/>
+        </id>
+        <version name="version" access="field" type="integer" column="VERSION"/>
+
+        <set name="parameters" schema="w4tj" table="PARAMETER" inverse="true" lazy="true" fetch="select">
+            <meta attribute="friendlyName">Parameters</meta>
+            <key>
+                <column name="OWNER_ID" not-null="true"/>
+            </key>
+            <one-to-many class="org.web4thejob.orm.parameter.Parameter"/>
+        </set>
+
+        <set name="panels" schema="w4tj" table="PANEL_DEFINITION" inverse="true" lazy="true" fetch="select">
+            <meta attribute="friendlyName">Panels</meta>
+            <key>
+                <column name="OWNER_ID" not-null="true"/>
+            </key>
+            <one-to-many class="org.web4thejob.orm.PanelDefinition"/>
+        </set>
+
+        <set name="renderSchemes" schema="w4tj" table="RENDER_SCHEME" inverse="true" lazy="true" fetch="select">
+            <meta attribute="friendlyName">Render Schemes</meta>
+            <key>
+                <column name="OWNER_ID" not-null="true"/>
+            </key>
+            <one-to-many class="org.web4thejob.orm.scheme.RenderScheme"/>
+        </set>
+
+        <set name="queries" schema="w4tj" table="QUERY" inverse="true" lazy="true" fetch="select">
+            <meta attribute="friendlyName">Queries</meta>
+            <key>
+                <column name="OWNER_ID" not-null="true"/>
+            </key>
+            <one-to-many class="org.web4thejob.orm.query.Query"/>
+        </set>
+
+        <joined-subclass name="org.web4thejob.orm.UserIdentityImpl"
+                         schema="w4tj" table="USER_IDENTITY" entity-name="org.web4thejob.security.UserIdentity">
+            <meta attribute="friendlyName">Users</meta>
+            <key column="ID"/>
+
+            <property name="userName" type="string" unique-key="UQ_USER_NAME" update="false">
+                <meta attribute="friendlyName">User name</meta>
+                <meta attribute="index">2</meta>
+                <column name="USER_NAME" not-null="true" length="40"/>
+            </property>
+            <property name="password" type="string">
+                <meta attribute="friendlyName">Password</meta>
+                <meta attribute="index">3</meta>
+                <column name="PASSWD" not-null="true" length="250"/>
+            </property>
+            <property name="lastName" type="string">
+                <meta attribute="friendlyName">Last name</meta>
+                <meta attribute="index">4</meta>
+                <column name="LAST_NAME" not-null="true" length="255"/>
+            </property>
+            <property name="firstName" type="string">
+                <meta attribute="friendlyName">First name</meta>
+                <meta attribute="index">5</meta>
+                <column name="FIRST_NAME" not-null="true" length="120"/>
+            </property>
+            <property name="locale" type="locale">
+                <meta attribute="friendlyName">Locale</meta>
+                <meta attribute="index">6</meta>
+                <column name="`LOCALE`" length="10" not-null="false"/>
+            </property>
+
+            <property name="accountNonExpired" type="boolean">
+                <meta attribute="friendlyName">Account Not Expired</meta>
+                <meta attribute="index">7</meta>
+                <column name="NON_EXPIRED" not-null="true"/>
+            </property>
+            <property name="accountNonLocked" type="boolean">
+                <meta attribute="friendlyName">Account Not Locked</meta>
+                <meta attribute="index">8</meta>
+                <column name="NON_LOCKED" not-null="true"/>
+            </property>
+            <property name="credentialsNonExpired" type="boolean">
+                <meta attribute="friendlyName">Credentials Not Expired</meta>
+                <meta attribute="index">9</meta>
+                <column name="NON_PASSWD_EXPIRED" not-null="true"/>
+            </property>
+            <property name="enabled" type="boolean">
+                <meta attribute="friendlyName">Enabled</meta>
+                <meta attribute="index">10</meta>
+                <column name="ENABLED" not-null="true"/>
+            </property>
+
+            <set name="roles" schema="w4tj" table="ROLE_MEMBERS" inverse="true" lazy="true" fetch="select">
+                <meta attribute="friendlyName">Roles</meta>
+                <key>
+                    <column name="USER_ID" not-null="true"/>
+                </key>
+                <one-to-many class="org.web4thejob.security.RoleMembers"/>
+            </set>
+        </joined-subclass>
+
+        <joined-subclass name="org.web4thejob.orm.RoleIdentityImpl"
+                         schema="w4tj" table="ROLE_IDENTITY" entity-name="org.web4thejob.security.RoleIdentity">
+            <meta attribute="friendlyName">Roles</meta>
+            <key column="ID"/>
+
+            <property name="authority" type="string" unique-key="UQ_AUTHORITY" update="false">
+                <meta attribute="friendlyName">Authority Code</meta>
+                <meta attribute="index">2</meta>
+                <column name="AUTHORITY_NAME" not-null="true" length="40"/>
+            </property>
+
+            <many-to-one name="authorizationPolicy" class="org.web4thejob.security.AuthorizationPolicy"
+                         fetch="select" not-null="false">
+                <meta attribute="friendlyName">Authorization Policy</meta>
+                <meta attribute="index">3</meta>
+                <column name="AUTH_STRUCT_ID" not-null="false"/>
+            </many-to-one>
+
+            <property name="description" type="string">
+                <meta attribute="friendlyName">Description</meta>
+                <meta attribute="index">4</meta>
+                <column name="DESCR" not-null="false"/>
+            </property>
+
+            <property name="index" type="int" not-null="true">
+                <meta attribute="friendlyName">Index</meta>
+                <meta attribute="index">5</meta>
+                <column name="INDEXNO" not-null="true"/>
+            </property>
+
+            <set name="users" schema="w4tj" table="ROLE_MEMBERS" inverse="true" lazy="true" fetch="select">
+                <meta attribute="friendlyName">Users</meta>
+                <key>
+                    <column name="ROLE_ID" not-null="true"/>
+                </key>
+                <one-to-many class="org.web4thejob.security.RoleMembers"/>
+            </set>
+
+
+        </joined-subclass>
+
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2012 Veniamin Isaias.
+  ~
+  ~ This file is part of web4thejob.
+  ~
+  ~ Web4thejob is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or any later version.
+  ~
+  ~ Web4thejob is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.web4thejob.orm.RoleMembersImpl" schema="w4tj"
+           table="ROLE_MEMBERS" entity-name="org.web4thejob.security.RoleMembers" optimistic-lock="version">
+        <meta attribute="friendlyName">Role Members</meta>
+
+        <cache usage="nonstrict-read-write"/>
+
+        <id name="id" type="long">
+            <meta attribute="friendlyName">ID</meta>
+            <meta attribute="index">1</meta>
+            <column name="ID"/>
+            <generator class="native"/>
+        </id>
+        <version name="version" access="field" type="integer" column="VERSION"/>
+
+        <many-to-one name="user" class="org.web4thejob.security.UserIdentity"
+                     column="USER_ID" not-null="true" unique-key="UQ_ROLE_USER">
+            <meta attribute="friendlyName">User</meta>
+            <meta attribute="index">2</meta>
+        </many-to-one>
+
+        <many-to-one name="role" class="org.web4thejob.security.RoleIdentity"
+                     column="ROLE_ID" not-null="true" unique-key="UQ_ROLE_USER">
+            <meta attribute="friendlyName">Role</meta>
+            <meta attribute="index">3</meta>
+        </many-to-one>
+
+
+    </class>
+</hibernate-mapping>

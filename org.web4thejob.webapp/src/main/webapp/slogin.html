@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
+<head>
+    <meta http-equiv=Content-Type content="text/html; charset=UTF-8">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>web4thejob.org >> Login Page</title>
+    <script type="text/javascript" src="./js/loginSupport.js"></script>
+</head>
+<body onload="handleLogin();" style="font-family:arial, sans-serif;" bgcolor="#FFFFFF">
+<table height="100%" width="100%">
+    <tbody>
+    <tr valign="middle" height="300px">
+        <td align="center">
+            <img src="img/w4tj_logo_vertical_full.png"/>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td align="center">
+            <form name="f" action="j_spring_security_check" method="POST">
+                <table height="70px">
+                    <tbody>
+                    <tr>
+                        <td align="right">
+                            <span>User Name:</span>
+                        </td>
+                        <td>
+                            <input type="text" name="j_username" style="width:150px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <span>Password:</span>
+                        </td>
+                        <td>
+                            <input type="password" name="j_password" style="width:150px"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td align="left">
+                            <input name="submit" type="submit" value="Sign in"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </td>
+    </tr>
+    <tr align="right" height="10px">
+        <td> <!--
+            <div style="font-family:candara;font-size:80%;font-weight:lighter;font-style:italic;">powered by
+                <a style="font-size:130%;" href="http://www.web4thejob.org">web4thejob.org</a></div>
+			-->
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

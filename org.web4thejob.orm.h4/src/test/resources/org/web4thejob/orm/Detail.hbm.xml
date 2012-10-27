@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2012 Veniamin Isaias.
+  ~
+  ~ This file is part of web4thejob.
+  ~
+  ~ Web4thejob is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or any later version.
+  ~
+  ~ Web4thejob is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4 ??? 2011 9:43:33 ?? by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping schema="w4tj">
+    <class name="org.web4thejob.orm.mapping.Detail" table="DETAIL">
+        <composite-id name="id"
+                      class="org.web4thejob.orm.mapping.DetailId">
+            <key-many-to-one name="master1"
+                             class="org.web4thejob.orm.mapping.Master1" column="MASTER1" foreign-key="DETAIL_MASTER1"/>
+            <key-property name="keyString"
+                          type="string" column="KEY_STRING"/>
+            <key-many-to-one name="master2"
+                             class="org.web4thejob.orm.mapping.Master2" column="MASTER2"/>
+            <key-property name="keyLong"
+                          type="long" column="KEY_LONG"/>
+        </composite-id>
+
+        <property name="fdate" type="java.util.Date">
+            <column name="FDATE" not-null="true"/>
+        </property>
+        <property name="ftimestamp" type="timestamp">
+            <column name="FTIMESTAMP" not-null="true"/>
+        </property>
+        <property name="fdouble" type="double">
+            <column name="FDOUBLE" not-null="true"/>
+        </property>
+        <property name="fint" type="int">
+            <column name="FINT" not-null="true"/>
+        </property>
+        <property name="fstring" type="java.lang.String">
+            <column name="FSTRING" not-null="true" length="255"/>
+        </property>
+        <property name="fclass" type="java.lang.Class">
+            <column name="FCLASS" not-null="true" length="255"/>
+        </property>
+    </class>
+</hibernate-mapping>

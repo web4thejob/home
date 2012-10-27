@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-7"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:aop="http://www.springframework.org/schema/aop"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <beans:bean id="userDetailsService"
+                class="org.web4thejob.security.UserDetailsServiceImpl"/>
+
+    <beans:bean id="webAccessDecisionManager"
+                class="org.springframework.security.access.vote.AffirmativeBased">
+        <beans:property name="decisionVoters">
+            <beans:list>
+                <beans:bean
+                        class="org.springframework.security.web.access.expression.WebExpressionVoter">
+                    <beans:property name="expressionHandler">
+                        <beans:bean class="org.web4thejob.security.CustomWebSecurityExpressionHandler"/>
+                    </beans:property>
+                </beans:bean>
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+
+    <beans:bean id="passwordEncoder"
+                class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+        <beans:constructor-arg value="256"/>
+    </beans:bean>
+
+    <beans:bean id="userSaltSource"
+                class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+        <beans:property name="userPropertyToUse" value="username"/>
+    </beans:bean>
+
+    <beans:bean id="credentialsExpiredErrorHandler"
+                class="org.web4thejob.security.CredentialsExpiredErrorHandler" scope="request">
+        <aop:scoped-proxy/>
+        <beans:property name="defaultFailureUrl" value="/login.html?failed=1"/>
+        <beans:property name="passwordChangeUrl" value="/sec/pchange.zul"/>
+    </beans:bean>
+
+    <beans:bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <beans:property name="propertyEditorRegistrars">
+            <beans:list>
+                <beans:bean class="org.web4thejob.security.CustomEditorRegistrar"/>
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+
+    <!--Delegating authentication point for providing secured/unsecured connections depending on request ip -->
+    <beans:bean id="authenticationEntryPoint"
+                class="org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint">
+        <beans:constructor-arg>
+            <beans:map>
+                <beans:entry
+                        key="firstUse"
+                        value-ref="firstUseEP"/>
+                <beans:entry
+                        key="fromIntranet"
+                        value-ref="unsecuredEP"/>
+            </beans:map>
+        </beans:constructor-arg>
+        <beans:property name="defaultEntryPoint" ref="securedEP"/>
+    </beans:bean>
+
+    <beans:bean id="unsecuredEP"
+                class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:constructor-arg>
+            <beans:value>/login.html</beans:value>
+        </beans:constructor-arg>
+    </beans:bean>
+
+    <beans:bean id="firstUseEP"
+                class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:constructor-arg>
+            <beans:value>/sec/fuwizard.zul</beans:value>
+        </beans:constructor-arg>
+    </beans:bean>
+
+    <beans:bean id="securedEP"
+                class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:constructor-arg>
+            <beans:value>/slogin.html</beans:value>
+        </beans:constructor-arg>
+        <beans:property name="forceHttps" value="true"/>
+    </beans:bean>
+
+    <!--Delegating authentication point for providing secured/unsecured connections depending on request ip -->
+
+
+    <authentication-manager alias="authenticationManager">
+        <!--<authentication-provider ref="adAuthenticationProvider"/>-->
+        <authentication-provider user-service-ref="userDetailsService">
+            <password-encoder ref="passwordEncoder">
+                <salt-source ref="userSaltSource"/>
+            </password-encoder>
+        </authentication-provider>
+    </authentication-manager>
+
+
+    <http auto-config="true" use-expressions="true" entry-point-ref="authenticationEntryPoint"
+          access-decision-manager-ref="webAccessDecisionManager">
+        <intercept-url pattern="/sec/fuwizard.zul" access="permitAll and firstUse" requires-channel="http"/>
+        <intercept-url pattern="/login.html" access="fromIntranet and !firstUse" requires-channel="http"/>
+        <intercept-url pattern="/slogin.html" access="permitAll and !firstUse" requires-channel="https"/>
+
+        <intercept-url pattern="/zkau/**" access="permitAll"/>
+        <intercept-url pattern="/js/**" access="permitAll"/>
+        <intercept-url pattern="/img/**" access="permitAll"/>
+        <intercept-url pattern="/license/**" access="permitAll"/>
+        <intercept-url pattern="/favicon.ico" access="permitAll"/>
+
+        <intercept-url pattern="/**" access="authenticated and !firstUse"/>
+        <form-login always-use-default-target="true"
+                    authentication-failure-handler-ref="credentialsExpiredErrorHandler"/>
+    </http>
+
+</beans:beans>
+

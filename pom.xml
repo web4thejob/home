@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <groupId>org.web4thejob</groupId>
+    <artifactId>web4thejob</artifactId>
+    <name>web4thejob descriptor</name>
+    <version>3.2.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <url>http://web4thejob.org</url>
+    <inceptionYear>2009</inceptionYear>
+    <description>Open source java framework for the rapid development of data centric web applications.</description>
+
+    <developers>
+        <developer>
+            <id>bissaias</id>
+            <name>Veniamin Isaias</name>
+            <email>bissaias@hotmail.com</email>
+            <roles>
+                <role>Creator</role>
+                <role>Architect</role>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>http://web4thejob.googlecode.com/svn/trunk</url>
+        <connection>scm:svn:http://web4thejob.googlecode.com/svn/trunk</connection>
+        <developerConnection>scm:svn:https://web4thejob.googlecode.com/svn/trunk</developerConnection>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License</name>
+            <url>http://www.gnu.org/licenses/lgpl.html</url>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>org.web4thejob.core</module>
+        <module>org.web4thejob.orm.h4</module>
+        <module>org.web4thejob.web.zk6</module>
+        <module>org.web4thejob.security.ss3</module>
+        <module>org.web4thejob.webapp</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <org.springframework.version>3.1.2.RELEASE</org.springframework.version>
+        <org.springsecurity.version>3.1.2.RELEASE</org.springsecurity.version>
+        <org.hibernate.version>4.1.7.Final</org.hibernate.version>
+        <org.hibernate-validator.version>4.3.0.Final</org.hibernate-validator.version>
+        <org.zkoss.version>6.5.0</org.zkoss.version>
+        <org.junit.version>4.10</org.junit.version>
+        <org.joda.version>2.0</org.joda.version>
+        <org.hsqldb.version>2.2.8</org.hsqldb.version>
+    </properties>
+
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.7.1</version>
+                    <configuration>
+                        <enableAssertions>false</enableAssertions>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.5.1</version>
+                    <configuration>
+                        <compilerVersion>1.7</compilerVersion>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                        <fork>true</fork>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <!--<dryRun>true</dryRun>-->
+                    <!--<releaseVersion>4.0.0.RELEASE</releaseVersion>-->
+                    <!--<releaseLabel>${project.version}}</releaseLabel>-->
+                    <!--<developmentVersion>4.0.1-SNAPSHOT</developmentVersion>-->
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.8</version>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${org.junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>aopalliance</groupId>
+                <artifactId>aopalliance</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjrt</artifactId>
+                <version>1.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>1.6.12</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>ZK-CE</id>
+            <name>ZK CE Repository</name>
+            <url>http://mavensync.zkoss.org/maven2</url>
+        </repository>
+    </repositories>
+
+</project>

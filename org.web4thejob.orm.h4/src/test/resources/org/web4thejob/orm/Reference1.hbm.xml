@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2012 Veniamin Isaias.
+  ~
+  ~ This file is part of web4thejob.
+  ~
+  ~ Web4thejob is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or any later version.
+  ~
+  ~ Web4thejob is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4 ??? 2011 9:43:33 ?? by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping schema="w4tj">
+    <class name="org.web4thejob.orm.mapping.Reference1" table="REFERENCE1">
+        <id name="id" type="long">
+            <column name="ID"/>
+            <generator class="native"/>
+        </id>
+        <property name="name" type="java.lang.String">
+            <column name="`NAME`" not-null="true"/>
+        </property>
+        <many-to-one name="reference2" class="org.web4thejob.orm.mapping.Reference2" fetch="select">
+            <column name="REFERENCE2" not-null="true"/>
+        </many-to-one>
+        <set name="masters1" table="MASTER1" inverse="true" lazy="true"
+             fetch="select">
+            <key>
+                <column name="REFERENCE1"/>
+            </key>
+            <one-to-many class="org.web4thejob.orm.mapping.Master1"/>
+        </set>
+        <property name="createTime" type="timestamp" not-null="true" access="field" update="false">
+            <column name="CREATE_TIME" not-null="true"/>
+        </property>
+        <property name="updateTime" type="timestamp" not-null="false" access="field" insert="false">
+            <column name="UPDATE_TIME" not-null="false"/>
+        </property>
+    </class>
+</hibernate-mapping>

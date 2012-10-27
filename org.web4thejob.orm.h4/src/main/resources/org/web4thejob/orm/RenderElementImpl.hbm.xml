@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2012 Veniamin Isaias.
+  ~
+  ~ This file is part of web4thejob.
+  ~
+  ~ Web4thejob is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or any later version.
+  ~
+  ~ Web4thejob is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.web4thejob.orm.RenderElementImpl" schema="w4tj"
+           table="RENDER_ELEMENT" entity-name="org.web4thejob.orm.scheme.RenderElement">
+        <meta attribute="friendlyName">Render Elements</meta>
+        <meta attribute="deny-add-new">true</meta>
+
+        <cache usage="nonstrict-read-write"/>
+
+        <id name="id" type="long">
+            <meta attribute="friendlyName">ID</meta>
+            <meta attribute="index">1</meta>
+            <column name="ID"/>
+            <generator class="native"/>
+        </id>
+
+        <many-to-one name="renderScheme" class="org.web4thejob.orm.scheme.RenderScheme"
+                     fetch="join" not-null="true" insert="false" update="false">
+            <meta attribute="friendlyName">Render Scheme</meta>
+            <meta attribute="index">2</meta>
+            <column name="SCHEME_ID" not-null="true"/>
+        </many-to-one>
+        <property name="friendlyName" type="string" not-null="true">
+            <meta attribute="friendlyName">Friendly Name</meta>
+            <meta attribute="index">3</meta>
+            <column name="`FRIENDLY_NAME`" length="255" not-null="true"/>
+        </property>
+        <property name="flatPropertyPath" type="string" update="false">
+            <meta attribute="friendlyName">Property Path</meta>
+            <meta attribute="disable-user-insert">true</meta>
+            <meta attribute="index">4</meta>
+            <column name="PROPERTY_PATH" length="255" not-null="true"/>
+        </property>
+        <property name="style" type="string" not-null="false">
+            <meta attribute="friendlyName">Style</meta>
+            <meta attribute="index">5</meta>
+            <column name="`STYLE`" length="255" not-null="false"/>
+        </property>
+        <property name="format" type="string" not-null="false">
+            <meta attribute="friendlyName">Format</meta>
+            <meta attribute="index">6</meta>
+            <column name="`FORMAT`" length="255" not-null="false"/>
+        </property>
+        <property name="align" type="string" not-null="false">
+            <meta attribute="friendlyName">Alignment</meta>
+            <meta attribute="index">7</meta>
+            <column name="`ALIGNMENT`" length="20" not-null="false"/>
+        </property>
+        <property name="width" type="string" not-null="false">
+            <meta attribute="friendlyName">Width</meta>
+            <meta attribute="index">8</meta>
+            <column name="`WIDTH`" length="20" not-null="false"/>
+        </property>
+        <property name="height" type="string" not-null="false">
+            <meta attribute="friendlyName">Height</meta>
+            <meta attribute="index">9</meta>
+            <column name="`HEIGHT`" length="20" not-null="false"/>
+        </property>
+        <property name="readOnly" type="boolean" not-null="true">
+            <meta attribute="friendlyName">Immutable</meta>
+            <meta attribute="index">10</meta>
+            <column name="READ_ONLY" not-null="true"/>
+        </property>
+        <property name="colSpan" type="int">
+            <meta attribute="friendlyName">Column Span</meta>
+            <meta attribute="index">11</meta>
+            <column name="COL_SPAN" not-null="true"/>
+        </property>
+        <property name="index" type="int" not-null="true" insert="false" update="false">
+            <meta attribute="friendlyName">Index</meta>
+            <meta attribute="index">12</meta>
+            <column name="INDEXNO" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

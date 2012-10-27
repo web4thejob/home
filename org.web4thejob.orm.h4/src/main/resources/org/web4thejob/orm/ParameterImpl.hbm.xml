@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2012 Veniamin Isaias.
+  ~
+  ~ This file is part of web4thejob.
+  ~
+  ~ Web4thejob is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or any later version.
+  ~
+  ~ Web4thejob is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.web4thejob.orm.ParameterImpl" schema="w4tj"
+           table="PARAMETER" entity-name="org.web4thejob.orm.parameter.Parameter" optimistic-lock="version">
+        <meta attribute="friendlyName">Parameters</meta>
+
+        <cache usage="nonstrict-read-write"/>
+
+        <id name="id" type="long">
+            <meta attribute="friendlyName">ID</meta>
+            <meta attribute="index">1</meta>
+            <column name="`ID`"/>
+            <generator class="native"/>
+        </id>
+        <version name="version" access="field" type="integer" column="VERSION"/>
+
+        <many-to-one name="owner" class="org.web4thejob.security.Identity"
+                     column="OWNER_ID" not-null="true" unique-key="UQ_PARAMETER">
+            <meta attribute="friendlyName">Owner</meta>
+            <meta attribute="index">2</meta>
+        </many-to-one>
+
+        <property name="category" not-null="true" unique-key="UQ_PARAMETER">
+            <meta attribute="friendlyName">Category</meta>
+            <meta attribute="index">3</meta>
+            <column name="`CATEGORY`" not-null="true"/>
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.web4thejob.orm.parameter.Category</param>
+                <param name="type">12</param>
+            </type>
+        </property>
+
+        <property name="key" type="string" not-null="true" unique-key="UQ_PARAMETER">
+            <meta attribute="friendlyName">Key</meta>
+            <meta attribute="index">4</meta>
+            <column name="`KEY`" length="255" not-null="true"/>
+        </property>
+
+        <property name="value" type="string" not-null="true">
+            <meta attribute="friendlyName">Value</meta>
+            <meta attribute="index">6</meta>
+            <column name="`VALUE`" length="255" not-null="true"/>
+        </property>
+
+
+    </class>
+</hibernate-mapping>
