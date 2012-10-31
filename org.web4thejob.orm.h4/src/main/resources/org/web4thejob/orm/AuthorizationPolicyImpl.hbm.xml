@@ -21,7 +21,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="org.web4thejob.orm.AuthorizationPolicyImpl" schema="w4tj" table="AUTH_STRUCTURE"
+    <class name="org.web4thejob.orm.AuthorizationPolicyImpl" schema="w4tj" table="`AUTH_STRUCTURE`"
            entity-name="org.web4thejob.security.AuthorizationPolicy" optimistic-lock="version">
         <meta attribute="friendlyName">Authorization Policy</meta>
 
@@ -30,10 +30,10 @@
         <id name="id" type="long">
             <meta attribute="friendlyName">ID</meta>
             <meta attribute="index">1</meta>
-            <column name="ID"/>
+            <column name="`ID`"/>
             <generator class="native"/>
         </id>
-        <version name="version" access="field" type="integer" column="VERSION"/>
+        <version name="version" access="field" type="integer" column="`VERSION`"/>
 
         <property name="name" type="string" length="150">
             <meta attribute="friendlyName">Name</meta>
@@ -44,13 +44,13 @@
         <property name="definition" type="materialized_clob">
             <meta attribute="friendlyName">Definition</meta>
             <meta attribute="index">3</meta>
-            <column name="DEFINITION" not-null="true" length="1000000"/>
+            <column name="`DEFINITION`" not-null="true" length="1000000"/>
         </property>
 
-        <set name="roles" schema="w4tj" table="ROLE_IDENTITY" inverse="true" lazy="true" fetch="select">
+        <set name="roles" schema="w4tj" table="`ROLE_IDENTITY`" inverse="true" lazy="true" fetch="select">
             <meta attribute="friendlyName">Roles</meta>
             <key>
-                <column name="AUTH_STRUCT_ID" not-null="false"/>
+                <column name="`AUTH_STRUCT_ID`" not-null="false"/>
             </key>
             <one-to-many class="org.web4thejob.security.RoleIdentity"/>
         </set>

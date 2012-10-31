@@ -85,7 +85,7 @@
                 <prop key="net.sf.ehcache.configurationResourceName">/org/web4thejob/conf/orm-ehcache.xml</prop>
 
                 <prop key="hibernate.hbm2ddl.auto">${datasource.hbm2ddl}</prop>
-                <prop key="hibernate.hbm2ddl.import_files">${datasource.sql_file}</prop>
+                <!--<prop key="hibernate.hbm2ddl.import_files">${datasource.sql_file}</prop>-->
             </props>
         </property>
 

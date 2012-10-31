@@ -67,6 +67,7 @@ public class MyXStreamMarshaller extends XStreamMarshaller {
         // register custom hibernate converter
         xstream.registerConverter(new MyHibernateProxyConverter());
         xstream.registerConverter(new DateFormulaConverter());
+        xstream.registerConverter(new CurrentUserConverter());
 
         // configure xstream to ignore all properties except identifiers.
         for (final ClassMetadata meta : sessionFactory.getAllClassMetadata().values()) {

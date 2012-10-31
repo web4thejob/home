@@ -1,17 +1,21 @@
+v3.2.1
+-----------------------------------------------------------
+1. Addition of org.web4thejob.orm.serial.CurrentUser
+
 v3.2.0
-==================================================================================
+-----------------------------------------------------------
 1. Change of base package org.w4tj to org.web4thejob so that it adheres to the Maven publishing rules.
 2. Improvement of CustomSessionFasctoryBean initial schema generation.
 
 
 v3.1.0
-==================================================================================
+-----------------------------------------------------------
 1. Introduction of Media manegement components (MediaBox,MediaConverter,MediaViewPanel)
 2. Introduction of Schema.sql (before schema creation) and Startup.sql (after schema creation). Both run only when hbm2ddl starts with 'create'.
 
 
 v3.0.0
-==================================================================================
+-----------------------------------------------------------
 1. Upgrade of ZK to v6.5.0
 2. Upgrade of Hibernate to v4.1.7.Final
 3. Refactoring: removal of packages org.w4tj.orm.h4 and org.w4tj.sec.ss3 Contents moved to org.w4tj.orm and org.w4tj.sec respectively.
@@ -25,13 +29,13 @@ v3.0.0
 
 
 v2.1.1
-==================================================================================
+-----------------------------------------------------------
 1. Code changes based on report of IntelliJ Code Analyzer
 2. Fixed buf with SchemaExport in org.w4tj.orm.CustomSessionFactoryBean.applyScripts
 
 
 v2.1.0
-==================================================================================
+-----------------------------------------------------------
 1. Creation of package org.w4tj.web. Existing subpackages panel,dialog and composer have been moved in.
 2. Introduction of Safe Mode when an exception occurs during load of Desktop. First use is to handle the transformation of panel names and classes after the addition of web package in the packahe hierarchy.
 3. User and System locale shortcuts in locale lists
@@ -40,7 +44,7 @@ v2.1.0
 
 
 v2.0.0
-==================================================================================
+-----------------------------------------------------------
 1. JDK 7
 2. Calendar module added (cal2).
 3. SettingEnum and CommandEnum refactoring in order to support settings and commands from new modules
@@ -56,7 +60,7 @@ v2.0.0
 
 
 v1.2.1
-==================================================================================
+-----------------------------------------------------------
 1. Introduction od cached xml meta-attribute so that even if a base class is not cached, a subclasses can be marked as cached.
 2. Mold setting for TabbedViewLayoutPanel
 3. Usage of last criteria as initialization values in new entities in DefaultEntityViewPanel (just like DefaultListViewPanels).
@@ -67,7 +71,7 @@ v1.2.1
 
 
 v1.2.0
-==================================================================================
+-----------------------------------------------------------
 1. First use wizard.
 2. Startup authorization policy for ADMINISTRATOR group.
 3. Changed color scheme and AboutDialog to match official colors (light blue and light green).
@@ -81,6 +85,6 @@ v1.2.0
 
 
 v1.1.1
-==================================================================================
+-----------------------------------------------------------
 1. Class name changed from 'AuthorizationStructure' to 'AuthorizationPolicy'.
 2. Bind property names in DefaultSettingsDialog matches properties using Class.assignableFrom and not Class.equals.

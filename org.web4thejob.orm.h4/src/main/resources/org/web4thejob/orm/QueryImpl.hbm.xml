@@ -22,7 +22,7 @@
 
 <hibernate-mapping>
     <class name="org.web4thejob.orm.QueryImpl" schema="w4tj"
-           table="QUERY" entity-name="org.web4thejob.orm.query.Query" optimistic-lock="version">
+           table="`QUERY`" entity-name="org.web4thejob.orm.query.Query" optimistic-lock="version">
         <meta attribute="friendlyName">Query Definitions</meta>
         <meta attribute="deny-add-new">true</meta>
 
@@ -34,7 +34,7 @@
             <column name="`ID`"/>
             <generator class="native"/>
         </id>
-        <version name="version" access="field" type="integer" column="VERSION"/>
+        <version name="version" access="field" type="integer" column="`VERSION`"/>
 
         <property name="name" type="string" unique-key="UQ_QUERY_NAME">
             <meta attribute="friendlyName">Name</meta>
@@ -62,26 +62,26 @@
                      fetch="select" not-null="true">
             <meta attribute="friendlyName">Owner</meta>
             <meta attribute="index">6</meta>
-            <column name="OWNER_ID" not-null="true"/>
+            <column name="`OWNER_ID`" not-null="true"/>
         </many-to-one>
 
 
-        <list name="criteria" schema="w4tj" table="CRITERION" inverse="false"
+        <list name="criteria" schema="w4tj" table="`CRITERION`" inverse="false"
               lazy="false" fetch="select" cascade="all,delete-orphan">
             <meta attribute="friendlyName">Criteria</meta>
             <meta attribute="index">5</meta>
             <cache usage="nonstrict-read-write"/>
-            <key column="QUERY_ID" not-null="true"/>
-            <list-index base="0" column="INDEXNO"/>
+            <key column="`QUERY_ID`" not-null="true"/>
+            <list-index base="0" column="`INDEXNO`"/>
             <one-to-many class="org.web4thejob.orm.query.Criterion"/>
         </list>
-        <list name="orderings" schema="w4tj" table="ORDERBY" inverse="false"
+        <list name="orderings" schema="w4tj" table="`ORDERBY`" inverse="false"
               lazy="false" fetch="select" cascade="all,delete-orphan">
             <meta attribute="friendlyName">Orderings</meta>
             <meta attribute="index">6</meta>
             <cache usage="nonstrict-read-write"/>
-            <key column="QUERY_ID" not-null="true"/>
-            <list-index base="0" column="INDEXNO"/>
+            <key column="`QUERY_ID`" not-null="true"/>
+            <list-index base="0" column="`INDEXNO`"/>
             <one-to-many class="org.web4thejob.orm.query.OrderBy"/>
         </list>
 

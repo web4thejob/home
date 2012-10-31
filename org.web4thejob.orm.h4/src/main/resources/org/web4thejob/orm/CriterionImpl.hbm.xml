@@ -22,7 +22,7 @@
 
 <hibernate-mapping>
     <class name="org.web4thejob.orm.CriterionImpl" schema="w4tj"
-           table="CRITERION" entity-name="org.web4thejob.orm.query.Criterion">
+           table="`CRITERION`" entity-name="org.web4thejob.orm.query.Criterion">
         <meta attribute="friendlyName">Query Criteria</meta>
         <meta attribute="deny-add-new">true</meta>
 
@@ -31,39 +31,39 @@
         <id name="id" type="long">
             <meta attribute="friendlyName">ID</meta>
             <meta attribute="index">1</meta>
-            <column name="ID"/>
+            <column name="`ID`"/>
             <generator class="native"/>
         </id>
         <many-to-one name="query" class="org.web4thejob.orm.query.Query"
                      fetch="join" not-null="true" insert="false" update="false" lazy="false">
             <meta attribute="friendlyName">Query</meta>
             <meta attribute="index">2</meta>
-            <column name="QUERY_ID" not-null="true"/>
+            <column name="`QUERY_ID`" not-null="true"/>
         </many-to-one>
         <property name="flatPropertyPath" type="string">
             <meta attribute="friendlyName">Property Path</meta>
             <meta attribute="index">3</meta>
-            <column name="PROPERTY_PATH" length="255" not-null="true"/>
+            <column name="`PROPERTY_PATH`" length="255" not-null="true"/>
         </property>
         <property name="flatCondition" type="string">
             <meta attribute="friendlyName">Condition</meta>
             <meta attribute="index">4</meta>
-            <column name="CONDITION" length="15" not-null="false"/>
+            <column name="`CONDITION`" length="15" not-null="false"/>
         </property>
         <property name="flatValue" type="materialized_clob">
             <meta attribute="friendlyName">Value</meta>
             <meta attribute="index">5</meta>
-            <column name="VALUE" not-null="false" length="5000"/>
+            <column name="`VALUE`" not-null="false" length="5000"/>
         </property>
         <property name="fixed" type="boolean" not-null="true">
             <meta attribute="friendlyName">Fixed</meta>
             <meta attribute="index">6</meta>
-            <column name="FIXED" not-null="true"/>
+            <column name="`FIXED`" not-null="true"/>
         </property>
         <property name="index" type="int" not-null="true" insert="false" update="false">
             <meta attribute="friendlyName">Index</meta>
             <meta attribute="index">7</meta>
-            <column name="INDEXNO" not-null="true"/>
+            <column name="`INDEXNO`" not-null="true"/>
         </property>
     </class>
 </hibernate-mapping>

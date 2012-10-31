@@ -369,6 +369,7 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
         settings.add(ContextUtil.getSetting(SettingEnum.TARGET_TYPE, entity.getEntityType()));
         EntityPersisterDialog dialog = ContextUtil.getDefaultDialog(EntityPersisterDialog.class, entity, settings,
                 MutableMode.UPDATE, true);
+        dialog.setDirty(true);
         dialog.show(this);
     }
 

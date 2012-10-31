@@ -31,6 +31,7 @@ import org.web4thejob.util.XMLUtil;
 import org.web4thejob.web.panel.base.zk.AbstractZkCommandAwarePanel;
 import org.web4thejob.web.util.ZkUtil;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Panel;
 import org.zkoss.zul.*;
 
 /**
@@ -66,6 +67,7 @@ public class DefaultAuthorizationPolicyPanel extends AbstractZkCommandAwarePanel
         this.readOnly = readOnly;
         Tabbox tabbox = new Tabbox();
         ZkUtil.setParentOfChild((Component) base, tabbox);
+        ((Panel) base).setHflex("true");
         tabbox.setWidth("100%");
         tabbox.setVflex("true");
         new Tabs().setParent(tabbox);

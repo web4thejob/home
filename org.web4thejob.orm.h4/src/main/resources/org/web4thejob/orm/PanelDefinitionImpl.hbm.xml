@@ -22,7 +22,7 @@
 <!-- Generated 21 ??? 2011 9:03:25 ?? by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="org.web4thejob.orm.PanelDefinitionImpl" schema="w4tj"
-           table="PANEL_DEFINITION" entity-name="org.web4thejob.orm.PanelDefinition" optimistic-lock="version">
+           table="`PANEL_DEFINITION`" entity-name="org.web4thejob.orm.PanelDefinition" optimistic-lock="version">
         <meta attribute="friendlyName">Panel Definitions</meta>
         <meta attribute="deny-add-new">true</meta>
 
@@ -31,29 +31,29 @@
         <id name="id" type="long">
             <meta attribute="friendlyName">ID</meta>
             <meta attribute="index">1</meta>
-            <column name="ID"/>
+            <column name="`ID`"/>
             <generator class="native"/>
         </id>
-        <version name="version" access="field" type="integer" column="VERSION"/>
+        <version name="version" access="field" type="integer" column="`VERSION`"/>
 
         <property name="beanId" type="string" unique-key="UQ_PanelDefinition">
             <meta attribute="friendlyName">Bean Id</meta>
             <meta attribute="index">2</meta>
             <meta attribute="disable-user-insert">true</meta>
             <meta attribute="disable-user-update">true</meta>
-            <column name="BEANID" length="255" not-null="true"/>
+            <column name="`BEANID`" length="255" not-null="true"/>
         </property>
         <property name="name" type="string">
             <meta attribute="friendlyName">Name</meta>
             <meta attribute="index">3</meta>
             <meta attribute="disable-user-insert">true</meta>
             <meta attribute="disable-user-update">true</meta>
-            <column name="NAME" length="255" not-null="true"/>
+            <column name="`NAME`" length="255" not-null="true"/>
         </property>
         <property name="description" type="text">
             <meta attribute="friendlyName">Description</meta>
             <meta attribute="index">4</meta>
-            <column name="DESCRIPTION" not-null="false"/>
+            <column name="`DESCRIPTION`" not-null="false"/>
         </property>
         <property name="image" type="string">
             <meta attribute="friendlyName">Image</meta>
@@ -78,13 +78,13 @@
                      fetch="select" not-null="true">
             <meta attribute="friendlyName">Owner</meta>
             <meta attribute="index">8</meta>
-            <column name="OWNER_ID" not-null="true"/>
+            <column name="`OWNER_ID`" not-null="true"/>
         </many-to-one>
 
         <property name="definition" type="materialized_clob">
             <meta attribute="friendlyName">Definition</meta>
             <meta attribute="index">9</meta>
-            <column name="DEFINITION" not-null="true" length="1000000"/>
+            <column name="`DEFINITION`" not-null="true" length="1000000"/>
         </property>
     </class>
 </hibernate-mapping>

@@ -22,7 +22,7 @@
 
 <hibernate-mapping>
     <class name="org.web4thejob.orm.OrderByImpl" schema="w4tj"
-           table="ORDERBY" entity-name="org.web4thejob.orm.query.OrderBy">
+           table="`ORDERBY`" entity-name="org.web4thejob.orm.query.OrderBy">
         <meta attribute="friendlyName">Query Orderings</meta>
         <meta attribute="deny-add-new">true</meta>
 
@@ -31,7 +31,7 @@
         <id name="id" type="long">
             <meta attribute="friendlyName">ID</meta>
             <meta attribute="index">1</meta>
-            <column name="ID"/>
+            <column name="`ID`"/>
             <generator class="native"/>
         </id>
         <many-to-one name="query" class="org.web4thejob.orm.query.Query"
@@ -39,12 +39,12 @@
                      update="false" lazy="false">
             <meta attribute="friendlyName">Query</meta>
             <meta attribute="index">2</meta>
-            <column name="QUERY_ID" not-null="true"/>
+            <column name="`QUERY_ID`" not-null="true"/>
         </many-to-one>
         <property name="property" type="string">
             <meta attribute="friendlyName">Property</meta>
             <meta attribute="index">3</meta>
-            <column name="PROPERTY" length="255" not-null="true"/>
+            <column name="`PROPERTY`" length="255" not-null="true"/>
         </property>
         <property name="descending" type="boolean">
             <meta attribute="friendlyName">Descending</meta>
@@ -54,13 +54,13 @@
         <property name="fixed" type="boolean" not-null="true">
             <meta attribute="friendlyName">Fixed</meta>
             <meta attribute="index">5</meta>
-            <column name="FIXED" not-null="true"/>
+            <column name="`FIXED`" not-null="true"/>
         </property>
         <property name="index" type="int" not-null="true"
                   insert="false" update="false">
             <meta attribute="friendlyName">Index</meta>
             <meta attribute="index">6</meta>
-            <column name="INDEXNO" not-null="true"/>
+            <column name="`INDEXNO`" not-null="true"/>
         </property>
     </class>
 </hibernate-mapping>

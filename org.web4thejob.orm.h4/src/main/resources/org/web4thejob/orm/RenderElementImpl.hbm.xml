@@ -22,7 +22,7 @@
 
 <hibernate-mapping>
     <class name="org.web4thejob.orm.RenderElementImpl" schema="w4tj"
-           table="RENDER_ELEMENT" entity-name="org.web4thejob.orm.scheme.RenderElement">
+           table="`RENDER_ELEMENT`" entity-name="org.web4thejob.orm.scheme.RenderElement">
         <meta attribute="friendlyName">Render Elements</meta>
         <meta attribute="deny-add-new">true</meta>
 
@@ -31,7 +31,7 @@
         <id name="id" type="long">
             <meta attribute="friendlyName">ID</meta>
             <meta attribute="index">1</meta>
-            <column name="ID"/>
+            <column name="`ID`"/>
             <generator class="native"/>
         </id>
 
@@ -39,7 +39,7 @@
                      fetch="join" not-null="true" insert="false" update="false">
             <meta attribute="friendlyName">Render Scheme</meta>
             <meta attribute="index">2</meta>
-            <column name="SCHEME_ID" not-null="true"/>
+            <column name="`SCHEME_ID`" not-null="true"/>
         </many-to-one>
         <property name="friendlyName" type="string" not-null="true">
             <meta attribute="friendlyName">Friendly Name</meta>
@@ -50,7 +50,7 @@
             <meta attribute="friendlyName">Property Path</meta>
             <meta attribute="disable-user-insert">true</meta>
             <meta attribute="index">4</meta>
-            <column name="PROPERTY_PATH" length="255" not-null="true"/>
+            <column name="`PROPERTY_PATH`" length="255" not-null="true"/>
         </property>
         <property name="style" type="string" not-null="false">
             <meta attribute="friendlyName">Style</meta>
@@ -80,17 +80,17 @@
         <property name="readOnly" type="boolean" not-null="true">
             <meta attribute="friendlyName">Immutable</meta>
             <meta attribute="index">10</meta>
-            <column name="READ_ONLY" not-null="true"/>
+            <column name="`READ_ONLY`" not-null="true"/>
         </property>
         <property name="colSpan" type="int">
             <meta attribute="friendlyName">Column Span</meta>
             <meta attribute="index">11</meta>
-            <column name="COL_SPAN" not-null="true"/>
+            <column name="`COL_SPAN`" not-null="true"/>
         </property>
         <property name="index" type="int" not-null="true" insert="false" update="false">
             <meta attribute="friendlyName">Index</meta>
             <meta attribute="index">12</meta>
-            <column name="INDEXNO" not-null="true"/>
+            <column name="`INDEXNO`" not-null="true"/>
         </property>
     </class>
 </hibernate-mapping>
