@@ -22,6 +22,8 @@ import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 
+import java.util.Locale;
+
 /**
  * @author Veniamin Isaias
  * @since 1.0.0
@@ -40,6 +42,7 @@ public class FullAccessSecurityService implements SecurityService {
             userAdmin.setPassword(encodePassword(userAdmin, UserIdentity.USER_ADMIN));
             userAdmin.setFirstName("test");
             userAdmin.setLastName("admin");
+            userAdmin.setLocale(Locale.getDefault());
         }
         ContextUtil.getDWS().save(userAdmin);
 

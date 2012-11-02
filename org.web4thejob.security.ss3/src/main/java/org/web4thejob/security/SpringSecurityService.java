@@ -31,6 +31,8 @@ import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 
+import java.util.Locale;
+
 /**
  * @author Veniamin Isaias
  * @since 1.0.0
@@ -78,6 +80,7 @@ public class SpringSecurityService implements SecurityService {
             userAdmin.setLastName("System");
             userAdmin.setFirstName("Administrator");
             userAdmin.setPassword(encodePassword(userAdmin, UserIdentity.USER_ADMIN));
+            userAdmin.setLocale(Locale.getDefault());
         }
         if (userAdmin.isNewInstance() || !userAdmin.isAccountNonExpired() || !userAdmin.isAccountNonLocked() ||
                 !userAdmin.isCredentialsNonExpired() || !userAdmin.isEnabled()) {
