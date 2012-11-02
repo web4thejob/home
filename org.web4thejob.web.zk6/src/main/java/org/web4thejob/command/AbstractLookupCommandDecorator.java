@@ -70,7 +70,7 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
 
     @Override
     public void dispatchMessage(Message message) {
-        if (MessageEnum.ENTITY_UPDATED == message.getId()) {
+        if (MessageEnum.ENTITY_UPDATED == message.getId() && subcommandsOwner.hasCommand(CommandEnum.UPDATE)) {
             setModified(true);
             return;
         }
