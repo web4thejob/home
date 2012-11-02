@@ -367,7 +367,8 @@ public class DefaultOrderByPanel extends AbstractZkTargetTypeAwarePanel implemen
                     arrangeForState(PanelState.READY);
                 }
             } else if (Events.ON_CHECK.equals(event.getName())) {
-                dispatchMessage(ContextUtil.getMessage(MessageEnum.VALUE_CHANGED, DefaultOrderByPanel.this));
+                //it is not a good idea to treat asc/desc changes as query change
+                //dispatchMessage(ContextUtil.getMessage(MessageEnum.VALUE_CHANGED, DefaultOrderByPanel.this));
             }
         }
     }

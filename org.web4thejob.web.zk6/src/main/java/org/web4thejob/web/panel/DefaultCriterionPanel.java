@@ -526,7 +526,8 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
         public void onEvent(Event event) throws Exception {
             if (Events.ON_CHANGE.equals(event.getName()) && event.getTarget().hasAttribute(ATTRIB_CONDITION)) {
                 arrangeValueBoxForCondition(null, (Combobox) event.getTarget());
-                dispatchMessage(ContextUtil.getMessage(MessageEnum.VALUE_CHANGED, DefaultCriterionPanel.this));
+                //it is not a good idea to treat value changes as query change
+                //dispatchMessage(ContextUtil.getMessage(MessageEnum.VALUE_CHANGED, DefaultCriterionPanel.this));
             } else if (Events.ON_CLICK.equals(event.getName())) {
                 if (event.getTarget().hasAttribute(ATTRIB_CLEAR)) {
                     Listitem item = (Listitem) event.getTarget().getAttribute(ATTRIB_CLEAR);
@@ -544,7 +545,8 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
                 }
             } else if (Events.ON_CHANGING.equals(event.getName()) || Events.ON_CHANGE.equals(event.getName()) ||
                     Events.ON_CHECK.equals(event.getName())) {
-                dispatchMessage(ContextUtil.getMessage(MessageEnum.VALUE_CHANGED, DefaultCriterionPanel.this));
+                //it is not a good idea to treat value changes as query change
+                //dispatchMessage(ContextUtil.getMessage(MessageEnum.VALUE_CHANGED, DefaultCriterionPanel.this));
             }
         }
     }
