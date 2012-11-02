@@ -1,6 +1,14 @@
 v3.2.1
 -----------------------------------------------------------
 1. Addition of org.web4thejob.orm.serial.CurrentUser
+2. Highlight color of unsaved panels changed to red.
+3. Upon creation child panels inherit the hightlight state of their parent.
+4. Notifications for changes in persisted criterion (values+conditions) and orderby (descending) entities are cancelled.
+5. Change notifications in query and render schemes are supressed when the user does not have the UPDATE command.
+6. New home_header.png
+7. Addition of w4tj_powered.png at login.html
+8. By default the locale of the admin user created by the First Use Wizard is set to Locale.getDefault()
+9. RenderSchemeUtil.createDefaultRenderScheme uses Locale.getDefault() in order to resolve the problem of multiple unwanted locale generations during a ContextRefreshedEvent
 
 v3.2.0
 -----------------------------------------------------------
