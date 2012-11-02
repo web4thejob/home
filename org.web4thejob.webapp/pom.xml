@@ -87,14 +87,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>tickets</groupId>
-            <artifactId>job.tickets</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
-        </dependency>
-
-
     </dependencies>
 
     <build>
