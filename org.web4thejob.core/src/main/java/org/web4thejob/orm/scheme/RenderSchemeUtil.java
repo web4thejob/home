@@ -142,7 +142,7 @@ public abstract class RenderSchemeUtil {
     }
 
     public static RenderScheme createDefaultRenderScheme(Class<? extends Entity> targetType, SchemeType schemeType) {
-        return createDefaultRenderScheme(targetType, schemeType, CoreUtil.getUserLocale());
+        return createDefaultRenderScheme(targetType, schemeType, Locale.getDefault());
     }
 
     public static Locale getFallbackLocale(Locale locale) {
