@@ -7,25 +7,25 @@
     <title>web4thejob.org >> Login Page</title>
     <script type="text/javascript" src="./js/loginSupport.js"></script>
 </head>
-<body onload="handleLogin();" style="font-family:arial, sans-serif;" bgcolor="#FFFFFF">
-<table height="100%" width="100%">
+<body onload="handleLogin();" style="font-family:arial, sans-serif; background-color: #FFFFFF; height: 100%;">
+<table style="height: 100%; width: 100%">
     <tbody>
-    <tr valign="middle" height="300px">
+    <tr valign="middle" style="height: 300px">
         <td align="center">
-            <img src="img/w4tj_logo_vertical_full.png"/>
+            <a href="http://web4thejob.org"><img src="img/w4tj_logo_vertical_full.png" title="Put your logo here"/></a>
         </td>
     </tr>
     <tr valign="top">
         <td align="center">
             <form name="f" action="j_spring_security_check" method="POST">
-                <table height="70px">
+                <table style="height: 70px">
                     <tbody>
                     <tr>
                         <td align="right">
                             <span>User Name:</span>
                         </td>
                         <td>
-                            <input type="text" name="j_username" style="width:150px">
+                            <input type="text" name="j_username" value="" style="width:150px">
                         </td>
                     </tr>
                     <tr>
@@ -33,7 +33,7 @@
                             <span>Password:</span>
                         </td>
                         <td>
-                            <input type="password" name="j_password" style="width:150px"/>
+                            <input type="password" name="j_password" value="" style="width:150px"/>
                         </td>
                     </tr>
                     <tr>
@@ -47,14 +47,10 @@
             </form>
         </td>
     </tr>
-    <tr align="right" height="10px">
-        <td> <!--
-            <div style="font-family:candara;font-size:80%;font-weight:lighter;font-style:italic;">powered by
-                <a style="font-size:130%;" href="http://www.web4thejob.org">web4thejob.org</a></div>
-			-->
-        </td>
-    </tr>
     </tbody>
 </table>
+<div style="display: block; position: absolute; top:94%; width: 98%">
+    <a href="http://web4thejob.org"><img src="img/w4tj_powered.png" align="right"></a>
+</div>
 </body>
 </html>
