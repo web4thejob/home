@@ -268,6 +268,7 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
         if (panel instanceof DesignModeAware) {
             ((DesignModeAware) panel).setInDesignMode(isInDesignMode());
         }
+        panel.hightlightPanel(isHighlighted());
     }
 
     protected void beforeRemove(Panel panel) {

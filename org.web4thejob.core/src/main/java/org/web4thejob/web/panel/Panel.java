@@ -89,5 +89,10 @@ public interface Panel extends InitializingBean, BeanNameAware, SecuredResource 
 
     public void hightlightPanel(boolean highlight);
 
+    /**
+     * @since 3.2.1
+     */
+    public boolean isHighlighted();
+
     public String getImage();
 }

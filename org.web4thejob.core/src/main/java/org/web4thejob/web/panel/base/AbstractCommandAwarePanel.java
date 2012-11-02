@@ -166,6 +166,14 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
     }
 
     @Override
+    public boolean isHighlighted() {
+        if (hasCommand(CommandEnum.HIGHLIGHT_PANEL)) {
+            return (Boolean) getCommand(CommandEnum.HIGHLIGHT_PANEL).getValue();
+        }
+        return false;
+    }
+
+    @Override
     public void clearBusy() {
         //if this is not the case don't do anything because
         //the stae has been changed to somethinbg else
@@ -473,6 +481,11 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
                 updateBeanName(panelDefinition.getBeanId());
                 ContextUtil.getSessionContext().refresh();
                 AbstractCommandAwarePanel.this.setUnsavedSettings(false);
+                if (AbstractCommandAwarePanel.this.isHighlighted()) {
+                    //in order to change highlight color if it was saved for first time
+                    AbstractCommandAwarePanel.this.hightlightPanel(true);
+                }
+
             } else if (message.getId() == MessageEnum.NEGATIVE_RESPONSE) {
                 //do nothing
             } else {
