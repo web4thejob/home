@@ -87,7 +87,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:jetty-util:6.1.26" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mortbay.jetty:servlet-api:2.5-20081211" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.seleniumhq.selenium.client-drivers:selenium-java-client-driver:1.0.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: tickets:job.tickets:1.0.0" level="project" />
   </component>
 </module>
 
