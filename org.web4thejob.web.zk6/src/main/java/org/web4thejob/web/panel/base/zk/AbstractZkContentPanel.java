@@ -108,7 +108,7 @@ public abstract class AbstractZkContentPanel extends AbstractContentPanel {
 
     @Override
     public void hightlightPanel(boolean highlight) {
-        ZkUtil.hightlightComponent((HtmlBasedComponent) base, highlight, isPersisted() ? "green" : "yellow");
+        ZkUtil.hightlightComponent((HtmlBasedComponent) base, highlight, isPersisted() ? "green" : "rgb(225,79,35)");
         if (hasCommand(CommandEnum.HIGHLIGHT_PANEL)) {
             getCommand(CommandEnum.HIGHLIGHT_PANEL).setValue(highlight);
         }
