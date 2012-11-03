@@ -32,5 +32,15 @@ public interface Identity extends Entity {
 
     public long getId();
 
+    /**
+     * @since 3.2.1
+     */
+    public String getEmail();
+
+    /**
+     * @since 3.2.1
+     */
+    public void setEmail(String email);
+
 
 }

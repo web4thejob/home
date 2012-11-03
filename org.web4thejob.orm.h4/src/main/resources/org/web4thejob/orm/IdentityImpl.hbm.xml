@@ -34,6 +34,11 @@
             <generator class="native"/>
         </id>
         <version name="version" access="field" type="integer" column="`VERSION`"/>
+        <property name="email" type="string">
+            <meta attribute="friendlyName">Email</meta>
+            <meta attribute="index">2</meta>
+            <column name="`EMAIL`" length="100" not-null="false"/>
+        </property>
 
         <set name="parameters" schema="w4tj" table="PARAMETER" inverse="true" lazy="true" fetch="select">
             <meta attribute="friendlyName">Parameters</meta>

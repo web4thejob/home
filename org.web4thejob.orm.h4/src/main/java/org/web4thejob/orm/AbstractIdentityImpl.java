@@ -18,6 +18,8 @@
 
 package org.web4thejob.orm;
 
+import org.hibernate.validator.constraints.Email;
+import org.web4thejob.orm.annotation.EmailHolder;
 import org.web4thejob.orm.parameter.Parameter;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.orm.scheme.RenderScheme;
@@ -36,6 +38,9 @@ public abstract class AbstractIdentityImpl extends AbstractHibernateEntity imple
     private long id;
     @SuppressWarnings("unused")
     private int version;
+    @EmailHolder
+    @Email
+    private String email;
     private Set<Parameter> parameters = new HashSet<Parameter>();
     private Set<PanelDefinition> panels = new HashSet<PanelDefinition>(0);
     private Set<RenderScheme> renderSchemes = new HashSet<RenderScheme>(0);
@@ -91,5 +96,15 @@ public abstract class AbstractIdentityImpl extends AbstractHibernateEntity imple
 
     public void setQueries(Set<Query> queries) {
         this.queries = queries;
+    }
+
+    @Override
+    public String getEmail() {
+        return email;
+    }
+
+    @Override
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
