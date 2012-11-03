@@ -251,13 +251,20 @@ public abstract class CoreUtil {
     }
 
     public static Panel getEntityViewPanel(Entity entity) {
-        String beainid = CoreUtil.getParameterValue(Category.DEFAULT_PANEL_FOR_TARGET_TYPE,
-                entity.getEntityType().getCanonicalName(), String.class);
+        return getEntityViewPanel(entity, null);
+    }
 
-        return getEntityViewPanel(entity, beainid);
+    public static String getDefaultEntityViewName(Class<? extends Entity> entityType) {
+        return CoreUtil.getParameterValue(Category.DEFAULT_PANEL_FOR_TARGET_TYPE,
+                entityType.getCanonicalName(), String.class);
     }
 
     public static Panel getEntityViewPanel(Entity entity, String beainid) {
+
+        if (beainid == null) {
+            beainid = getDefaultEntityViewName(entity.getEntityType());
+        }
+
         Entity bindValue = entity;
         if (bindValue != null) {
             org.web4thejob.web.panel.Panel entityPanel;

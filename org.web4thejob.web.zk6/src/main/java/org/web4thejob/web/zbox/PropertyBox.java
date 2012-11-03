@@ -38,6 +38,7 @@ import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nMessages;
 import org.web4thejob.util.L10nString;
 import org.web4thejob.util.L10nUtil;
+import org.web4thejob.web.panel.EntityViewPanel;
 import org.web4thejob.web.panel.Panel;
 import org.web4thejob.web.util.MediaUtil;
 import org.web4thejob.web.util.ZkUtil;
@@ -298,6 +299,13 @@ public class PropertyBox extends Hbox {
     }
 
     private void buildNavigationLink() {
+
+        String beanid = CoreUtil.getDefaultEntityViewName(renderElement.getPropertyPath()
+                .getLastStep().getEntityMetadata().getEntityType());
+        if (beanid != null && !ContextUtil.getSessionContext().hasPanel(beanid, EntityViewPanel.class)) {
+            return;
+        }
+
         navigateLink = new A();
         this.insertBefore(navigateLink, html);
         navigateLink.setVisible(false);
