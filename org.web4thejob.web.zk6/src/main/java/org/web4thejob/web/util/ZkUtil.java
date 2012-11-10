@@ -108,17 +108,29 @@ public abstract class ZkUtil {
     }
 
     public static Component getEditableComponentForRenderElement(RenderElement renderElement) {
-        if (renderElement.getPropertyPath().getLastStep().isAssociationType()) {
-            if (renderElement.getPropertyPath().getLastStep().getAssociatedEntityMetadata().isCached()) {
-                return new EntityDropdownBox(renderElement);
-            } else {
-                return new EntityBox(renderElement);
+        Component component = getEditableComponentForPropertyType(renderElement.getPropertyPath());
+
+        if (StringUtils.hasText(renderElement.getFormat())) {
+            if (component instanceof Datebox) {
+                ((Datebox) component).setFormat(extractFormatForDatebox(renderElement.getFormat()));
+            } else if (component instanceof Timebox) {
+                ((Timebox) component).setFormat(extractFormatForDatebox(renderElement.getFormat()));
             }
-        } else {
-            return getEditableComponentForPropertyType(renderElement.getPropertyPath());
         }
 
+        return component;
     }
+
+    public static String extractFormatForDatebox(String format) {
+        if (format == null) return null;
+
+        if (format.startsWith("date,")) {
+            return format.split(",")[1];
+        } else {
+            return format;
+        }
+    }
+
 
     public static Component getEditableComponentForPropertyType(PathMetadata pathMetadata) {
         Component comp;
