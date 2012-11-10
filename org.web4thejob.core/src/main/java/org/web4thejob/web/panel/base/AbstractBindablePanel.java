@@ -213,6 +213,7 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
                     }
                 }
             }
+            templEntity.calculate();
         }
     }
 
