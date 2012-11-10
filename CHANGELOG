@@ -9,6 +9,12 @@ v3.2.1
 7. Addition of w4tj_powered.png at login.html
 8. By default the locale of the admin user created by the First Use Wizard is set to Locale.getDefault()
 9. RenderSchemeUtil.createDefaultRenderScheme uses Locale.getDefault() in order to resolve the problem of multiple unwanted locale generations during a ContextRefreshedEvent
+10. Introduction of AdhocConstraintViolation for raising custom bussiness constraint violations.
+11. Added Identity Email
+12. Navigation links for non-admins appear only if DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE parameter is set
+13. New Parameter Categories: DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE, DEFAULT_LIST_VIEW_FOR_TARGET_TYPE,DEFAULT_QUERY_FOR_TARGET_TYPE, DEFAULT_QUERY_FOR_PATH
+14. Function extractFormatForDatebox for applying render element formats to Datebox
+15. Use of CoreUtil.getDefaultListViewName for listbox generation
 
 v3.2.0
 -----------------------------------------------------------
