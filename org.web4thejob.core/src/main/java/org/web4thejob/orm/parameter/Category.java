@@ -25,7 +25,10 @@ package org.web4thejob.orm.parameter;
  * @since 1.0.5
  */
 public enum Category {
-    DEFAULT_PANEL_FOR_TARGET_TYPE,
+    DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE,
+    DEFAULT_LIST_VIEW_FOR_TARGET_TYPE,
+    DEFAULT_QUERY_FOR_TARGET_TYPE,
+    DEFAULT_QUERY_FOR_PATH,
     PRINTER,
     LOCATION
 }
