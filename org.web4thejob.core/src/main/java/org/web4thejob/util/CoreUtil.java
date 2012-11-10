@@ -29,6 +29,7 @@ import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageAware;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.orm.Entity;
+import org.web4thejob.orm.PathMetadata;
 import org.web4thejob.orm.parameter.Category;
 import org.web4thejob.orm.parameter.Parameter;
 import org.web4thejob.orm.query.Condition;
@@ -136,7 +137,37 @@ public abstract class CoreUtil {
                 value);
     }
 
+    private static boolean isParamAlreadySetForRole(Identity owner, Category category, String key, Object value) {
+        if (value == null) return false;
+
+        Object oldValue = getParameterValue(owner, category, key, value.getClass(), null);
+        if (new EqualsBuilder().append(oldValue, value).isEquals()) {
+            return true;
+        }
+
+        Query query = ContextUtil.getEntityFactory().buildQuery(RoleMembers.class);
+        query.setCached(true);
+        query.addCriterion(RoleMembers.FLD_USER, Condition.EQ, owner);
+        query.addOrderBy(RoleMembers.FLD_ROLE + "." + RoleIdentity.FLD_INDEX);
+        for (Entity members : ContextUtil.getDRS().findByQuery(query)) {
+            oldValue = getParameterValue(ContextUtil.getMRS().deproxyEntity(((RoleMembers) members).getRole()),
+                    category, key, value.getClass(), null);
+            if (new EqualsBuilder().append(oldValue, value).isEquals()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static void setParameterValue(Identity owner, Category category, String key, Object value) {
+
+        if (isParamAlreadySetForRole(owner, category, key, value)) {
+            //if this parameter is already set in a higher level exit
+            return;
+        }
+
+
         Query query = ContextUtil.getEntityFactory().buildQuery(Parameter.class);
         query.addCriterion(Parameter.FLD_OWNER, Condition.EQ, owner);
         query.addCriterion(Parameter.FLD_CATEGORY, Condition.EQ, category);
@@ -255,7 +286,12 @@ public abstract class CoreUtil {
     }
 
     public static String getDefaultEntityViewName(Class<? extends Entity> entityType) {
-        return CoreUtil.getParameterValue(Category.DEFAULT_PANEL_FOR_TARGET_TYPE,
+        return CoreUtil.getParameterValue(Category.DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE,
+                entityType.getCanonicalName(), String.class);
+    }
+
+    public static String getDefaultListViewName(Class<? extends Entity> entityType) {
+        return CoreUtil.getParameterValue(Category.DEFAULT_LIST_VIEW_FOR_TARGET_TYPE,
                 entityType.getCanonicalName(), String.class);
     }
 
@@ -265,8 +301,7 @@ public abstract class CoreUtil {
             beainid = getDefaultEntityViewName(entity.getEntityType());
         }
 
-        Entity bindValue = entity;
-        if (bindValue != null) {
+        if (entity != null) {
             org.web4thejob.web.panel.Panel entityPanel;
 
             if (beainid != null && ContextUtil.getSessionContext().hasPanel(beainid,
@@ -275,15 +310,15 @@ public abstract class CoreUtil {
                 if (!MessageAware.class.isInstance(entityPanel)) return null;
                 entityPanel.render();
                 ((MessageAware) entityPanel).processMessage(ContextUtil.getMessage(MessageEnum
-                        .BIND_DIRECT, entityPanel, MessageArgEnum.ARG_ITEM, bindValue));
+                        .BIND_DIRECT, entityPanel, MessageArgEnum.ARG_ITEM, entity));
 
-                CoreUtil.setParameterValue(Category.DEFAULT_PANEL_FOR_TARGET_TYPE,
-                        bindValue.getEntityType().getCanonicalName(), beainid);
+                CoreUtil.setParameterValue(Category.DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE,
+                        entity.getEntityType().getCanonicalName(), beainid);
             } else {
                 entityPanel = ContextUtil.getDefaultPanel(EntityViewPanel.class);
-                ((EntityViewPanel) entityPanel).setTargetType(bindValue.getEntityType());
+                ((EntityViewPanel) entityPanel).setTargetType(entity.getEntityType());
                 entityPanel.render();
-                ((EntityViewPanel) entityPanel).setTargetEntity(bindValue);
+                ((EntityViewPanel) entityPanel).setTargetEntity(entity);
             }
 
 
@@ -298,15 +333,50 @@ public abstract class CoreUtil {
     }
 
     public static String getCommandImage(CommandEnum id, String defaultImage) {
-        StringBuilder sb = new StringBuilder().append("img/CMD_").append(id.name()).append(".png");
+        String sb = "img/CMD_" + id.name() + ".png";
         return ContextUtil.resourceExists(sb.toString()) ? sb.toString() : defaultImage;
     }
 
     public static String getCommandImage(CommandEnum id, String defaultImage, boolean dirty) {
         if (!dirty) return getCommandImage(id, defaultImage);
 
-        StringBuilder sb = new StringBuilder().append("img/CMD_").append(id.name()).append("_Dirty.png");
+        String sb = "img/CMD_" + id.name() + "_Dirty.png";
         return ContextUtil.resourceExists(sb.toString()) ? sb.toString() : defaultImage;
+    }
+
+    public static Query getQuery(Class<? extends Entity> targetType, String name) {
+        Query lookup = ContextUtil.getEntityFactory().buildQuery(Query.class);
+        lookup.addCriterion(Query.FLD_FLAT_TARGET_TYPE, Condition.EQ, targetType.getCanonicalName());
+        lookup.addCriterion(Query.FLD_NAME, Condition.EQ, name);
+        lookup.setCached(true);
+        return ContextUtil.getDRS().findUniqueByQuery(lookup);
+    }
+
+    public static Query getDefaultQueryForTargetType(Class<? extends Entity> targetType) {
+        String name = CoreUtil.getParameterValue(Category.DEFAULT_QUERY_FOR_TARGET_TYPE,
+                targetType.getCanonicalName(), String.class, null);
+        if (StringUtils.hasText(name)) {
+            return getQuery(targetType, name);
+        }
+        return null;
+    }
+
+    public static Query getDefaultQueryForPath(PathMetadata pathMetadata) {
+        Query query = null;
+
+        String name = CoreUtil.getParameterValue(Category.DEFAULT_QUERY_FOR_PATH,
+                pathMetadata.getLastStep().getAssociatedEntityMetadata().getName(), String.class, null);
+
+        if (StringUtils.hasText(name)) {
+            query = getQuery(pathMetadata.getLastStep().getAssociatedEntityMetadata().getEntityType(), name);
+        }
+
+        if (query != null) {
+            return query;
+        } else {
+            return getDefaultQueryForTargetType(pathMetadata.getLastStep().getAssociatedEntityMetadata()
+                    .getEntityType());
+        }
     }
 
 }
