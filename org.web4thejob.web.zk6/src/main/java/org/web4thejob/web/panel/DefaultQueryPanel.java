@@ -29,9 +29,9 @@ import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.EntityFactory;
-import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.query.*;
 import org.web4thejob.setting.SettingEnum;
+import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nString;
 import org.web4thejob.web.panel.base.AbstractBorderLayoutPanel;
 import org.web4thejob.web.util.ZkUtil;
@@ -246,7 +246,7 @@ public class DefaultQueryPanel extends AbstractBorderLayoutPanel implements Quer
         if (hasTargetType()) {
             String queryName = getSettingValue(SettingEnum.PERSISTED_QUERY_NAME, null);
             if (StringUtils.hasText(queryName)) {
-                Query query = ORMUtil.getQuery(getTargetType(), queryName);
+                Query query = CoreUtil.getQuery(getTargetType(), queryName);
                 if (query != null) {
                     renderAfterLookupChange(query);
                     Command command = getCommand(CommandEnum.QUERY_LOOKUP);
@@ -291,10 +291,26 @@ public class DefaultQueryPanel extends AbstractBorderLayoutPanel implements Quer
                 arrangeForTargetType();
             }
 
-            if (listViewPanel != null) {
+
+            String beanid = CoreUtil.getDefaultListViewName((Class<? extends Entity>) newValue);
+            if (beanid != null) {
+                if (listViewPanel != null) {
+                    subpanels.remove(listViewPanel);
+                }
+
+                listViewPanel = (ListViewPanel) ContextUtil.getPanel(beanid);
+                listViewPanel.unregisterCommand(CommandEnum.QUERY);
+                listViewPanel.unregisterCommand(CommandEnum.RELATED_PANELS);
+                listViewPanel.setSettingValue(SettingEnum.DISPATCH_DOUBLE_CLICK, true);
+                setCenter(listViewPanel);
+                listViewPanel.render();
+
+
+            } else if (listViewPanel != null) {
                 listViewPanel.setSettingValue(id, newValue);
                 listViewPanel.unregisterCommand(CommandEnum.QUERY);
             }
+
             if (modelCriteriaPanel != null) {
                 modelCriteriaPanel.setSettingValue(id, newValue);
             }
