@@ -40,6 +40,7 @@ import org.web4thejob.orm.query.QueryResultMode;
 import org.web4thejob.orm.scheme.RenderElement;
 import org.web4thejob.orm.scheme.RenderScheme;
 import org.web4thejob.setting.SettingEnum;
+import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nString;
 import org.web4thejob.util.L10nUtil;
 import org.web4thejob.web.dialog.EntityPersisterDialog;
@@ -158,7 +159,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         if (getSettingValue(SettingEnum.RUN_QUERY_ON_STARTUP, false) && StringUtils.hasText(getSettingValue(SettingEnum
                 .PERSISTED_QUERY_NAME, (String) null)) && hasTargetType() && activeQuery == null && ((Component)
                 base).getPage() != null && getMutableMode() == MutableMode.READONLY) {
-            Query q = ORMUtil.getQuery(getTargetType(), getSettingValue(SettingEnum.PERSISTED_QUERY_NAME,
+            Query q = CoreUtil.getQuery(getTargetType(), getSettingValue(SettingEnum.PERSISTED_QUERY_NAME,
                     (String) null));
             if (q != null) {
                 List<Entity> list = ContextUtil.getDRS().findByQuery(q);
@@ -733,7 +734,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
                 }
             } else {
                 if (!element.getPropertyPath().getLastStep().isAnnotatedWith(PropertyEditor.class)) {
-                    comp = ZkUtil.getEditableComponentForPropertyType(element.getPropertyPath());
+                    comp = ZkUtil.getEditableComponentForRenderElement(element);
                 } else {
                     comp = buildViewer(element.getPropertyPath().getLastStep().getAnnotation(PropertyEditor.class)
                             .className());
