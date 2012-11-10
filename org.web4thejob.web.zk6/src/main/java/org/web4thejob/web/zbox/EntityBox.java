@@ -26,10 +26,12 @@ import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PathMetadata;
+import org.web4thejob.orm.query.Query;
 import org.web4thejob.orm.query.QueryResultMode;
 import org.web4thejob.orm.scheme.RenderElement;
 import org.web4thejob.setting.Setting;
 import org.web4thejob.setting.SettingEnum;
+import org.web4thejob.util.CoreUtil;
 import org.web4thejob.web.dialog.QueryDialog;
 import org.web4thejob.web.util.ZkUtil;
 
@@ -95,6 +97,12 @@ public class EntityBox extends AbstractBox<Entity> implements MessageListener {
         Set<Setting<?>> settings = new HashSet<Setting<?>>(1);
         settings.add(ContextUtil.getSetting(SettingEnum.TARGET_TYPE, renderElement.getPropertyPath().getLastStep()
                 .getAssociatedEntityMetadata().getEntityType()));
+
+        Query defaultQuery = CoreUtil.getDefaultQueryForPath(renderElement.getPropertyPath());
+        if (defaultQuery != null) {
+            settings.add(ContextUtil.getSetting(SettingEnum.PERSISTED_QUERY_NAME, defaultQuery.getName()));
+        }
+
         QueryDialog queryDialog = ContextUtil.getDefaultDialog(QueryDialog.class, settings, QueryResultMode.RETURN_ONE);
 
         queryDialog.setSubqueryConstraints(ORMUtil.buildUniqueKeyCriteria(ZkUtil.getOwningPanelOfComponent(this),

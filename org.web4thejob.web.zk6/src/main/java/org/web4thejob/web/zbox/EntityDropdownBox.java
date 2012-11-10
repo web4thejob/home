@@ -22,10 +22,9 @@ import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PathMetadata;
-import org.web4thejob.orm.query.Condition;
-import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.orm.scheme.RenderElement;
+import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nMessages;
 import org.web4thejob.web.util.ZkUtil;
 import org.zkoss.zk.ui.event.Event;
@@ -167,25 +166,16 @@ public class EntityDropdownBox extends AbstractBox<Entity> {
     }
 
     private List<? extends Entity> getModel() {
-        Criterion name;
-        Query query = ContextUtil.getEntityFactory().buildQuery(Query.class);
-        query.addCriterion(Query.FLD_FLAT_TARGET_TYPE, Condition.EQ, renderElement.getPropertyPath().getLastStep()
-                .getAssociatedEntityMetadata().getName());
-        name = query.addCriterion(Query.FLD_NAME, Condition.EQ, getClass().getSimpleName() + "|" + renderElement
-                .getPropertyPath().getPath());
-        Query queryToUse = ContextUtil.getDRS().findUniqueByQuery(query);
-        if (queryToUse == null) {
-            name.setValue(getClass().getSimpleName());
-            queryToUse = ContextUtil.getDRS().findUniqueByQuery(query);
-            if (queryToUse == null) {
-                queryToUse = ContextUtil.getEntityFactory().buildQuery(renderElement.getPropertyPath().getLastStep()
-                        .getAssociatedEntityMetadata().getEntityType());
-            }
+        Query defaultQuery = CoreUtil.getDefaultQueryForPath(renderElement.getPropertyPath());
+        if (defaultQuery == null) {
+            defaultQuery = ContextUtil.getEntityFactory().buildQuery(renderElement.getPropertyPath().getLastStep()
+                    .getAssociatedEntityMetadata().getEntityType());
         }
 
-        queryToUse.setSubqueries(ORMUtil.buildUniqueKeyCriteria(ZkUtil.getOwningPanelOfComponent(this), renderElement));
+        defaultQuery.setSubqueries(ORMUtil.buildUniqueKeyCriteria(ZkUtil.getOwningPanelOfComponent(this),
+                renderElement));
 
-        return ContextUtil.getDRS().findByQuery(queryToUse);
+        return ContextUtil.getDRS().findByQuery(defaultQuery);
 
     }
 
