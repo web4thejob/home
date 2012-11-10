@@ -38,7 +38,6 @@ import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nMessages;
 import org.web4thejob.util.L10nString;
 import org.web4thejob.util.L10nUtil;
-import org.web4thejob.web.panel.EntityViewPanel;
 import org.web4thejob.web.panel.Panel;
 import org.web4thejob.web.util.MediaUtil;
 import org.web4thejob.web.util.ZkUtil;
@@ -167,14 +166,10 @@ public class PropertyBox extends Hbox {
             content = L10nUtil.getMessage(L10nString.class, value.getClass().getSimpleName() + "." + value.toString()
                     , value.toString());
         } else if (value instanceof Boolean) {
-            if (ContextUtil.resourceExists("img/OK.png")) {
-                if (((Boolean) value)) {
-                    content = "<img src=\"img/OK.png\"/>";
-                } else {
-                    content = "";
-                }
+            if (((Boolean) value)) {
+                content = ContextUtil.resourceExists("img/OK.png") ? "<img src=\"img/OK.png\"/>" : "Ok";
             } else {
-                content = value.toString();
+                content = ContextUtil.resourceExists("img/NOT_OK.png") ? "<img src=\"img/NOT_OK.png\"/>" : "Not Ok";
             }
         } else if (value instanceof Entity) {
             if (navigateLink != null) {
@@ -300,10 +295,12 @@ public class PropertyBox extends Hbox {
 
     private void buildNavigationLink() {
 
-        String beanid = CoreUtil.getDefaultEntityViewName(renderElement.getPropertyPath()
-                .getLastStep().getEntityMetadata().getEntityType());
-        if (beanid != null && !ContextUtil.getSessionContext().hasPanel(beanid, EntityViewPanel.class)) {
-            return;
+        if (!ContextUtil.getSessionContext().getSecurityContext().isAdministrator()) {
+            String beanid = CoreUtil.getDefaultEntityViewName(renderElement.getPropertyPath()
+                    .getLastStep().getAssociatedEntityMetadata().getEntityType());
+            if (beanid == null && !ContextUtil.getSessionContext().hasPanel(beanid, Panel.class)) {
+                return;
+            }
         }
 
         navigateLink = new A();
@@ -441,10 +438,7 @@ public class PropertyBox extends Hbox {
 
     private boolean isNavigationAllowed() {
         Panel panel = ZkUtil.getOwningPanelOfComponent(this);
-        if (panel instanceof CommandAware) {
-            return ((CommandAware) panel).hasCommand(CommandEnum.RELATED_PANELS);
-        }
-        return false;
+        return panel instanceof CommandAware && ((CommandAware) panel).hasCommand(CommandEnum.RELATED_PANELS);
     }
 
     @Override
