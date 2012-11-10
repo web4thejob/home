@@ -30,7 +30,6 @@ import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.EntityMetadata;
-import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PropertyMetadata;
 import org.web4thejob.orm.annotation.DefaultHolder;
 import org.web4thejob.orm.query.*;
@@ -290,7 +289,7 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         if (getSettingValue(SettingEnum.RUN_QUERY_ON_STARTUP, false) && StringUtils.hasText(getSettingValue(SettingEnum
                 .PERSISTED_QUERY_NAME, (String) null)) && hasTargetType() && activeQuery == null && listbox.getPage
                 () != null) {
-            Query q = ORMUtil.getQuery(getTargetType(), getSettingValue(SettingEnum
+            Query q = CoreUtil.getQuery(getTargetType(), getSettingValue(SettingEnum
                     .PERSISTED_QUERY_NAME, (String) null));
             if (q != null) {
                 processMessage(ContextUtil.getMessage(MessageEnum.QUERY, this, MessageArgEnum.ARG_ITEM, q));

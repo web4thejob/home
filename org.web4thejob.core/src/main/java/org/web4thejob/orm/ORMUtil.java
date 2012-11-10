@@ -83,13 +83,6 @@ public class ORMUtil {
         return null;
     }
 
-    public static Query getQuery(Class<? extends Entity> targetType, String name) {
-        Query lookup = ContextUtil.getEntityFactory().buildQuery(Query.class);
-        lookup.addCriterion(Query.FLD_FLAT_TARGET_TYPE, Condition.EQ, targetType.getCanonicalName());
-        lookup.addCriterion(Query.FLD_NAME, Condition.EQ, name);
-        return ContextUtil.getDRS().findUniqueByQuery(lookup);
-    }
-
     public static String persistPanel(org.web4thejob.web.panel.Panel panel, String description, String extraTags) {
         String xml = panel.toSpringXml();
         String beanid = XMLUtil.getRootElementId(xml);
