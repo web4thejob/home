@@ -197,6 +197,7 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
                                             ContextUtil.getDWS().delete(entity);
                                             processEntityDeletion(entity);
                                             dispatchMessage(message);
+                                            ContextUtil.getSessionContext().refresh();
                                         } catch (HibernateOptimisticLockingFailureException e) {
                                             displayMessage(L10N_MSG_ENTITY_MODIFIED_BY_OTHERS.toString(), true);
                                         } catch (SystemProtectedEntryException e) {
