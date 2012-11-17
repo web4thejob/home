@@ -21,9 +21,12 @@ package org.web4thejob.orm;
 import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.query.Condition;
+import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.orm.query.Subquery;
 import org.web4thejob.orm.scheme.RenderElement;
+import org.web4thejob.security.RoleIdentity;
+import org.web4thejob.security.RoleMembers;
 import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.XMLUtil;
 import org.web4thejob.web.panel.BindCapable;
@@ -45,9 +48,29 @@ public class ORMUtil {
     public static PanelDefinition getUserDesktop() {
         Query query = ContextUtil.getEntityFactory().buildQuery(PanelDefinition.class);
         query.addCriterion(PanelDefinition.FLD_TYPE, Condition.CN, DesktopLayoutPanel.class.getSimpleName());
-        query.addCriterion(PanelDefinition.FLD_OWNER, Condition.EQ, ContextUtil.getSessionContext()
+        Criterion owner = query.addCriterion(PanelDefinition.FLD_OWNER, Condition.EQ, ContextUtil.getSessionContext()
                 .getSecurityContext().getUserIdentity());
-        return ContextUtil.getDRS().findUniqueByQuery(query);
+        PanelDefinition panelDefinition = ContextUtil.getDRS().findUniqueByQuery(query);
+
+        if (panelDefinition == null) {
+            Query roleMembers = ContextUtil.getEntityFactory().buildQuery(RoleMembers.class);
+            roleMembers.setCached(true);
+            roleMembers.addCriterion(RoleMembers.FLD_USER, Condition.EQ, ContextUtil.getSessionContext()
+                    .getSecurityContext().getUserIdentity());
+            roleMembers.addOrderBy(RoleMembers.FLD_ROLE + "." + RoleIdentity.FLD_INDEX);
+
+            for (Entity entity : ContextUtil.getDRS().findByQuery(roleMembers)) {
+                owner.setValue(ContextUtil.getMRS().deproxyEntity(((RoleMembers) entity).getRole()));
+                panelDefinition = ContextUtil.getDRS().findUniqueByQuery(query);
+
+                if (panelDefinition != null) {
+                    return panelDefinition;
+                }
+            }
+        }
+
+
+        return panelDefinition;
     }
 
     public static PanelDefinition getPanelDefinition(String beanid) {

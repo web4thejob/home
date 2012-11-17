@@ -332,7 +332,6 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
 
         if (menuRegion != null) {
             menuRegion.setBorder("none");
-            //menuRegion.setFlex(false);
             menuRegion.setWidth(getSettingValue(SettingEnum.WEST_WIDTH, "250px"));
             menuRegion.setSplittable(getSettingValue(SettingEnum.WEST_SPLITTABLE, true));
             menuRegion.setCollapsible(getSettingValue(SettingEnum.WEST_COLLAPSIBLE, true));
@@ -380,10 +379,16 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
     private void saveDesktop() {
         PanelDefinition panelDefinition = ORMUtil.getUserDesktop();
         if (panelDefinition != null) {
-            ContextUtil.getDWS().delete(panelDefinition);
+            if (ContextUtil.getMRS().deproxyEntity(panelDefinition.getOwner()).equals
+                    (ContextUtil.getSessionContext()
+                            .getSecurityContext().getUserIdentity())) {
+                ContextUtil.getDWS().delete(panelDefinition);
+            } else {
+                updateBeanName("<temp>");
+            }
         }
 
-        setSettingValue(SettingEnum.WEST_OPEN, menuRegion.isOpen());
+        setSettingValue(SettingEnum.WEST_OPEN, menuRegion != null ? menuRegion.isOpen() : false);
         String xml = toSpringXml();
         panelDefinition = ContextUtil.getEntityFactory().buildPanelDefinition();
         panelDefinition.setBeanId(XMLUtil.getRootElementId(xml));
@@ -393,6 +398,7 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
         panelDefinition.setOwner(ContextUtil.getSessionContext().getSecurityContext().getUserIdentity());
         panelDefinition.setDefinition(XMLUtil.toSpringBeanXmlResource(xml));
         ContextUtil.getDWS().save(panelDefinition);
+        updateBeanName(panelDefinition.getBeanId());
         ContextUtil.getSessionContext().refresh();
     }
 
@@ -439,6 +445,12 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
         registerSetting(SettingEnum.WEST_COLLAPSIBLE, true);
         registerSetting(SettingEnum.WEST_SPLITTABLE, true);
         registerSetting(SettingEnum.WEST_WIDTH, "250px");
+
+        registerSetting(SettingEnum.EAST_ENABLED, false);
+        registerSetting(SettingEnum.EAST_OPEN, false);
+        registerSetting(SettingEnum.EAST_COLLAPSIBLE, true);
+        registerSetting(SettingEnum.EAST_SPLITTABLE, true);
+        registerSetting(SettingEnum.EAST_WIDTH, "250px");
     }
 
     private void displayPanelForDesign(org.web4thejob.web.panel.Panel panel) {
@@ -469,6 +481,17 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
                         .toString());
                 displayPanelForDesign(panel);
             }
+        }
+    }
+
+    @Override
+    public void setInDesignMode(boolean designMode) {
+        super.setInDesignMode(designMode);
+
+        if (isInDesignMode()) {
+
+        } else {
+
         }
     }
 }
