@@ -34,6 +34,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
+import org.springframework.util.StringUtils;
 import org.web4thejob.util.CoreUtil;
 
 import java.io.IOException;
@@ -63,11 +64,6 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
         }
 
         try {
-            StringBuilder sb = new StringBuilder();
-            for (String schema : FileUtils.readLines(applicationContext.getResource(SCHEMA_FILE).getFile())) {
-                sb.append(schema);
-            }
-
             final ServiceRegistry serviceRegistry = new ServiceRegistryBuilder()
                     .applySettings(sfb.getProperties())
                     .buildServiceRegistry();
@@ -82,7 +78,12 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
                     .getService(JdbcServices.class).getSqlExceptionHelper());
 
 
-            myDatabaseExporter.export(sb.toString());
+            for (String schema : FileUtils.readLines(applicationContext.getResource(SCHEMA_FILE).getFile())) {
+                if (StringUtils.hasText(schema)) {
+                    myDatabaseExporter.export(schema);
+                }
+            }
+
             LOG.info("SCHEMA creation completed successfully.");
 
         } catch (Exception e) {
