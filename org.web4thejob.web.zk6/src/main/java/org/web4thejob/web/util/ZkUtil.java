@@ -123,6 +123,7 @@ public abstract class ZkUtil {
 
     public static String extractFormatForDatebox(String format) {
         if (format == null) return null;
+        if ("date".equals(format)) return null;
 
         if (format.startsWith("date,")) {
             return format.split(",")[1];
