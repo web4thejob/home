@@ -284,6 +284,7 @@ public class DefaultQueryPanel extends AbstractBorderLayoutPanel implements Quer
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected <T extends Serializable> void onSettingValueChanged(SettingEnum id, T oldValue, T newValue) {
         if (SettingEnum.TARGET_TYPE.equals(id)) {
             arrangeForNullTargetType();

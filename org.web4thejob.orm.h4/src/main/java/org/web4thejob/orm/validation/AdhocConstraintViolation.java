@@ -35,6 +35,7 @@ import java.lang.annotation.ElementType;
  * @author Veniamin Isaias
  * @since 3.2.1
  */
+@SuppressWarnings("unchecked")
 public class AdhocConstraintViolation implements ConstraintViolation<Entity> {
     private static final ConstraintHelper constraintHelper = new ConstraintHelper();
     private final String message;
