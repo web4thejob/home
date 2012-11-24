@@ -43,8 +43,9 @@ public class FullAccessSecurityService implements SecurityService {
             userAdmin.setFirstName("test");
             userAdmin.setLastName("admin");
             userAdmin.setLocale(Locale.getDefault());
+            ContextUtil.getDWS().save(userAdmin);
         }
-        ContextUtil.getDWS().save(userAdmin);
+
 
         return userAdmin;
     }
