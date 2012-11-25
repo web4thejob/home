@@ -358,6 +358,10 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
                 unregisterCommand(CommandEnum.DESIGN);
                 hightlightPanel(false);
             }
+
+            if (commandRenderer != null) {
+                commandRenderer.render();
+            }
         }
     }
 

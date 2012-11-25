@@ -248,6 +248,19 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
         }
     }
 
+
+    @Override
+    protected void afterAdd(Panel panel) {
+        super.afterAdd(panel);
+
+        if (getCommandRenderer() != null) {
+            if (panel instanceof CommandAware) {
+                getCommandRenderer().addCommandOwner((CommandAware) panel);
+                getCommandRenderer().reset();
+            }
+        }
+    }
+
     @Override
     protected void beforeAdd(Panel panel) {
         super.beforeAdd(panel);
@@ -256,8 +269,13 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
             panel.setAttribute(Attributes.ATTRIB_REGION, findNextAvailableRegion());
         }
 
-        LayoutRegion region = getNewRegionByName(panel.getAttribute(Attributes.ATTRIB_REGION).toString());
+        String name = panel.getAttribute(Attributes.ATTRIB_REGION).toString();
+        Panel oldPanel = getPanelByRegionName(name);
+        if (oldPanel != null) {
+            subpanels.remove(oldPanel);
+        }
 
+        LayoutRegion region = getNewRegionByName(name);
         panel.attach(region);
         region.setAttribute(Attributes.ATTRIB_PANEL, panel);
     }
@@ -678,4 +696,6 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
         }
 
     }
+
+
 }

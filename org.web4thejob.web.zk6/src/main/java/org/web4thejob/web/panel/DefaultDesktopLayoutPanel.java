@@ -18,11 +18,8 @@
 
 package org.web4thejob.web.panel;
 
-import nu.xom.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.NestedRuntimeException;
-import org.springframework.util.StringUtils;
 import org.web4thejob.command.Command;
 import org.web4thejob.command.CommandAware;
 import org.web4thejob.command.CommandEnum;
@@ -33,9 +30,6 @@ import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PanelDefinition;
-import org.web4thejob.orm.query.Condition;
-import org.web4thejob.orm.query.Query;
-import org.web4thejob.security.UnauthorizedResourceException;
 import org.web4thejob.setting.SettingEnum;
 import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nMessages;
@@ -45,17 +39,12 @@ import org.web4thejob.web.dialog.AboutDialog;
 import org.web4thejob.web.dialog.Dialog;
 import org.web4thejob.web.dialog.PasswordDialog;
 import org.web4thejob.web.dialog.SelectPanelDialog;
-import org.web4thejob.web.panel.base.zk.AbstractZkLayoutPanel;
-import org.web4thejob.web.util.ZkUtil;
-import org.zkoss.zk.ui.Component;
+import org.web4thejob.web.panel.base.AbstractBorderLayoutPanel;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
+import org.zkoss.zul.Messagebox;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -67,29 +56,11 @@ import java.util.Set;
 
 @org.springframework.stereotype.Component
 @Scope("prototype")
-public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements DesktopLayoutPanel, L10nMessages,
-        EventListener<Event> {
+public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel implements DesktopLayoutPanel, L10nMessages {
 // ------------------------------ FIELDS ------------------------------
 
-    private static final String ON_PANEL_LOAD = "onPanelLoad";
-    private static final int DEFAULT_CHILDREN_COUNT = 1;
     public static final L10nString L10N_QUESTION_LOGOUT = new L10nString(DefaultDesktopLayoutPanel.class, "question",
             "Are you sure you want to logout?");
-    private final Borderlayout regions = new Borderlayout();
-    private Tree startMenu;
-    private West menuRegion;
-    private TabbedLayoutPanel tabbedRegion;
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
-    public DefaultDesktopLayoutPanel() {
-        ZkUtil.setParentOfChild((Component) base, regions);
-        //regions.setWidth("100%");
-        regions.setVflex("true");
-    }
-
-// ------------------------ INTERFACE METHODS ------------------------
-
 
 // --------------------- Interface CommandAware ---------------------
 
@@ -105,41 +76,6 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
 // --------------------- Interface EventListener ---------------------
 
 
-    @Override
-    public void onEvent(Event event) throws Exception {
-        if (Events.ON_CLICK.equals(event.getName()) && event.getTarget().hasAttribute(DefaultMenuAuthorizationPanel
-                .ELEMENT_PANEL)) {
-            showBusy();
-            Events.echoEvent(ON_PANEL_LOAD, event.getTarget(), null);
-        } else if (ON_PANEL_LOAD.equals(event.getName())) {
-            clearBusy();
-            try {
-                org.web4thejob.web.panel.Panel panel = ContextUtil.getPanel(event.getTarget().getAttribute
-                        (DefaultMenuAuthorizationPanel
-                                .ELEMENT_PANEL).toString());
-                panel.setParent(tabbedRegion);
-                if (panel instanceof DesignModeAware) {
-                    ((DesignModeAware) panel).setInDesignMode(isInDesignMode());
-                }
-                if (panel instanceof I18nAware) {
-                    ((I18nAware) panel).setL10nMode(getL10nMode());
-                }
-                panel.render();
-            } catch (Exception e) {
-                if (e instanceof NestedRuntimeException && ((NestedRuntimeException) e).contains
-                        (UnauthorizedResourceException.class)) {
-                    displayMessage(L10N_UNAUTHORIZED_ACCESS.toString(), true);
-                } else {
-                    displayMessage(L10N_UNEXPECTED_ERROR.toString(), true);
-                }
-                e.printStackTrace();
-            }
-        }
-    }
-
-// --------------------- Interface InitializingBean ---------------------
-
-
 // --------------------- Interface Panel ---------------------
 
     @Override
@@ -152,98 +88,6 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
         Clients.showBusy(null);
     }
 
-// --------------------- Interface ParentCapable ---------------------
-
-    @Override
-    public boolean accepts(org.web4thejob.web.panel.Panel panel) {
-        return getSettingValue(SettingEnum.CHILDREN_COUNT, DEFAULT_CHILDREN_COUNT) > subpanels.size();
-    }
-
-// -------------------------- OTHER METHODS --------------------------
-
-    private Treeitem appendTreeNode(Element node, Treeitem parentItem) {
-        Treeitem item = null;
-        if (DefaultMenuAuthorizationPanel.ELEMENT_MENU.equals(node.getLocalName())) {
-            item = renderMenuItem(parentItem, XMLUtil.getTextualValue(node));
-        } else if (DefaultMenuAuthorizationPanel.ELEMENT_PANEL.equals(node.getLocalName())) {
-            String sid = XMLUtil.getTextualValue(node);
-            if (ContextUtil.getSessionContext().getSecurityContext().isAccessible(sid)) {
-                Query query = ContextUtil.getEntityFactory().buildQuery(PanelDefinition.class);
-                query.addCriterion(PanelDefinition.FLD_BEANID, Condition.EQ, XMLUtil.getTextualValue(node));
-                PanelDefinition panelDefinition = ContextUtil.getDRS().findUniqueByQuery(query);
-                if (panelDefinition == null) {
-                    return null;
-                }
-                item = renderPanelItem(parentItem, panelDefinition);
-            }
-        } else {
-            return null;
-        }
-
-        if (item != null) {
-            for (int i = 0; i < node.getChildElements().size(); i++) {
-                appendTreeNode(node.getChildElements().get(i), item);
-            }
-        }
-
-        return item;
-    }
-
-    private Treeitem renderMenuItem(Treeitem parent, String name) {
-        Treeitem item = new Treeitem();
-        if (parent.getTreechildren() == null) {
-            new Treechildren().setParent(parent);
-        }
-        item.setParent(parent.getTreechildren());
-
-        if (item.getTreerow() == null) {
-            new Treerow().setParent(item);
-        }
-        Treecell cell = new Treecell(name, "img/FOLDER.png");
-        cell.setParent(item.getTreerow());
-        cell.setStyle("white-space:nowrap;");
-        item.setTooltiptext(name);
-
-        return item;
-    }
-
-    private Treeitem renderPanelItem(Treeitem parent, PanelDefinition panelDefinition) {
-        Treeitem item = new Treeitem();
-        if (parent.getTreechildren() == null) {
-            new Treechildren().setParent(parent);
-        }
-        item.setParent(parent.getTreechildren());
-
-        if (item.getTreerow() == null) {
-            new Treerow().setParent(item);
-        }
-        Treecell cell = new Treecell(panelDefinition.getName(), StringUtils.hasText(panelDefinition.getImage()) ?
-                panelDefinition.getImage() : "img/PANEL.png");
-        cell.setParent(item.getTreerow());
-        cell.setStyle("white-space:nowrap;");
-        item.setTooltiptext(panelDefinition.getName());
-
-        parent.setOpen(false);
-        item.setParent(parent.getTreechildren());
-        item.setAttribute(DefaultMenuAuthorizationPanel.ELEMENT_PANEL, panelDefinition.getBeanId());
-        item.addEventListener(Events.ON_CLICK, this);
-        item.addEventListener(ON_PANEL_LOAD, this);
-        return item;
-    }
-
-    @Override
-    protected void beforeAdd(org.web4thejob.web.panel.Panel panel) {
-        final Center center = new Center();
-        center.setParent(regions);
-        //center.setFlex(true);
-        panel.attach(center);
-    }
-
-    @Override
-    protected Collection<org.web4thejob.web.panel.Panel> getRenderedOrderOfChildren() {
-        return subpanels;
-    }
-
     @Override
     protected boolean isActive(org.web4thejob.web.panel.Panel panel) {
         return true;
@@ -253,8 +97,7 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
     protected void processValidCommand(Command command) {
         if (CommandEnum.SESSION_INFO.equals(command.getId())) {
             SessionInfoPanel panel = ContextUtil.getDefaultPanel(SessionInfoPanel.class);
-            panel.setParent(tabbedRegion);
-            panel.render();
+            dispatchMessage(ContextUtil.getMessage(MessageEnum.ADOPT_ME, panel));
         } else if (CommandEnum.DESIGN_PANEL_ENTITY_VIEW.equals(command.getId())) {
             displayPanelForDesign(ContextUtil.getDefaultPanel(EntityViewPanel.class));
         } else if (CommandEnum.DESIGN_PANEL_LIST_VIEW.equals(command.getId())) {
@@ -312,66 +155,6 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
     @Override
     public void render() {
         super.render();
-        if (subpanels.isEmpty()) {
-            tabbedRegion = ContextUtil.getDefaultPanel(TabbedLayoutPanel.class);
-            tabbedRegion.setSettingValue(SettingEnum.HONOR_ADOPTION_REQUEST, true);
-            tabbedRegion.setParent(this);
-            tabbedRegion.setUnsavedSettings(false);
-            tabbedRegion.render();
-        } else {
-            tabbedRegion = (TabbedLayoutPanel) subpanels.get(0);
-        }
-
-        if (menuRegion == null && getSettingValue(SettingEnum.WEST_ENABLED, false)) {
-            menuRegion = new West();
-            menuRegion.setParent(regions);
-        } else if (menuRegion != null && !getSettingValue(SettingEnum.WEST_ENABLED, false)) {
-            menuRegion.detach();
-            menuRegion = null;
-        }
-
-        if (menuRegion != null) {
-            menuRegion.setBorder("none");
-            menuRegion.setWidth(getSettingValue(SettingEnum.WEST_WIDTH, "250px"));
-            menuRegion.setSplittable(getSettingValue(SettingEnum.WEST_SPLITTABLE, true));
-            menuRegion.setCollapsible(getSettingValue(SettingEnum.WEST_COLLAPSIBLE, true));
-            menuRegion.setOpen(getSettingValue(SettingEnum.WEST_OPEN, true));
-        }
-
-        Treeitem rootItem;
-        if (menuRegion != null && startMenu == null) {
-            startMenu = new Tree();
-            startMenu.setSclass("w4tj-desktop-menu");
-            startMenu.setParent(menuRegion);
-            startMenu.setHflex("true");
-            startMenu.setVflex("true");
-            startMenu.setSpan(true);
-            Treecols treecols = new Treecols();
-            treecols.setSizable(true);
-            treecols.setParent(startMenu);
-            new Treecol().setParent(treecols);
-            new Treechildren().setParent(startMenu);
-
-            rootItem = new Treeitem();
-            rootItem.setParent(startMenu.getTreechildren());
-            rootItem.setImage("img/ROOT.png");
-            rootItem.setLabel(ContextUtil.getSessionContext().getSecurityContext().getUserIdentity().getUserName
-                    ());
-
-            Element root = XMLUtil.getRootElement(ContextUtil.getSessionContext().getSecurityContext()
-                    .getAuthorizationMenu());
-            for (int i = 0; i < root.getChildElements().size(); i++) {
-                Treeitem item = appendTreeNode(root.getChildElements().get(i), rootItem);
-                if (i == 0 && item != null) {
-                    item.setOpen(true);
-                }
-            }
-        } else if (menuRegion == null && startMenu != null) {
-            startMenu.detach();
-            startMenu = null;
-            rootItem = null;
-        }
-
         arrangeForState(PanelState.READY);
         activateCommands(true);
     }
@@ -388,7 +171,6 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
             }
         }
 
-        setSettingValue(SettingEnum.WEST_OPEN, menuRegion != null ? menuRegion.isOpen() : false);
         String xml = toSpringXml();
         panelDefinition = ContextUtil.getEntityFactory().buildPanelDefinition();
         panelDefinition.setBeanId(XMLUtil.getRootElementId(xml));
@@ -436,25 +218,30 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
     }
 
     @Override
-    protected void registerSettings() {
-        super.registerSettings();
-        registerSetting(SettingEnum.CHILDREN_COUNT, DEFAULT_CHILDREN_COUNT);
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
 
-        registerSetting(SettingEnum.WEST_ENABLED, true);
-        registerSetting(SettingEnum.WEST_OPEN, true);
-        registerSetting(SettingEnum.WEST_COLLAPSIBLE, true);
-        registerSetting(SettingEnum.WEST_SPLITTABLE, true);
-        registerSetting(SettingEnum.WEST_WIDTH, "250px");
+        if (!isPersisted()) {
+            setSettingValue(SettingEnum.CENTER_ENABLED, true);
+            setSettingValue(SettingEnum.WEST_ENABLED, true);
+            setSettingValue(SettingEnum.WEST_OPEN, true);
+            setSettingValue(SettingEnum.WEST_WIDTH, "250px");
+            setSettingValue(SettingEnum.NORTH_ENABLED, false);
+            setSettingValue(SettingEnum.EAST_ENABLED, false);
+            setSettingValue(SettingEnum.SOUTH_ENABLED, false);
+            super.render();
 
-        registerSetting(SettingEnum.EAST_ENABLED, false);
-        registerSetting(SettingEnum.EAST_OPEN, false);
-        registerSetting(SettingEnum.EAST_COLLAPSIBLE, true);
-        registerSetting(SettingEnum.EAST_SPLITTABLE, true);
-        registerSetting(SettingEnum.EAST_WIDTH, "250px");
+            UserMenuPanel userMenuPanel = ContextUtil.getDefaultPanel(UserMenuPanel.class);
+            setWest(userMenuPanel);
+
+            TabbedLayoutPanel tabbedLayoutPanel = ContextUtil.getDefaultPanel(TabbedLayoutPanel.class);
+            tabbedLayoutPanel.setSettingValue(SettingEnum.HONOR_ADOPTION_REQUEST, true);
+            setCenter(tabbedLayoutPanel);
+        }
     }
 
     private void displayPanelForDesign(org.web4thejob.web.panel.Panel panel) {
-        panel.setParent(tabbedRegion);
+        dispatchMessage(ContextUtil.getMessage(MessageEnum.ADOPT_ME, panel));
         if (panel instanceof DesignModeAware) {
             ((DesignModeAware) panel).setInDesignMode(true);
         }
@@ -484,14 +271,4 @@ public class DefaultDesktopLayoutPanel extends AbstractZkLayoutPanel implements 
         }
     }
 
-    @Override
-    public void setInDesignMode(boolean designMode) {
-        super.setInDesignMode(designMode);
-
-        if (isInDesignMode()) {
-
-        } else {
-
-        }
-    }
 }
