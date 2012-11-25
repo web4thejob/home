@@ -74,4 +74,5 @@ public interface EntityMetadata {
 
     public boolean isDenyAddNew();
 
+    public List<Class<? extends Entity>> getSubclasses();
 }

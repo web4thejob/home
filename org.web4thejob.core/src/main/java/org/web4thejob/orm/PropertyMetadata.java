@@ -76,6 +76,8 @@ public interface PropertyMetadata {
 
     public boolean isAssociationType();
 
+    public boolean isSubclassType();
+
     public boolean isBlobType();
 
     public boolean isClobType();

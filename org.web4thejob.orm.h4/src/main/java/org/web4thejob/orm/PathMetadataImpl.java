@@ -50,6 +50,12 @@ import java.util.List;
 
         for (final String step : path) {
             final PropertyMetadata propertyMetadata = entityMetadata.getPropertyMetadata(step);
+
+            if (propertyMetadata == null) {
+                throw new RuntimeException("invalid attribute " + step + " for entity type " + entityMetadata.getName
+                        ());
+            }
+
             steps.add(propertyMetadata);
             entityMetadata = propertyMetadata.getAssociatedEntityMetadata();
         }

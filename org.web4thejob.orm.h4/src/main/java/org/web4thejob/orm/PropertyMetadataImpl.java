@@ -395,6 +395,11 @@ import java.util.Set;
     }
 
     @Override
+    public boolean isSubclassType() {
+        return false;
+    }
+
+    @Override
     public boolean isBlobType() {
         return property.getType() instanceof MaterializedBlobType;
     }

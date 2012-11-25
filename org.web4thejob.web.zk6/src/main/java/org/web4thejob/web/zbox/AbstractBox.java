@@ -49,8 +49,8 @@ public abstract class AbstractBox<T> extends Hbox implements RawValueBox<T>, Eve
     private static final String NOVALUE_STYLE = "font-style: italic; color: #0099cc;";
     protected Toolbarbutton _clearLink;
     protected Component _valueBox;
-    private Toolbarbutton _novalueLink;
-    private Toolbarbutton _editLink;
+    protected Toolbarbutton _novalueLink;
+    protected Toolbarbutton _editLink;
     private int tooltipLimit = PropertyBox.TOOLTIP_LIMIT;
     private boolean hideClearLink;
 

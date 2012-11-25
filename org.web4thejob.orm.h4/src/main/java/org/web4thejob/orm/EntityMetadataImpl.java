@@ -19,10 +19,7 @@
 package org.web4thejob.orm;
 
 import org.apache.log4j.Logger;
-import org.hibernate.mapping.Join;
-import org.hibernate.mapping.PersistentClass;
-import org.hibernate.mapping.RootClass;
-import org.hibernate.mapping.UniqueKey;
+import org.hibernate.mapping.*;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.Type;
 import org.springframework.util.StringUtils;
@@ -31,6 +28,7 @@ import org.web4thejob.context.ContextUtil;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.List;
 
 /**
  * @author Veniamin Isaias
@@ -54,12 +52,14 @@ import java.util.*;
     final private PersistentClass persistentClass;
     final private String friendlyName;
     final private List<UniqueKeyConstraint> uniqueKeyConstraints;
+    final private List<Class<? extends Entity>> subclasses;
     final private boolean tableSubset;
     final private boolean cached;
     final private boolean denyAddNew;
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
+    @SuppressWarnings("unchecked")
     public EntityMetadataImpl(ClassMetadata classMetadata) {
         this.classMetadata = classMetadata;
         this.persistentClass = ContextUtil.getBean(HibernateConfiguration.class).getConfiguration().getClassMapping
@@ -83,10 +83,14 @@ import java.util.*;
         } else {
             cached = false;
         }
+
+        boolean isAbstract = persistentClass.isAbstract() != null ? persistentClass.isAbstract() : false;
         if (MetaUtil.hasMetaAttribute(this.persistentClass, META_DENY_ADDNEW)) {
-            denyAddNew = Boolean.parseBoolean(MetaUtil.getMetaAttribute(this.persistentClass, META_DENY_ADDNEW));
+            denyAddNew = isAbstract || Boolean.parseBoolean(MetaUtil
+                    .getMetaAttribute(this
+                            .persistentClass, META_DENY_ADDNEW));
         } else {
-            denyAddNew = false;
+            denyAddNew = isAbstract;
         }
 
         // id
@@ -128,6 +132,31 @@ import java.util.*;
         }
         uniqueKeyConstraints = Collections.unmodifiableList(temp);
 
+        // subclasses
+        if (persistentClass.hasSubclasses()) {
+            subclasses = new ArrayList<Class<? extends Entity>>();
+            for (final Iterator<?> iter = persistentClass.getSubclassIterator(); iter.hasNext(); ) {
+                Subclass subclass = (Subclass) iter.next();
+                try {
+                    subclasses.add((Class<? extends Entity>) Class.forName(subclass.getEntityName()));
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } else {
+            subclasses = Collections.emptyList();
+        }
+    }
+
+
+    /*package*/ void addSubclassesAsProperties() {
+        for (Class<? extends Entity> subclass : subclasses) {
+            //add subclasses as virtual properties
+            SubclassPropertyMetadataImpl propertyMetadata = new SubclassPropertyMetadataImpl(this,
+                    (EntityMetadataImpl) ContextUtil.getMRS().getEntityMetadata(subclass));
+            propertySet.add(propertyMetadata);
+            propertyMap.put(propertyMetadata.getName(), propertyMetadata);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -281,4 +310,8 @@ import java.util.*;
         return denyAddNew;
     }
 
+    @Override
+    public List<Class<? extends Entity>> getSubclasses() {
+        return subclasses;
+    }
 }
