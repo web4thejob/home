@@ -22,6 +22,7 @@ import org.web4thejob.context.ContextUtil;
 import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.setting.SettingEnum;
+import org.web4thejob.util.CoreUtil;
 import org.web4thejob.web.panel.Attributes;
 import org.web4thejob.web.panel.*;
 import org.web4thejob.web.panel.Panel;
@@ -335,9 +336,26 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
         registerSetting(SettingEnum.HONOR_ADOPTION_REQUEST, false);
         registerSetting(SettingEnum.DISABLE_DYNAMIC_TAB_TITLE, false);
         registerSetting(SettingEnum.MOLD, null);
+        registerSetting(SettingEnum.DISABLE_CROSS_TAB_BINDING, false);
     }
 
     protected void setSelectedIndex(int index) {
         tabbox.setSelectedIndex(index);
     }
+
+    @Override
+    protected boolean cancelDispatchForSubpanel(Panel panel, Message message) {
+        if (!getSettingValue(SettingEnum.DISABLE_CROSS_TAB_BINDING, false)) {
+            return false;
+        } else if (!CoreUtil.isSelectionMessage(message)) {
+            return false;
+        } else if (panel.equals(message.getSender())) {
+            return false;
+        } else if (panel instanceof ParentCapable && message.getSender() instanceof Panel) {
+            return !isContained((ParentCapable) panel, (Panel) message.getSender());
+        } else {
+            return true;
+        }
+    }
+
 }

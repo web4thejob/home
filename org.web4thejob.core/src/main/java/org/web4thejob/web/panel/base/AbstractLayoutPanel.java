@@ -143,6 +143,11 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
             super.processMessage(message);
             for (final Panel panel : subpanels) {
                 if (panel instanceof MessageListener) {
+
+                    if (cancelDispatchForSubpanel(panel, message)) {
+                        continue;
+                    }
+
                     switch (message.getId()) {
                         case ENTITY_SELECTED:
                             if (isActive(panel)) {
@@ -166,6 +171,10 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
                 }
             }
         }
+    }
+
+    protected boolean cancelDispatchForSubpanel(Panel panel, Message message) {
+        return false;
     }
 
 // --------------------- Interface Panel ---------------------
@@ -287,7 +296,7 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
 
     protected abstract boolean isActive(Panel panel);
 
-    private static boolean isContained(ParentCapable parent, Panel child) {
+    protected static boolean isContained(ParentCapable parent, Panel child) {
         boolean contained = false;
 
         for (Panel subpanel : parent.getSubpanels()) {
