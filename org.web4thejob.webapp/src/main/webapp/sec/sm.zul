@@ -7,6 +7,7 @@
         <vbox width="100%" height="100%" spacing="5px">
             <button id="btnGo1" label="Change org.web4thejob.panel to org.web4thejob.web.panel"/>
             <button id="btnGo2" label="Create joblet panels"/>
+            <textbox id="models" width="200px"/>
         </vbox>
 	</window>
 </zk>
