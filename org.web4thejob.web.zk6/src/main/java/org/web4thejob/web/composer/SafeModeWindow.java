@@ -33,6 +33,7 @@ import org.web4thejob.web.panel.ListViewPanel;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import java.util.List;
@@ -43,6 +44,17 @@ import java.util.List;
  */
 public class SafeModeWindow extends GenericForwardComposer<Window> {
     private static final long serialVersionUID = 1L;
+    private Textbox models;
+
+
+    @Override
+    public void doAfterCompose(Window comp) throws Exception {
+        if (!ContextUtil.getSessionContext().getSecurityContext().isAdministrator()) {
+            Executions.getCurrent().sendRedirect("/");
+        }
+
+        super.doAfterCompose(comp);
+    }
 
     public void onClick$btnGo1(MouseEvent event) throws Exception {
 
@@ -76,7 +88,7 @@ public class SafeModeWindow extends GenericForwardComposer<Window> {
 
 
         for (EntityMetadata entityMetadata : ContextUtil.getMRS().getEntityMetadatas()) {
-            if ("academia".equals(entityMetadata.getSchema())) {
+            if (models.getText().equals(entityMetadata.getSchema())) {
 
                 StringBuilder sb = new StringBuilder().append("[").append(SettingEnum.TARGET_TYPE.name()).append("=")
                         .append(entityMetadata.getName()).append("]");
