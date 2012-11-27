@@ -33,29 +33,32 @@
             <column name="`ID`"/>
             <generator class="native"/>
         </id>
+
+        <natural-id mutable="true">
+            <many-to-one name="owner" class="org.web4thejob.security.Identity"
+                         column="`OWNER_ID`" not-null="true">
+                <meta attribute="friendlyName">Owner</meta>
+                <meta attribute="index">2</meta>
+            </many-to-one>
+
+            <property name="category" not-null="true">
+                <meta attribute="friendlyName">Category</meta>
+                <meta attribute="index">3</meta>
+                <column name="`CATEGORY`" not-null="true"/>
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.web4thejob.orm.parameter.Category</param>
+                    <param name="type">12</param>
+                </type>
+            </property>
+
+            <property name="key" type="string" not-null="true">
+                <meta attribute="friendlyName">Key</meta>
+                <meta attribute="index">4</meta>
+                <column name="`KEY`" length="255" not-null="true"/>
+            </property>
+        </natural-id>
+
         <version name="version" access="field" type="integer" column="`VERSION`"/>
-
-        <many-to-one name="owner" class="org.web4thejob.security.Identity"
-                     column="`OWNER_ID`" not-null="true" unique-key="UQ_PARAMETER">
-            <meta attribute="friendlyName">Owner</meta>
-            <meta attribute="index">2</meta>
-        </many-to-one>
-
-        <property name="category" not-null="true" unique-key="UQ_PARAMETER">
-            <meta attribute="friendlyName">Category</meta>
-            <meta attribute="index">3</meta>
-            <column name="`CATEGORY`" not-null="true"/>
-            <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.web4thejob.orm.parameter.Category</param>
-                <param name="type">12</param>
-            </type>
-        </property>
-
-        <property name="key" type="string" not-null="true" unique-key="UQ_PARAMETER">
-            <meta attribute="friendlyName">Key</meta>
-            <meta attribute="index">4</meta>
-            <column name="`KEY`" length="255" not-null="true"/>
-        </property>
 
         <property name="value" type="string" not-null="true">
             <meta attribute="friendlyName">Value</meta>

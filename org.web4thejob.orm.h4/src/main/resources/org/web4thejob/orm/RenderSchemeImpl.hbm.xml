@@ -34,39 +34,44 @@
             <column name="`ID`"/>
             <generator class="native"/>
         </id>
+
+        <natural-id mutable="true">
+            <property name="name" type="string" not-null="true">
+                <meta attribute="friendlyName">Name</meta>
+                <meta attribute="index">2</meta>
+                <column name="`NAME`" length="255" not-null="true"/>
+            </property>
+            <property name="flatTargetType" type="string" not-null="true" update="false">
+                <meta attribute="friendlyName">Target Type</meta>
+                <meta attribute="disable-user-insert">true</meta>
+                <meta attribute="index">4</meta>
+                <column name="`TARGET_TYPE`" length="255" not-null="true"/>
+            </property>
+            <property name="locale" type="locale" not-null="true">
+                <meta attribute="friendlyName">Locale</meta>
+                <meta attribute="index">5</meta>
+                <column name="`LOCALE`" length="10" not-null="true"/>
+            </property>
+            <property name="schemeType" not-null="true" update="false">
+                <meta attribute="friendlyName">Type</meta>
+                <meta attribute="disable-user-insert">true</meta>
+                <meta attribute="index">6</meta>
+                <column name="`SCHEME_TYPE`" not-null="true"/>
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.web4thejob.orm.scheme.SchemeType</param>
+                    <param name="type">12</param>
+                </type>
+            </property>
+        </natural-id>
+
         <version name="version" access="field" type="integer" column="`VERSION`"/>
 
-        <property name="name" type="string" not-null="true" unique-key="UQ_SCHEME_NAME">
-            <meta attribute="friendlyName">Name</meta>
-            <meta attribute="index">2</meta>
-            <column name="`NAME`" length="255" not-null="true"/>
-        </property>
         <property name="friendlyName" type="string" not-null="true">
             <meta attribute="friendlyName">Friendly Name</meta>
             <meta attribute="index">3</meta>
             <column name="`FRIENDLY_NAME`" length="255" not-null="true"/>
         </property>
-        <property name="flatTargetType" type="string" not-null="true" unique-key="UQ_SCHEME_NAME" update="false">
-            <meta attribute="friendlyName">Target Type</meta>
-            <meta attribute="disable-user-insert">true</meta>
-            <meta attribute="index">4</meta>
-            <column name="`TARGET_TYPE`" length="255" not-null="true"/>
-        </property>
-        <property name="locale" type="locale" not-null="true" unique-key="UQ_SCHEME_NAME">
-            <meta attribute="friendlyName">Locale</meta>
-            <meta attribute="index">5</meta>
-            <column name="`LOCALE`" length="10" not-null="true"/>
-        </property>
-        <property name="schemeType" not-null="true" unique-key="UQ_SCHEME_NAME" update="false">
-            <meta attribute="friendlyName">Type</meta>
-            <meta attribute="disable-user-insert">true</meta>
-            <meta attribute="index">6</meta>
-            <column name="`SCHEME_TYPE`" not-null="true"/>
-            <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.web4thejob.orm.scheme.SchemeType</param>
-                <param name="type">12</param>
-            </type>
-        </property>
+
         <property name="colSpan" type="integer">
             <meta attribute="friendlyName">Column Span</meta>
             <meta attribute="index">7</meta>

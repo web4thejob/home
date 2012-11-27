@@ -33,13 +33,16 @@
             <column name="`ID`"/>
             <generator class="native"/>
         </id>
-        <version name="version" access="field" type="integer" column="`VERSION`"/>
 
-        <property name="name" type="string" length="150">
-            <meta attribute="friendlyName">Name</meta>
-            <meta attribute="index">2</meta>
-            <column name="`NAME`" not-null="false" length="150"/>
-        </property>
+        <natural-id mutable="true">
+            <property name="name" type="string" length="150">
+                <meta attribute="friendlyName">Name</meta>
+                <meta attribute="index">2</meta>
+                <column name="`NAME`" not-null="false" length="150"/>
+            </property>
+        </natural-id>
+
+        <version name="version" access="field" type="integer" column="`VERSION`"/>
 
         <property name="definition" type="materialized_clob">
             <meta attribute="friendlyName">Definition</meta>

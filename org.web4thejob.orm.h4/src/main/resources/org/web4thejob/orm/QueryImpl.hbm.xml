@@ -34,19 +34,22 @@
             <column name="`ID`"/>
             <generator class="native"/>
         </id>
-        <version name="version" access="field" type="integer" column="`VERSION`"/>
 
-        <property name="name" type="string" unique-key="UQ_QUERY_NAME">
-            <meta attribute="friendlyName">Name</meta>
-            <meta attribute="index">2</meta>
-            <column name="`NAME`" length="255" not-null="true"/>
-        </property>
-        <property name="flatTargetType" type="string" unique-key="UQ_QUERY_NAME" update="false">
-            <meta attribute="friendlyName">Target Type</meta>
-            <meta attribute="disable-user-insert">true</meta>
-            <meta attribute="index">3</meta>
-            <column name="`TARGET_TYPE`" length="255" not-null="true"/>
-        </property>
+        <natural-id mutable="true">
+            <property name="name" type="string">
+                <meta attribute="friendlyName">Name</meta>
+                <meta attribute="index">2</meta>
+                <column name="`NAME`" length="255" not-null="true"/>
+            </property>
+            <property name="flatTargetType" type="string" update="false">
+                <meta attribute="friendlyName">Target Type</meta>
+                <meta attribute="disable-user-insert">true</meta>
+                <meta attribute="index">3</meta>
+                <column name="`TARGET_TYPE`" length="255" not-null="true"/>
+            </property>
+        </natural-id>
+
+        <version name="version" access="field" type="integer" column="`VERSION`"/>
 
         <property name="cached" type="boolean">
             <meta attribute="friendlyName">Cached</meta>
