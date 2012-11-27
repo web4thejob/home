@@ -22,6 +22,7 @@ import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.mapping.UniqueKey;
+import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
@@ -80,7 +81,7 @@ public class UniqueKeyConstraintImpl implements UniqueKeyConstraint {
 
     @Override
     public Query getValidationQuery(Entity entity) {
-        Query query = ContextUtil.getEntityFactory().buildQuery(entity.getEntityType());
+        Query query = ContextUtil.getEntityFactory().buildQuery(entityMetadata.getEntityType());
         for (PropertyMetadata propertyMetadata : getPropertyMetadatas()) {
             query.addCriterion(propertyMetadata.getName(), Condition.EQ, propertyMetadata.getValue(entity));
         }
@@ -89,7 +90,18 @@ public class UniqueKeyConstraintImpl implements UniqueKeyConstraint {
 
     @Override
     public boolean isViolated(Entity entity) {
-        return !ContextUtil.getDRS().findByQuery(getValidationQuery(entity)).isEmpty();
+        boolean notNull = true;
+        for (PropertyMetadata propertyMetadata : getPropertyMetadatas()) {
+            Object val = propertyMetadata.getValue(entity);
+            notNull &= val != null && StringUtils.hasText(val.toString());
+        }
+
+        if (notNull) {
+            return !ContextUtil.getDRS().findByQuery(getValidationQuery(entity)).isEmpty();
+        } else {
+            return false;
+        }
+
     }
 
     public PropertyMetadata getPropertyForColumn(Column column) {

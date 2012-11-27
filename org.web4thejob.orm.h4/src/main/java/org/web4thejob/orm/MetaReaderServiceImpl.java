@@ -191,10 +191,16 @@ import java.util.*;
         }
 
         metaCache.clear();
+        //first pass
         for (final ClassMetadata classMetadata : sessionFactory.getAllClassMetadata().values()) {
             if (!metaCache.containsKey(classMetadata.getEntityName())) {
                 metaCache.put(classMetadata.getEntityName(), new EntityMetadataImpl(classMetadata));
             }
+        }
+
+        //second pass
+        for (EntityMetadata entityMetadata : metaCache.values()) {
+            ((EntityMetadataImpl) entityMetadata).initUniqueKeyConstraints();
         }
 
         ensureAdministratorExists();
@@ -215,7 +221,7 @@ import java.util.*;
         RoleIdentity roleAdmin = ContextUtil.getDRS().findUniqueByQuery(query);
         if (roleAdmin == null) {
             roleAdmin = ContextUtil.getEntityFactory().buildRoleIdentity();
-            roleAdmin.setAuthority(RoleIdentity.ROLE_ADMINISTRATOR);
+            roleAdmin.setCode(RoleIdentity.ROLE_ADMINISTRATOR);
             ContextUtil.getDWS().save(roleAdmin);
         }
 
