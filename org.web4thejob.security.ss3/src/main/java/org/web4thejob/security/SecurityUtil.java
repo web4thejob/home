@@ -42,7 +42,7 @@ public class SecurityUtil {
         if (firstUse) {
             UserIdentity admin = ContextUtil.getSecurityService().getAdministratorIdentity();
             firstUse = admin.getPassword().equals(ContextUtil.getSecurityService().encodePassword(admin,
-                    admin.getUserName()));
+                    admin.getCode()));
         }
         return firstUse;
     }

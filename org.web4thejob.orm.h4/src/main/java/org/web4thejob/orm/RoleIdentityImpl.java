@@ -18,7 +18,6 @@
 
 package org.web4thejob.orm;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.web4thejob.security.AuthorizationPolicy;
 import org.web4thejob.security.RoleIdentity;
 import org.web4thejob.security.RoleMembers;
@@ -33,8 +32,6 @@ import java.util.Set;
 /*package*/ class RoleIdentityImpl extends AbstractIdentityImpl implements RoleIdentity {
 // ------------------------------ FIELDS ------------------------------
 
-    @NotBlank
-    private String authority;
     private String description;
     private int index = Integer.MAX_VALUE;
     private AuthorizationPolicy authorizationPolicy;
@@ -43,16 +40,6 @@ import java.util.Set;
     private int version;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
-
-    @Override
-    public String getAuthority() {
-        return authority;
-    }
-
-    @Override
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
 
     @Override
     public AuthorizationPolicy getAuthorizationPolicy() {
@@ -99,6 +86,6 @@ import java.util.Set;
 
     @Override
     public String toString() {
-        return authority;
+        return getCode();
     }
 }

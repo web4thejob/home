@@ -86,7 +86,7 @@ public class UserDetailsExImpl implements UserDetailsEx {
 
     @Override
     public String getUsername() {
-        return userIdentity.getUserName();
+        return userIdentity.getCode();
     }
 
     @Override
@@ -116,6 +116,6 @@ public class UserDetailsExImpl implements UserDetailsEx {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + ":" + userIdentity.getUserName();
+        return getClass().getSimpleName() + ":" + userIdentity.getCode();
     }
 }

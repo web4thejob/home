@@ -117,7 +117,7 @@ public class DefaultPasswordDialog extends AbstractDialog implements PasswordDia
             Clients.wrongValue(newPassword, L10N_NEW_PASSWORD_LENGTH_FAILURE.toString(MINIMUM_PASSWORD_LENGTH));
             return false;
         }
-        if (newPassword.getValue().equals(userIdentity.getUserName())) {
+        if (newPassword.getValue().equals(userIdentity.getCode())) {
             Clients.wrongValue(newPassword, L10N_PASSWORD_MATCH_USERNAME_FAILURE.toString());
             return false;
         }

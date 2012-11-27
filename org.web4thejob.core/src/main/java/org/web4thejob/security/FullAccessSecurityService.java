@@ -38,7 +38,7 @@ public class FullAccessSecurityService implements SecurityService {
         UserIdentity userAdmin = ContextUtil.getDRS().findUniqueByQuery(query);
         if (userAdmin == null) {
             userAdmin = ContextUtil.getEntityFactory().buildUserIdentity();
-            userAdmin.setUserName(UserIdentity.USER_ADMIN);
+            userAdmin.setCode(UserIdentity.USER_ADMIN);
             userAdmin.setPassword(encodePassword(userAdmin, UserIdentity.USER_ADMIN));
             userAdmin.setFirstName("test");
             userAdmin.setLastName("admin");

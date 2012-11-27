@@ -37,7 +37,7 @@ public class IdentityHierarchy {
     @Test
     public void doTest() {
         UserIdentity user = new UserIdentityImpl();
-        user.setUserName("aaa");
+        user.setCode("aaa");
         user.setPassword("123");
         user.setLastName("a");
         user.setFirstName("b");

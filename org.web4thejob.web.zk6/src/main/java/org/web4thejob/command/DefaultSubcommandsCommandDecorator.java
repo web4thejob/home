@@ -56,7 +56,7 @@ public class DefaultSubcommandsCommandDecorator extends AbstractCommandDecorator
         }
 
         if (command.getId() == CommandEnum.USER_DROPDOWN) {
-            String username = ContextUtil.getSessionContext().getSecurityContext().getUserIdentity().getUserName();
+            String username = ContextUtil.getSessionContext().getSecurityContext().getUserIdentity().getCode();
             combobutton.setTooltiptext(command.getName() + ": " + username);
             if (ContextUtil.resourceExists(image)) {
                 combobutton.setLabel(username);

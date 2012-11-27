@@ -76,7 +76,7 @@ public class SpringSecurityService implements SecurityService {
         UserIdentity userAdmin = ContextUtil.getDRS().findUniqueByQuery(query);
         if (userAdmin == null) {
             userAdmin = ContextUtil.getEntityFactory().buildUserIdentity();
-            userAdmin.setUserName(UserIdentity.USER_ADMIN);
+            userAdmin.setCode(UserIdentity.USER_ADMIN);
             userAdmin.setLastName("System");
             userAdmin.setFirstName("Administrator");
             userAdmin.setPassword(encodePassword(userAdmin, UserIdentity.USER_ADMIN));

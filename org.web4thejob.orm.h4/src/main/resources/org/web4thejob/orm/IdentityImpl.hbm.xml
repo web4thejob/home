@@ -33,8 +33,18 @@
             <column name="`ID`"/>
             <generator class="native"/>
         </id>
+
+        <natural-id>
+            <property name="code" type="string">
+                <meta attribute="friendlyName">Code</meta>
+                <meta attribute="index">1</meta>
+                <column name="`CODE`" not-null="true" length="40"/>
+            </property>
+        </natural-id>
+
         <version name="version" access="field" type="integer" column="`VERSION`"/>
-        <property name="email" type="string">
+
+        <property name="email" type="string" unique-key="UQ_EMAIL">
             <meta attribute="friendlyName">Email</meta>
             <meta attribute="index">2</meta>
             <column name="`EMAIL`" length="100" not-null="false"/>
@@ -77,11 +87,6 @@
             <meta attribute="friendlyName">Users</meta>
             <key column="`ID`"/>
 
-            <property name="userName" type="string" unique-key="UQ_USER_NAME" update="false">
-                <meta attribute="friendlyName">User name</meta>
-                <meta attribute="index">2</meta>
-                <column name="`USER_NAME`" not-null="true" length="40"/>
-            </property>
             <property name="password" type="string">
                 <meta attribute="friendlyName">Password</meta>
                 <meta attribute="index">3</meta>
@@ -137,12 +142,6 @@
                          schema="w4tj" table="`ROLE_IDENTITY`" entity-name="org.web4thejob.security.RoleIdentity">
             <meta attribute="friendlyName">Roles</meta>
             <key column="`ID`"/>
-
-            <property name="authority" type="string" unique-key="UQ_AUTHORITY" update="false">
-                <meta attribute="friendlyName">Authority Code</meta>
-                <meta attribute="index">2</meta>
-                <column name="`AUTHORITY_NAME`" not-null="true" length="40"/>
-            </property>
 
             <many-to-one name="authorizationPolicy" class="org.web4thejob.security.AuthorizationPolicy"
                          fetch="select" not-null="false">

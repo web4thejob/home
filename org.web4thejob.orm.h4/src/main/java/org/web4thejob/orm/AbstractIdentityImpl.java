@@ -19,6 +19,7 @@
 package org.web4thejob.orm;
 
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 import org.web4thejob.orm.annotation.EmailHolder;
 import org.web4thejob.orm.parameter.Parameter;
 import org.web4thejob.orm.query.Query;
@@ -38,6 +39,8 @@ public abstract class AbstractIdentityImpl extends AbstractHibernateEntity imple
     private long id;
     @SuppressWarnings("unused")
     private int version;
+    @NotBlank
+    private String code;
     @EmailHolder
     @Email
     private String email;
@@ -105,6 +108,19 @@ public abstract class AbstractIdentityImpl extends AbstractHibernateEntity imple
 
     @Override
     public void setEmail(String email) {
+        if (email != null && email.trim().length() == 0) {
+            email = null; //so that unique constraint will work correctly for multiple null values
+        }
         this.email = email;
+    }
+
+    @Override
+    public String getCode() {
+        return code;
+    }
+
+    @Override
+    public void setCode(String code) {
+        this.code = code;
     }
 }

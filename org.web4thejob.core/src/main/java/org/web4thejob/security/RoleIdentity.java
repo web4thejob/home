@@ -30,14 +30,12 @@ public interface RoleIdentity extends Identity {
 // ------------------------------ FIELDS ------------------------------
 
     public static final String ROLE_ADMINISTRATOR = "ADMINISTRATOR";
-    public static final String FLD_AUTHORITY = "authority";
+    public static final String FLD_AUTHORITY = "code";
     public static final String FLD_AUTHORIZATION_POLICY = "authorizationPolicy";
     public static final String FLD_INDEX = "index";
     public static final String FLD_USERS = "users";
 
 // -------------------------- OTHER METHODS --------------------------
-
-    public String getAuthority();
 
     public AuthorizationPolicy getAuthorizationPolicy();
 
@@ -46,8 +44,6 @@ public interface RoleIdentity extends Identity {
     public long getId();
 
     public int getIndex();
-
-    public void setAuthority(String authority);
 
     public void setAuthorizationPolicy(AuthorizationPolicy authorizationPolicy);
 

@@ -38,8 +38,6 @@ import java.util.Set;
 // ------------------------------ FIELDS ------------------------------
 
     @NotBlank
-    private String userName;
-    @NotBlank
     @Encrypted
     @PropertyViewer(className = "org.web4thejob.web.zbox.PasswordViewer")
     @PropertyEditor(className = "org.web4thejob.web.zbox.PasswordEditor")
@@ -77,16 +75,6 @@ import java.util.Set;
 
     public void setRoles(Set<RoleMembers> roles) {
         this.roles = roles;
-    }
-
-    @Override
-    public String getUserName() {
-        return userName;
-    }
-
-    @Override
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     @Override
@@ -157,7 +145,7 @@ import java.util.Set;
 
     @Override
     public String toString() {
-        return userName;
+        return getCode();
     }
 
     @Override

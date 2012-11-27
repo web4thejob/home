@@ -175,7 +175,7 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
         panelDefinition = ContextUtil.getEntityFactory().buildPanelDefinition();
         panelDefinition.setBeanId(XMLUtil.getRootElementId(xml));
         panelDefinition.setName(ContextUtil.getSessionContext().getSecurityContext().getUserIdentity()
-                .getUserName() + "\\Desktop");
+                .getCode() + "\\Desktop");
         panelDefinition.setType(CoreUtil.describeClass(getClass()));
         panelDefinition.setOwner(ContextUtil.getSessionContext().getSecurityContext().getUserIdentity());
         panelDefinition.setDefinition(XMLUtil.toSpringBeanXmlResource(xml));
@@ -236,6 +236,8 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
 
             TabbedLayoutPanel tabbedLayoutPanel = ContextUtil.getDefaultPanel(TabbedLayoutPanel.class);
             tabbedLayoutPanel.setSettingValue(SettingEnum.HONOR_ADOPTION_REQUEST, true);
+            tabbedLayoutPanel.setSettingValue(SettingEnum.SCLASS, "w4tj-desktop-background");
+            tabbedLayoutPanel.setSettingValue(SettingEnum.DISABLE_CROSS_TAB_BINDING, true);
             setCenter(tabbedLayoutPanel);
         }
     }

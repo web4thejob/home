@@ -34,15 +34,13 @@ public interface UserIdentity extends Identity {
     public static final String USER_ADMIN = "admin";
 
     public static final String FLD_ID = "id";
-    public static final String FLD_USERNAME = "userName";
+    public static final String FLD_USERNAME = "code";
 
 // -------------------------- OTHER METHODS --------------------------
 
     public long getId();
 
     public String getPassword();
-
-    public String getUserName();
 
     public boolean isAccountNonExpired();
 
@@ -61,8 +59,6 @@ public interface UserIdentity extends Identity {
     public void setEnabled(boolean enabled);
 
     public void setPassword(String password);
-
-    public void setUserName(String username);
 
     public Set<RoleMembers> getRoles();
 

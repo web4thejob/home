@@ -75,8 +75,7 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
         Treeitem rootItem = new Treeitem();
         rootItem.setParent(treeMenu.getTreechildren());
         rootItem.setImage("img/ROOT.png");
-        rootItem.setLabel(ContextUtil.getSessionContext().getSecurityContext().getUserIdentity().getUserName
-                ());
+        rootItem.setLabel(ContextUtil.getSessionContext().getSecurityContext().getUserIdentity().getCode());
 
         Element root = XMLUtil.getRootElement(ContextUtil.getSessionContext().getSecurityContext()
                 .getAuthorizationMenu());

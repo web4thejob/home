@@ -176,7 +176,7 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
             userIdentity.setCredentialsNonExpired(true);
             userIdentity.setPassword(ContextUtil.getSecurityService().encodePassword(userIdentity, newPassword));
             ContextUtil.getDWS().save(userIdentity);
-            Authentication authentication = ContextUtil.getSecurityService().authenticate(userIdentity.getUserName(),
+            Authentication authentication = ContextUtil.getSecurityService().authenticate(userIdentity.getCode(),
                     newPassword);
             if (authentication != null && authentication.getPrincipal() instanceof UserDetailsEx && ((UserDetailsEx)
                     authentication.getPrincipal()).getUserIdentity().equals(userIdentity)) {
