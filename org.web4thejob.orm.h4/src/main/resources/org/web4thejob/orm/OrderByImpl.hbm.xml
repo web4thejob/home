@@ -25,6 +25,7 @@
            table="`ORDERBY`" entity-name="org.web4thejob.orm.query.OrderBy">
         <meta attribute="friendlyName">Query Orderings</meta>
         <meta attribute="deny-add-new">true</meta>
+        <meta attribute="deny-delete">true</meta>
 
         <cache usage="nonstrict-read-write"/>
 

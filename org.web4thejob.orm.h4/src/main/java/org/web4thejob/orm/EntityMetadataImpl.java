@@ -41,6 +41,7 @@ import java.util.List;
     private static final String META_TABLE_SUBSET = "tableSubset";
     private static final String META_TABLE_CACHED = "cached";
     private static final String META_DENY_ADDNEW = "deny-add-new";
+    private static final String META_DENY_DELETE = "deny-delete";
     private static final Logger logger = Logger.getLogger(EntityMetadataImpl.class);
     final private SortedSet<PropertyMetadata> propertySet = new TreeSet<PropertyMetadata>();
     final private HashMap<String, PropertyMetadata> propertyMap = new HashMap<String, PropertyMetadata>();
@@ -51,11 +52,12 @@ import java.util.List;
     final private boolean versioned;
     final private PersistentClass persistentClass;
     final private String friendlyName;
-    final private List<UniqueKeyConstraint> uniqueKeyConstraints;
     final private List<Class<? extends Entity>> subclasses;
     final private boolean tableSubset;
     final private boolean cached;
     final private boolean denyAddNew;
+    final private boolean denyDelete;
+    private List<UniqueKeyConstraint> uniqueKeyConstraints;
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -93,6 +95,12 @@ import java.util.List;
             denyAddNew = isAbstract;
         }
 
+        if (MetaUtil.hasMetaAttribute(this.persistentClass, META_DENY_DELETE)) {
+            denyDelete = Boolean.parseBoolean(MetaUtil.getMetaAttribute(this.persistentClass, META_DENY_DELETE));
+        } else {
+            denyDelete = false;
+        }
+
         // id
         PropertyMetadata propertyMetadata = new PropertyMetadataImpl(this, classMetadata.getIdentifierPropertyName());
         propertySet.add(propertyMetadata);
@@ -110,27 +118,6 @@ import java.util.List;
             }
             i++;
         }
-
-        // unique key constraints
-        List<UniqueKeyConstraint> temp = new ArrayList<UniqueKeyConstraint>();
-        PersistentClass pc = persistentClass;
-        while (pc != null) {
-            for (final Iterator<?> iter = pc.getTable().getUniqueKeyIterator(); iter.hasNext(); ) {
-                temp.add(new UniqueKeyConstraintImpl(this, (UniqueKey) iter.next()));
-            }
-
-            if (!RootClass.class.isInstance(pc)) {
-                for (final Iterator<?> iter = pc.getJoinIterator(); iter.hasNext(); ) {
-                    Join join = (Join) iter.next();
-                    for (final Iterator<?> iter2 = join.getTable().getUniqueKeyIterator(); iter2.hasNext(); ) {
-                        temp.add(new UniqueKeyConstraintImpl(this, (UniqueKey) iter2.next()));
-                    }
-                }
-            }
-
-            pc = pc.getSuperclass();
-        }
-        uniqueKeyConstraints = Collections.unmodifiableList(temp);
 
         // subclasses
         if (persistentClass.hasSubclasses()) {
@@ -311,7 +298,43 @@ import java.util.List;
     }
 
     @Override
+    public boolean isDenyDelete() {
+        return denyDelete;
+    }
+
+    @Override
     public List<Class<? extends Entity>> getSubclasses() {
         return subclasses;
+    }
+
+    /*package*/ void initUniqueKeyConstraints() {
+        // unique key constraints
+        uniqueKeyConstraints = new ArrayList<UniqueKeyConstraint>();
+        PersistentClass pc = persistentClass;
+        while (pc != null) {
+            for (final Iterator<?> iter = pc.getTable().getUniqueKeyIterator(); iter.hasNext(); ) {
+
+                if (persistentClass.equals(pc)) {
+                    uniqueKeyConstraints.add(new UniqueKeyConstraintImpl(this, (UniqueKey) iter.next()));
+                } else {
+                    uniqueKeyConstraints.add(new UniqueKeyConstraintImpl(MetaReaderServiceImpl.metaCache.get(pc
+                            .getEntityName()), (UniqueKey) iter.next()));
+                }
+
+            }
+
+            if (!RootClass.class.isInstance(pc)) {
+                for (final Iterator<?> iter = pc.getJoinIterator(); iter.hasNext(); ) {
+                    Join join = (Join) iter.next();
+                    for (final Iterator<?> iter2 = join.getTable().getUniqueKeyIterator(); iter2.hasNext(); ) {
+                        uniqueKeyConstraints.add(new UniqueKeyConstraintImpl(this, (UniqueKey) iter2.next()));
+                    }
+                }
+            }
+
+            pc = pc.getSuperclass();
+        }
+        uniqueKeyConstraints = Collections.unmodifiableList(uniqueKeyConstraints);
+
     }
 }

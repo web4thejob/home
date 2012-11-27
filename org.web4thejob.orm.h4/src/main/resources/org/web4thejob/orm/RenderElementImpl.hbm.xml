@@ -25,6 +25,7 @@
            table="`RENDER_ELEMENT`" entity-name="org.web4thejob.orm.scheme.RenderElement">
         <meta attribute="friendlyName">Render Elements</meta>
         <meta attribute="deny-add-new">true</meta>
+        <meta attribute="deny-delete">true</meta>
 
         <cache usage="nonstrict-read-write"/>
 

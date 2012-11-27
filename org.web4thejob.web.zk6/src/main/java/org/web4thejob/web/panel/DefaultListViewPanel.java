@@ -73,7 +73,9 @@ import java.util.*;
 public class DefaultListViewPanel extends AbstractZkBindablePanel implements ListViewPanel, EventListener<Event> {
     // ------------------------------ FIELDS ------------------------------
     public static final L10nString L10N_MSG_NO_ROWS_TO_DISPLAY = new L10nString(DefaultListViewPanel.class,
-            "message_no_rows_to_display", "No data to display");
+            "message_no_rows_to_display", "No data was found matching the criteria you set");
+    public static final L10nString L10N_MSG_NO_QUERY_YET = new L10nString(DefaultListViewPanel.class,
+            "message_no_query_yet", "No query has been executed yet");
 
     private static final String ON_DOUBLE_CLICK_ECHO = Events.ON_DOUBLE_CLICK + "Echo";
     private final Listbox listbox = new Listbox();
@@ -96,6 +98,7 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         listbox.addEventListener(Events.ON_SELECT, this);
         listbox.addEventListener(Events.ON_DOUBLE_CLICK, this);
         listbox.addEventListener(ON_DOUBLE_CLICK_ECHO, this);
+        listbox.setEmptyMessage(L10N_MSG_NO_QUERY_YET.toString());
         //listbox.addEventListener(Events.ON_, this);
     }
 
@@ -485,11 +488,13 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         }
         EntityMetadata entityMetadata = ContextUtil.getMRS().getEntityMetadata(getTargetType());
         if (!entityMetadata.isReadOnly()) {
+            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.UPDATE, this));
             if (!entityMetadata.isDenyAddNew()) {
                 registerCommand(ContextUtil.getDefaultCommand(CommandEnum.ADDNEW, this));
             }
-            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.UPDATE, this));
-            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.DELETE, this));
+            if (!entityMetadata.isDenyDelete()) {
+                registerCommand(ContextUtil.getDefaultCommand(CommandEnum.DELETE, this));
+            }
         }
 
         RenderScheme renderScheme = null;

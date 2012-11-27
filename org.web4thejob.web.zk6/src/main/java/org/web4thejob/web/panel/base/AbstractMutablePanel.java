@@ -451,7 +451,9 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
                 if (!entityMetadata.isDenyAddNew()) {
                     registerCommand(ContextUtil.getDefaultCommand(CommandEnum.ADDNEW, this));
                 }
-                registerCommand(ContextUtil.getDefaultCommand(CommandEnum.DELETE, this));
+                if (!entityMetadata.isDenyDelete()) {
+                    registerCommand(ContextUtil.getDefaultCommand(CommandEnum.DELETE, this));
+                }
             }
         }
 
