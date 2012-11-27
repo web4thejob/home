@@ -19,10 +19,12 @@
 package org.web4thejob.web.panel;
 
 
+import org.web4thejob.setting.SettingAware;
+
 /**
  * @author Veniamin Isaias
  * @since 2.0.0
  */
 
-public interface ModuleInfoPanel extends ContentPanel {
+public interface ModuleInfoPanel extends ContentPanel, SettingAware {
 }
