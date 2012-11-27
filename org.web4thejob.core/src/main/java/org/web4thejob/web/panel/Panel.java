@@ -94,5 +94,18 @@ public interface Panel extends InitializingBean, BeanNameAware, SecuredResource 
      */
     public boolean isHighlighted();
 
+    /**
+     * @since 3.2.1
+     */
     public String getImage();
+
+    /**
+     * @since 3.2.1
+     */
+    public String getSclass();
+
+    /**
+     * @since 3.2.1
+     */
+    public void setSclass(String sclass);
 }

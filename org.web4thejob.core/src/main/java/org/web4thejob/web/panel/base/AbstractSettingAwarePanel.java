@@ -57,6 +57,7 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
 
     protected void registerSettings() {
         registerSetting(SettingEnum.PANEL_NAME, null);
+        registerSetting(SettingEnum.SCLASS, null);
     }
 
     protected <T extends Serializable> void registerSetting(SettingEnum id, T value) {
@@ -227,6 +228,8 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
         setUnsavedSettings(true);
         if (SettingEnum.PANEL_NAME == id) {
             dispatchTitleChange();
+        } else if (SettingEnum.SCLASS == id) {
+            setSclass((String) newValue);
         }
     }
 

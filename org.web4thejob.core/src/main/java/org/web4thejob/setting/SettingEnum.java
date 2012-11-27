@@ -49,6 +49,7 @@ public class SettingEnum implements Comparable<SettingEnum> {
     public static final SettingEnum PANEL_STYLE = new SettingEnum("PANEL_STYLE", String.class);
     public static final SettingEnum ASSUME_DETAIL_BEHAVIOR = new SettingEnum("ASSUME_DETAIL_BEHAVIOR", Boolean.class);
     public static final SettingEnum MOLD = new SettingEnum("MOLD", String.class);
+    public static final SettingEnum SCLASS = new SettingEnum("SCLASS", String.class);
 
     public static final SettingEnum RENDER_SCHEME_FOR_VIEW = new SettingEnum("RENDER_SCHEME_FOR_VIEW", String.class);
     public static final SettingEnum RENDER_SCHEME_FOR_UPDATE = new SettingEnum("RENDER_SCHEME_FOR_UPDATE",
@@ -74,6 +75,10 @@ public class SettingEnum implements Comparable<SettingEnum> {
     public static final SettingEnum DISABLE_DYNAMIC_TAB_TITLE = new SettingEnum("DISABLE_DYNAMIC_TAB_TITLE",
             Boolean.class,
             SettingsDialog.L10N_CATEGORY_1000_TABS);
+    public static final SettingEnum DISABLE_CROSS_TAB_BINDING = new SettingEnum("DISABLE_CROSS_TAB_BINDING",
+            Boolean.class,
+            SettingsDialog.L10N_CATEGORY_1000_TABS);
+
 
     public static final SettingEnum NORTH_ENABLED = new SettingEnum("NORTH_ENABLED", Boolean.class,
             SettingsDialog.L10N_CATEGORY_2000_NORTH);

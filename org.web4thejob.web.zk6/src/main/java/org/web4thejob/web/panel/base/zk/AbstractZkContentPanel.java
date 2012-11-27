@@ -115,6 +115,25 @@ public abstract class AbstractZkContentPanel extends AbstractContentPanel {
     }
 
     @Override
+    public String getSclass() {
+        if (base instanceof org.zkoss.zul.Panel) {
+            return ((org.zkoss.zul.Panel) base).getPanelchildren().getSclass();
+        } else if (base instanceof HtmlBasedComponent) {
+            return ((HtmlBasedComponent) base).getSclass();
+        }
+        return null;
+    }
+
+    @Override
+    public void setSclass(String sclass) {
+        if (base instanceof org.zkoss.zul.Panel && ((org.zkoss.zul.Panel) base).getPanelchildren() != null) {
+            ((org.zkoss.zul.Panel) base).getPanelchildren().setSclass(sclass);
+        } else if (base instanceof HtmlBasedComponent) {
+            ((HtmlBasedComponent) base).setSclass(sclass);
+        }
+    }
+
+    @Override
     protected void processValidCommand(Command command) {
         final Dialog dialog;
         if (CommandEnum.CONFIGURE_SETTINGS.equals(command.getId())) {
