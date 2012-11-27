@@ -29,6 +29,6 @@ public class CoreModule extends AbstractModule {
 
     @Override
     public int getOrdinal() {
-        return 0;
+        return 1;
     }
 }
