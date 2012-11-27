@@ -18,6 +18,7 @@
 
 package org.web4thejob.orm.scheme;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.EntityFactory;
@@ -99,6 +100,18 @@ public abstract class RenderSchemeUtil {
 
     public static RenderScheme createDefaultRenderScheme(Class<? extends Entity> targetType, SchemeType schemeType,
                                                          Locale locale) {
+        return createDefaultRenderScheme(targetType, schemeType, locale, null);
+    }
+
+    public static RenderScheme createDefaultRenderScheme(Class<? extends Entity> targetType, SchemeType schemeType,
+                                                         String[] exclude) {
+        return createDefaultRenderScheme(targetType, schemeType, Locale.getDefault(), exclude);
+    }
+
+
+    public static RenderScheme createDefaultRenderScheme(Class<? extends Entity> targetType, SchemeType schemeType,
+                                                         Locale locale, String[] exclude) {
+
         RenderScheme renderScheme = ContextUtil.getEntityFactory().buildRenderScheme(targetType);
         renderScheme.setLocale(locale);
         renderScheme.setSchemeType(schemeType);
@@ -112,7 +125,11 @@ public abstract class RenderSchemeUtil {
 
         for (PropertyMetadata propertyMetadata : ContextUtil.getMRS().getEntityMetadata(targetType)
                 .getPropertiesMetadata()) {
-            if (propertyMetadata.isOneToManyType() || propertyMetadata.isOneToOneType()) {
+            if (propertyMetadata.isIdentityIdentifier() ||
+                    propertyMetadata.isOneToManyType() ||
+                    propertyMetadata.isOneToOneType() ||
+                    ArrayUtils.contains(exclude, propertyMetadata.getName())
+                    ) {
                 continue;
             } else if (schemeType == SchemeType.LIST_SCHEME && (propertyMetadata.isAnnotatedWith(Encrypted.class) ||
                     propertyMetadata.isBlobType() || propertyMetadata.isClobType())) {
@@ -166,4 +183,5 @@ public abstract class RenderSchemeUtil {
         return fallbackLocale;
 
     }
+
 }

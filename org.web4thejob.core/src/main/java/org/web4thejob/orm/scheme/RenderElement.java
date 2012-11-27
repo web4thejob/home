@@ -40,6 +40,8 @@ public interface RenderElement extends Entity {
 // ------------------------------ FIELDS ------------------------------
 
     public static final String ATTRIB_RENDER_ELEMENT = RenderElement.class.getName();
+    public static final String FLD_ID = "id";
+    public static final String FLD_RENDER_SCHEME = "renderScheme";
 
 // -------------------------- OTHER METHODS --------------------------
 

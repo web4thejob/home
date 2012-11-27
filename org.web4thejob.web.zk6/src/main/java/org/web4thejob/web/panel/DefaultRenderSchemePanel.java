@@ -31,8 +31,10 @@ import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.PathMetadata;
 import org.web4thejob.orm.scheme.RenderElement;
 import org.web4thejob.orm.scheme.RenderScheme;
+import org.web4thejob.orm.scheme.RenderSchemeUtil;
 import org.web4thejob.orm.scheme.SchemeType;
 import org.web4thejob.setting.SettingEnum;
+import org.web4thejob.util.CoreUtil;
 import org.web4thejob.web.panel.base.AbstractBorderLayoutPanel;
 import org.web4thejob.web.util.ZkUtil;
 
@@ -260,8 +262,23 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
                 // we need this double assignment in order to force a target
                 // type re-arrangemnet
                 // since this listview is always of RenderElement type.
+
+                RenderScheme scheme = RenderSchemeUtil.getRenderScheme(getClass().getCanonicalName(),
+                        RenderElement.class, SchemeType.LIST_SCHEME);
+
+                if (scheme == null) {
+                    scheme = RenderSchemeUtil.createDefaultRenderScheme(RenderElement.class, SchemeType.LIST_SCHEME,
+                            CoreUtil.getUserLocale(), new String[]{RenderElement.FLD_ID,
+                            RenderElement.FLD_RENDER_SCHEME});
+                    scheme.setName(getClass().getCanonicalName());
+                    scheme.setFriendlyName(getClass().getSimpleName());
+                    ContextUtil.getDWS().save(scheme);
+                }
+                getListViewPanel().setSettingValue(SettingEnum.RENDER_SCHEME_FOR_VIEW, scheme.getName());
+
                 getListViewPanel().setSettingValue(id, null);
                 getListViewPanel().setSettingValue(id, RenderElement.class);
+
             }
             if (getModelHierarchyPanel() != null) {
                 getModelHierarchyPanel().setSettingValue(id, newValue);
