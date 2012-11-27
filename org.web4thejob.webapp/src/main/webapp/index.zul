@@ -16,6 +16,10 @@
 
         <!-- example of a simple style customization using css selectors -->
         div[class~="w4tj-desktop-menu"] > div[class="z-tree-body"] {background-color: rgba(220, 240, 251, 0.10);}
+
+        div[class~="w4tj-desktop-background"] {background-position: bottom right; background-size: 100%;
+                background-repeat: no-repeat; background-attachment: scroll; background-image: url('img/desktop_background.gif');
+                background-origin:content-box;}
     </style>
 
         <window border="normal" width="100%" height="100%">
