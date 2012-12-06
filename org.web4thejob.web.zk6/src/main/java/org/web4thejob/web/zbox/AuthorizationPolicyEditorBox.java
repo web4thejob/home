@@ -66,6 +66,9 @@ public class AuthorizationPolicyEditorBox extends AuthorizationPolicyViewerBox i
             edit.setLabel(AbstractBox.L10N_BUTTON_EDIT.toString());
         }
 
+/*
+        Clear is not needed, the user can reset the authorization plicy, or delete it and start clean.
+
         Toolbarbutton clear = new Toolbarbutton();
         clear.setParent(vbox);
         clear.setAttribute("clear", true);
@@ -78,6 +81,7 @@ public class AuthorizationPolicyEditorBox extends AuthorizationPolicyViewerBox i
         } else {
             clear.setLabel(AbstractBox.L10N_BUTTON_CLEAR.toString());
         }
+*/
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
