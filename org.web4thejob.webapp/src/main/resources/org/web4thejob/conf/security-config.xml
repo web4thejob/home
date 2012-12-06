@@ -115,6 +115,9 @@
         <intercept-url pattern="/**" access="authenticated and !firstUse"/>
         <form-login always-use-default-target="true"
                     authentication-failure-handler-ref="credentialsExpiredErrorHandler"/>
+
+        <!--cookie style remember me service valid for 1 year (60*60*24*365)-->
+        <remember-me key="change_me_to_something_unique_to_your_application" token-validity-seconds="31536000"/>
     </http>
 
 </beans:beans>

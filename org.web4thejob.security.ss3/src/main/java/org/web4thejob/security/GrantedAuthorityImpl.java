@@ -48,4 +48,8 @@ public class GrantedAuthorityImpl implements GrantedAuthority {
         return "ROLE_" + roleIdentity.getCode();
     }
 
+    @Override
+    public String toString() {
+        return getAuthority();
+    }
 }
