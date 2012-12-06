@@ -21,9 +21,13 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
+
     <class name="org.web4thejob.orm.ParameterImpl" schema="w4tj"
-           table="`PARAMETER`" entity-name="org.web4thejob.orm.parameter.Parameter" optimistic-lock="version">
+           table="`PARAMETER`" entity-name="org.web4thejob.orm.parameter.Parameter"
+           optimistic-lock="version" abstract="true">
         <meta attribute="friendlyName">Parameters</meta>
+        <meta attribute="deny-add-new" inherit="false">true</meta>
+        <meta attribute="deny-update" inherit="false">true</meta>
 
         <cache usage="nonstrict-read-write"/>
 
@@ -34,6 +38,8 @@
             <generator class="native"/>
         </id>
 
+        <discriminator column="`DISCRIMINATOR`" not-null="true" type="string"/>
+
         <natural-id mutable="true">
             <many-to-one name="owner" class="org.web4thejob.security.Identity"
                          column="`OWNER_ID`" not-null="true">
@@ -41,9 +47,10 @@
                 <meta attribute="index">2</meta>
             </many-to-one>
 
-            <property name="category" not-null="true">
+            <property name="category" not-null="true" update="false">
                 <meta attribute="friendlyName">Category</meta>
                 <meta attribute="index">3</meta>
+                <meta attribute="disable-user-insert">true</meta>
                 <column name="`CATEGORY`" not-null="true"/>
                 <type name="org.hibernate.type.EnumType">
                     <param name="enumClass">org.web4thejob.orm.parameter.Category</param>
@@ -66,6 +73,36 @@
             <column name="`VALUE`" length="255" not-null="true"/>
         </property>
 
+
+        <subclass name="org.web4thejob.orm.EntityTypeEntityViewParameterImpl"
+                  entity-name="org.web4thejob.orm.parameter.EntityTypeEntityViewParameter"
+                  discriminator-value="ENTITY_TYPE_ENTITY_VIEW_PARAM">
+            <meta attribute="friendlyName">Default Entity View Parameter</meta>
+        </subclass>
+
+        <subclass name="org.web4thejob.orm.EntityTypeListViewParameterImpl"
+                  entity-name="org.web4thejob.orm.parameter.EntityTypeListViewParameter"
+                  discriminator-value="ENTITY_TYPE_LIST_VIEW_PARAM">
+            <meta attribute="friendlyName">Default List View Parameter</meta>
+        </subclass>
+
+        <subclass name="org.web4thejob.orm.EntityTypeQueryParameterImpl"
+                  entity-name="org.web4thejob.orm.parameter.EntityTypeQueryParameter"
+                  discriminator-value="ENTITY_TYPE_QUERY_PARAM">
+            <meta attribute="friendlyName">Default Query Parameter</meta>
+        </subclass>
+
+        <subclass name="org.web4thejob.orm.PrinterCharsetParameterImpl"
+                  entity-name="org.web4thejob.orm.parameter.PrinterCharsetParameter"
+                  discriminator-value="PRINTER_PARAM|CHARSET">
+            <meta attribute="friendlyName">Printer Charset Parameter</meta>
+        </subclass>
+
+        <subclass name="org.web4thejob.orm.LocationImagesRepoParameterImpl"
+                  entity-name="org.web4thejob.orm.parameter.LocationImagesRepoParameter"
+                  discriminator-value="LOCATION_PARAM|IMAGES_REPOSITORY">
+            <meta attribute="friendlyName">Images Repository Parameter</meta>
+        </subclass>
 
     </class>
 </hibernate-mapping>

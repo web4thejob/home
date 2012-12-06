@@ -18,6 +18,7 @@
 
 package org.web4thejob.web.panel.base;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.hibernate4.HibernateObjectRetrievalFailureException;
 import org.springframework.util.StringUtils;
@@ -30,10 +31,7 @@ import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.*;
-import org.web4thejob.orm.annotation.Encrypted;
-import org.web4thejob.orm.annotation.PropertyEditor;
-import org.web4thejob.orm.annotation.PropertyViewer;
-import org.web4thejob.orm.annotation.StatusHolder;
+import org.web4thejob.orm.annotation.*;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.orm.query.QueryResultMode;
@@ -43,6 +41,7 @@ import org.web4thejob.setting.SettingEnum;
 import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nString;
 import org.web4thejob.util.L10nUtil;
+import org.web4thejob.web.controller.ComponentController;
 import org.web4thejob.web.dialog.EntityPersisterDialog;
 import org.web4thejob.web.dialog.QueryDialog;
 import org.web4thejob.web.panel.*;
@@ -82,6 +81,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
 
     private final MutableMode mutableMode;
     private Entity targetEntity;
+    private Entity targetEntityOrig;
     private QueryDialog queryDialog;
     private Boolean dirty = null;
     private ChangeMonitor changeMonitor = new ChangeMonitor();
@@ -265,6 +265,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
 
     protected void persistLocal() throws Exception {
         ContextUtil.getDWS().save(getTargetEntity());
+        targetEntityOrig = targetEntity.clone();
     }
 
     @Override
@@ -282,9 +283,32 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
                     bindEcho(entity);
 
                 } catch (DataIntegrityViolationException e) {
+
+                    //hibernate changes version even if flash fails, we need to revert it so that user can do
+                    //multiple change/save cycles on the same view
+                    if (!targetEntity.isNewInstance()) {
+                        EntityMetadata entityMetadata = ContextUtil.getMRS().getEntityMetadata(getTargetType());
+                        if (entityMetadata.isVersioned()) {
+                            entityMetadata.setVersionValue(targetEntity, entityMetadata.getVersionValue
+                                    (targetEntityOrig));
+                        }
+                    }
+
                     boolean uniqueViolation = false;
                     for (UniqueKeyConstraint constraint : ContextUtil.getMRS().getEntityMetadata(entity.getEntityType
                             ()).getUniqueConstraints()) {
+
+                        //raise violations only for the updated properties, so that user will not get confused
+                        boolean notChanged = true;
+                        if (!targetEntity.isNewInstance()) {
+                            for (PropertyMetadata propertyMetadata : constraint.getPropertyMetadatas()) {
+                                notChanged &= new EqualsBuilder().append(propertyMetadata.getValue(entity),
+                                        propertyMetadata.getValue(targetEntityOrig)).isEquals();
+                            }
+                            if (notChanged) continue;
+                        }
+
+
                         if (constraint.isViolated(entity)) {
                             for (PropertyMetadata propertyMetadata : constraint.getPropertyMetadatas()) {
                                 Component component = getBoundComponent(ContextUtil.getMRS().getPropertyPath
@@ -315,7 +339,9 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
 
     @Override
     public void addDirtyListener(DirtyListener dirtyListener) {
-        dirtyListeners.add(dirtyListener);
+        if (!dirtyListeners.contains(dirtyListener)) {
+            dirtyListeners.add(dirtyListener);
+        }
     }
 
     // -------------------------- OTHER METHODS --------------------------
@@ -335,6 +361,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void arrangeForTargetEntity(Entity targetEntity) {
         boolean hasChanged = (this.targetEntity != null && !this.targetEntity.equals(targetEntity)) || (targetEntity !=
                 null && !targetEntity.equals(this.targetEntity));
@@ -351,10 +378,17 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         }
 
         if (this.targetEntity != null) {
+            this.targetEntityOrig = targetEntity.clone();
             arrangeForState(PanelState.FOCUSED);
             if (hasChanged) {
                 dispatchMessage(ContextUtil.getMessage(MessageEnum.ENTITY_SELECTED, this, MessageArgEnum.ARG_ITEM,
                         this.targetEntity));
+            }
+
+            for (DirtyListener listener : dirtyListeners) {
+                if (listener instanceof ComponentController) {
+                    ((ComponentController) listener).setEntity(this.targetEntity);
+                }
             }
 
             //this mechanism is used for forcing screen refresh for calculated fields
@@ -371,12 +405,14 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
             }
 
         } else {
+            this.targetEntityOrig = null;
             if (isMasterDetail() && !hasMasterEntity()) {
                 arrangeForState(PanelState.UNDEFINED);
             } else {
                 arrangeForState(PanelState.READY);
             }
         }
+
 
         dispatchTitleChange();
     }
@@ -446,7 +482,9 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         }
 
         if (!ContextUtil.getMRS().getEntityMetadata(getTargetType()).isReadOnly()) {
-            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.UPDATE, this));
+            if (!entityMetadata.isDenyUpdate()) {
+                registerCommand(ContextUtil.getDefaultCommand(CommandEnum.UPDATE, this));
+            }
             if (!entityMetadata.isTableSubset()) {
                 if (!entityMetadata.isDenyAddNew()) {
                     registerCommand(ContextUtil.getDefaultCommand(CommandEnum.ADDNEW, this));
@@ -466,6 +504,15 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
 
     @Override
     public void setDirty(boolean dirty) {
+        //always notify component controllers
+        if (dirty) {
+            for (DirtyListener dirtyListener : dirtyListeners) {
+                if (dirtyListener instanceof ComponentController) {
+                    dirtyListener.onDirty(true);
+                }
+            }
+        }
+
         if (this.dirty != null && this.dirty == dirty) {
             return;
         }
@@ -473,7 +520,9 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         monitorComponents(!this.dirty);
 
         for (DirtyListener dirtyListener : dirtyListeners) {
-            dirtyListener.onDirty(this.dirty);
+            if (!(dialogListener instanceof ComponentController)) {
+                dirtyListener.onDirty(this.dirty);
+            }
         }
     }
 
@@ -692,8 +741,16 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         arrangeForRenderScheme(grid, renderScheme, DEFAULT_BEAN_ID);
     }
 
+    @SuppressWarnings("unchecked")
     protected void arrangeForRenderScheme(Grid grid, RenderScheme renderScheme, String BEAN_ID) {
         grid.getRows().getChildren().clear();
+        for (Iterator<DirtyListener> iter = dirtyListeners.iterator(); iter.hasNext(); ) {
+            if (iter.next() instanceof ComponentController) {
+                iter.remove();
+            }
+        }
+
+
         for (RenderElement element : renderScheme.getElements()) {
             if (element.getPropertyPath().isMultiStep() || element.getPropertyPath().getLastStep().isOneToManyType()
                     || element.getPropertyPath().getLastStep().isOneToOneType() || (MutableMode.READONLY ==
@@ -741,15 +798,24 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
                     comp = buildViewer(element.getPropertyPath().getLastStep().getAnnotation(PropertyEditor.class)
                             .className());
                 }
+
+                //look for component controllers
+                if (element.getPropertyPath().getLastStep().isAnnotatedWith(ControllerHolder.class)) {
+                    ComponentController controller = ContextUtil.getComponentController(getTargetType(),
+                            comp.getClass());
+                    if (controller != null) {
+                        controller.setComponent(comp);
+                        controller.setBinder(dataBinder);
+                        addDirtyListener(controller);
+                    }
+                }
             }
 
             if (comp instanceof HtmlBasedComponent) {
                 if (StringUtils.hasText(element.getWidth())) {
-                    //((HtmlBasedComponent) comp).setHflex("false");
                     ((HtmlBasedComponent) comp).setWidth(element.getWidth());
                 }
                 if (StringUtils.hasText(element.getHeight())) {
-                    //((HtmlBasedComponent) comp).setVflex("false");
                     ((HtmlBasedComponent) comp).setHeight(element.getHeight());
                 }
             }

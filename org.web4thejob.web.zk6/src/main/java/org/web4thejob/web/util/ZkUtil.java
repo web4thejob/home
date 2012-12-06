@@ -27,10 +27,7 @@ import org.web4thejob.message.MessageAware;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.EntityMetadata;
 import org.web4thejob.orm.PathMetadata;
-import org.web4thejob.orm.annotation.ColorHolder;
-import org.web4thejob.orm.annotation.HtmlHolder;
-import org.web4thejob.orm.annotation.ImageHolder;
-import org.web4thejob.orm.annotation.MediaHolder;
+import org.web4thejob.orm.annotation.*;
 import org.web4thejob.orm.parameter.Category;
 import org.web4thejob.orm.parameter.Key;
 import org.web4thejob.orm.scheme.RenderElement;
@@ -108,7 +105,16 @@ public abstract class ZkUtil {
     }
 
     public static Component getEditableComponentForRenderElement(RenderElement renderElement) {
-        Component component = getEditableComponentForPropertyType(renderElement.getPropertyPath());
+        Component component;
+        if (StringUtils.hasText(renderElement.getPropertyEditor())) {
+            if (renderElement.getPropertyEditor().equals(EntityTypeDropDownBox.class.getCanonicalName())) {
+                component = new EntityTypeDropDownBox(renderElement);
+            } else {
+                throw new UnsupportedOperationException("unknown component: " + renderElement.getPropertyEditor());
+            }
+        } else {
+            component = getEditableComponentForPropertyType(renderElement.getPropertyPath());
+        }
 
         if (StringUtils.hasText(renderElement.getFormat())) {
             if (component instanceof Datebox) {
@@ -144,6 +150,14 @@ public abstract class ZkUtil {
             comp = new MediaBox(pathMetadata);
         } else if (pathMetadata.getLastStep().isAnnotatedWith(ColorHolder.class)) {
             comp = new ColorDropDownBox(pathMetadata);
+        } else if (pathMetadata.getLastStep().isAnnotatedWith(EntityTypeHolder.class)) {
+            comp = new EntityTypeDropDownBox(pathMetadata);
+        } else if (pathMetadata.getLastStep().isAnnotatedWith(PanelHolder.class)) {
+            comp = new PanelDropDownBox(pathMetadata);
+            ((PanelDropDownBox) comp).setPanelType(pathMetadata.getLastStep().getAnnotation(PanelHolder.class)
+                    .panelType());
+        } else if (pathMetadata.getLastStep().isAnnotatedWith(QueryHolder.class)) {
+            comp = new QueryDropDownBox(pathMetadata);
         } else if (pathMetadata.getLastStep().isClobType()) {
             Textbox textbox = new Textbox();
             textbox.setHflex("true");
@@ -220,26 +234,13 @@ public abstract class ZkUtil {
 
     private static Component getComboForEntityTypes() {
         Combobox combobox = new Combobox();
-        List<EntityMetadata> entities = new ArrayList<EntityMetadata>(ContextUtil.getMRS().getEntityMetadatas());
-        Collections.sort(entities, new Comparator<EntityMetadata>() {
-            @Override
-            public int compare(EntityMetadata o1, EntityMetadata o2) {
-                return (o1.getSchema() + o1.getFriendlyName()).compareTo(o2.getSchema() + o2.getFriendlyName());
-            }
-        });
 
-
-        for (EntityMetadata entityMetadata : entities) {
-            if (!entityMetadata.isAbstract()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("(");
-                sb.append(entityMetadata.getSchema());
-                sb.append(") ");
-                sb.append(entityMetadata.getFriendlyName());
-                Comboitem comboitem = new Comboitem(sb.toString());
-                comboitem.setValue(entityMetadata.getEntityType());
-                comboitem.setParent(combobox);
-            }
+        for (EntityMetadata entityMetadata : ContextUtil.getMRS().getEntityMetadatas()) {
+            //if (!entityMetadata.isAbstract()) {
+            Comboitem comboitem = new Comboitem(entityMetadata.getFullFriendlyName());
+            comboitem.setValue(entityMetadata.getEntityType());
+            comboitem.setParent(combobox);
+            //}
         }
 
         combobox.setReadonly(true);
@@ -412,6 +413,10 @@ public abstract class ZkUtil {
             addBinding(dataBinder, component, beanId, propertyPath, MediaConverter.class);
         } else if (component instanceof Image) {
             addBinding(dataBinder, component, beanId, propertyPath, ImageConverter.class);
+        } else if (component instanceof EntityTypeDropDownBox) {
+            addBinding(dataBinder, component, beanId, propertyPath, ClassConverter.class);
+        } else if (component instanceof QueryDropDownBox) {
+            addBinding(dataBinder, component, beanId, propertyPath, QueryConverter.class);
         } else {
             addBinding(dataBinder, component, beanId, propertyPath, null);
         }
@@ -732,7 +737,7 @@ public abstract class ZkUtil {
         if (file != null) {
             try {
                 Filedownload.save(new InputStreamReader(new FileInputStream(file),
-                        CoreUtil.getParameterValue(Category.PRINTER, Key.CHARSET, String.class, "UTF-8")) {
+                        CoreUtil.getParameterValue(Category.PRINTER_PARAM, Key.CHARSET, String.class, "UTF-8")) {
                 }, "text/csv", "export.csv");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

@@ -77,4 +77,25 @@ public interface EntityMetadata {
     public boolean isDenyDelete();
 
     public List<Class<? extends Entity>> getSubclasses();
+
+    /**
+     * @since 3.3.0
+     */
+    public String getFullFriendlyName();
+
+    /**
+     * @since 3.3.0
+     */
+    public boolean isDenyUpdate();
+
+    /**
+     * @since 3.3.0
+     */
+    public Object getVersionValue(Entity entity);
+
+    /**
+     * @since 3.3.0
+     */
+    public void setVersionValue(Entity entity, Object value);
+
 }

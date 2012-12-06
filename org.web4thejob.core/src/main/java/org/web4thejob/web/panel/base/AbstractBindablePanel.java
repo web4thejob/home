@@ -25,8 +25,6 @@ import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.orm.Entity;
-import org.web4thejob.orm.ORMUtil;
-import org.web4thejob.orm.PanelDefinition;
 import org.web4thejob.orm.PropertyMetadata;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;
@@ -35,7 +33,8 @@ import org.web4thejob.setting.SettingEnum;
 import org.web4thejob.util.CoreUtil;
 import org.web4thejob.web.panel.*;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author Veniamin Isaias
@@ -236,20 +235,7 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
     @Override
     public Map<String, String> getDropdownItems() {
         if (!hasTargetType()) return Collections.emptyMap();
-
-        Map<String, Object> tags = new HashMap<String, Object>();
-        tags.put(CoreUtil.TAG_ENTITY_VIEW, true);
-        tags.put(CoreUtil.TAG_MASTER_DETAIL, false);
-        tags.put(SettingEnum.TARGET_TYPE.name(), getTargetType().getCanonicalName());
-        List<PanelDefinition> panelDefinitions = ORMUtil.getPanelsMatchingTags(tags);
-        if (panelDefinitions.isEmpty()) return Collections.emptyMap();
-
-        Map<String, String> map = new LinkedHashMap<String, String>(panelDefinitions.size());
-        for (PanelDefinition panelDefinition : ORMUtil.getPanelsMatchingTags(tags)) {
-            map.put(panelDefinition.getBeanId(), panelDefinition.getName());
-        }
-
-        return map;
+        return CoreUtil.getRelatedPanelsMap(getTargetType(), EntityViewPanel.class);
     }
 
     @Override

@@ -27,6 +27,9 @@ import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.orm.EntityFactory;
 import org.web4thejob.orm.PathMetadata;
+import org.web4thejob.orm.PropertyMetadata;
+import org.web4thejob.orm.annotation.ControllerHolder;
+import org.web4thejob.orm.annotation.EntityTypeHolder;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.scheme.RenderElement;
@@ -329,7 +332,6 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
         @Override
         @SuppressWarnings("unchecked")
         public void render(Listitem item, Criterion criterion, int index) throws Exception {
-            final Class<?> javaType = criterion.getPropertyPath().getLastStep().getJavaType();
             final boolean enforceFixed = getFixedHeader() == null;
 
             Listcell listcell;
@@ -381,7 +383,7 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
                 listcell = new Listcell();
                 listcell.setParent(item);
                 Combobox conditionCombobox = new Combobox();
-                buildApplicableConditions(conditionCombobox, javaType);
+                buildApplicableConditions(conditionCombobox, criterion.getPropertyPath().getLastStep());
                 conditionCombobox.setHflex("true");
                 conditionCombobox.setParent(listcell);
                 conditionCombobox.setAttribute(ATTRIB_CONDITION, true);
@@ -389,7 +391,7 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
                         ComboItemConverter.class);
                 conditionCombobox.addEventListener(Events.ON_CHANGE, this);
                 if (conditionCombobox.getItemCount() > 0 && criterion.getCondition() == null) {
-                    criterion.setCondition(getDefaultForType(javaType));
+                    criterion.setCondition(getDefaultForType(criterion.getPropertyPath().getLastStep()));
                 }
                 //required in  arrangeValueBoxForCondition()
                 conditionCombobox.setAttribute(ATTRIB_VALUEBOX, null);
@@ -438,10 +440,13 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
 
         }
 
-        private Condition getDefaultForType(Class<?> javaType) {
-            if (String.class.isAssignableFrom(javaType)) {
+        private Condition getDefaultForType(PropertyMetadata propertyMetadata) {
+            if (propertyMetadata.isAnnotatedWith(ControllerHolder.class) || propertyMetadata.isAnnotatedWith
+                    (EntityTypeHolder.class)) {
+                return Condition.EQ;
+            } else if (String.class.isAssignableFrom(propertyMetadata.getJavaType())) {
                 return Condition.SW;
-            } else if (Collection.class.isAssignableFrom(javaType)) {
+            } else if (Collection.class.isAssignableFrom(propertyMetadata.getJavaType())) {
                 return Condition.EX;
             } else {
                 return Condition.EQ;
@@ -511,10 +516,10 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
 
         // --------------------- Interface MessageListener ---------------------
 
-        private void buildApplicableConditions(Combobox combobox, Class<?> javaType) {
+        private void buildApplicableConditions(Combobox combobox, PropertyMetadata propertyMetadata) {
             combobox.getItems().clear();
             combobox.setReadonly(true);
-            for (Condition condition : Condition.getApplicableToType(javaType)) {
+            for (Condition condition : Condition.getApplicableToType(propertyMetadata)) {
                 Comboitem item = new Comboitem(condition.toString());
                 item.setParent(combobox);
                 item.setValue(condition);

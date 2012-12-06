@@ -27,7 +27,7 @@ import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PanelDefinition;
-import org.web4thejob.orm.parameter.Parameter;
+import org.web4thejob.orm.parameter.*;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.OrderBy;
 import org.web4thejob.orm.query.Query;
@@ -244,12 +244,6 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
                     .class).getFriendlyName());
             beanIds.put(roles, ORMUtil.persistPanel(roles));
 
-            ListViewPanel parameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            parameters.setTargetType(Parameter.class);
-            parameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(Parameter
-                    .class).getFriendlyName());
-            beanIds.put(parameters, ORMUtil.persistPanel(parameters));
-
             ListViewPanel users = ContextUtil.getDefaultPanel(ListViewPanel.class);
             users.setTargetType(UserIdentity.class);
             users.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(UserIdentity
@@ -261,6 +255,40 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             policies.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(AuthorizationPolicy
                     .class).getFriendlyName());
             beanIds.put(policies, ORMUtil.persistPanel(policies));
+
+            //----------------------------------------------------------------------------------------------------------
+            //Parameters
+            //----------------------------------------------------------------------------------------------------------
+            ListViewPanel entityViewParameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
+            entityViewParameters.setTargetType(EntityTypeEntityViewParameter.class);
+            entityViewParameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
+                    (EntityTypeEntityViewParameter.class).getFriendlyName());
+            beanIds.put(entityViewParameters, ORMUtil.persistPanel(entityViewParameters));
+
+            ListViewPanel listViewParameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
+            listViewParameters.setTargetType(EntityTypeListViewParameter.class);
+            listViewParameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
+                    (EntityTypeListViewParameter.class).getFriendlyName());
+            beanIds.put(listViewParameters, ORMUtil.persistPanel(listViewParameters));
+
+            ListViewPanel queryParameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
+            queryParameters.setTargetType(EntityTypeQueryParameter.class);
+            queryParameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
+                    (EntityTypeQueryParameter.class).getFriendlyName());
+            beanIds.put(queryParameters, ORMUtil.persistPanel(queryParameters));
+
+            ListViewPanel charsetParameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
+            charsetParameters.setTargetType(PrinterCharsetParameter.class);
+            charsetParameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
+                    (PrinterCharsetParameter.class).getFriendlyName());
+            beanIds.put(charsetParameters, ORMUtil.persistPanel(charsetParameters));
+
+            ListViewPanel imageRepoParameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
+            imageRepoParameters.setTargetType(LocationImagesRepoParameter.class);
+            imageRepoParameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
+                    (LocationImagesRepoParameter.class).getFriendlyName());
+            beanIds.put(imageRepoParameters, ORMUtil.persistPanel(imageRepoParameters));
+            //----------------------------------------------------------------------------------------------------------
 
             ListViewPanel renderSchemes = ContextUtil.getDefaultPanel(ListViewPanel.class);
             renderSchemes.setTargetType(RenderScheme.class);
@@ -372,6 +400,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             BorderedLayoutPanel queriesElements = ContextUtil.getDefaultPanel(BorderedLayoutPanel.class);
             queriesElements.setCenter(ContextUtil.getPanel(beanIds.get(queries)));
             TabbedLayoutPanel tabbedLayoutPanel = ContextUtil.getDefaultPanel(TabbedLayoutPanel.class);
+            tabbedLayoutPanel.setSettingValue(SettingEnum.DISABLE_DYNAMIC_TAB_TITLE, true);
             tabbedLayoutPanel.getSubpanels().add(criteria);
             tabbedLayoutPanel.getSubpanels().add(orderings);
             tabbedLayoutPanel.setSelectedIndex(0);
@@ -407,8 +436,17 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(panels)));
             menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(schemeElements)));
             menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(queriesElements)));
-            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(parameters)));
             menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(moduleInfoPanel)));
+
+            Treeitem paramsMenu = menuAuthorizationPanel.renderAddedMenu(rootItem,
+                    L10nMessages.L10N_NAME_DEFAULT_PARAMETERS_MENU.toString());
+            menuAuthorizationPanel.renderAddedPanel(paramsMenu, ContextUtil.getPanel(beanIds.get
+                    (entityViewParameters)));
+            menuAuthorizationPanel.renderAddedPanel(paramsMenu, ContextUtil.getPanel(beanIds.get(listViewParameters)));
+            menuAuthorizationPanel.renderAddedPanel(paramsMenu, ContextUtil.getPanel(beanIds.get(queryParameters)));
+            menuAuthorizationPanel.renderAddedPanel(paramsMenu, ContextUtil.getPanel(beanIds.get(charsetParameters)));
+            menuAuthorizationPanel.renderAddedPanel(paramsMenu, ContextUtil.getPanel(beanIds.get(imageRepoParameters)));
+
 
             AuthorizationPolicy authorizationPolicy = ContextUtil.getEntityFactory().buildAuthorizationPolicy();
             authorizationPolicy.setName(L10nMessages.L10N_NAME_DEFAULT_SECURITY_MENU.toString());
@@ -419,7 +457,34 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             role.setAuthorizationPolicy(authorizationPolicy);
             ContextUtil.getDWS().save(role);
 
+            //--------------------------------------------------------------------------------------------------------
+            // ANYONE role and default query for sorting identities
+            //--------------------------------------------------------------------------------------------------------
+            role = ContextUtil.getEntityFactory().buildRoleIdentity();
+            role.setCode("ANYONE");
+            role.setIndex(1000);
+            ContextUtil.getDWS().save(role);
+
+            RoleMembers roleMembers = ContextUtil.getEntityFactory().buildRoleMembers();
+            roleMembers.setRole(role);
+            roleMembers.setUser(userIdentity);
+            ContextUtil.getDWS().save(roleMembers);
+
+            Query query = ContextUtil.getEntityFactory().buildQuery(Identity.class);
+            query.setName("by code");
+            query.setCached(true);
+            query.addOrderBy(Identity.FLD_CODE);
+            ContextUtil.getDWS().save(query);
+
+            EntityTypeQueryParameter entityTypeQueryParameter = ContextUtil.getEntityFactory().buildParameter
+                    (EntityTypeQueryParameter.class);
+            entityTypeQueryParameter.setOwner(role);
+            entityTypeQueryParameter.setKey(Identity.class.getCanonicalName());
+            entityTypeQueryParameter.setValue(Long.valueOf(query.getId()).toString());
+            ContextUtil.getDWS().save(entityTypeQueryParameter);
+
             return true;
+
         }
 
     }

@@ -152,7 +152,8 @@ public class DefaultEntityViewPanel extends AbstractMutablePanel implements Enti
     protected void processValidCommand(Command command) {
         if (CommandEnum.PRINT.equals(command.getId())) {
             if (hasTargetEntity()) {
-                String title = getSettingValue(SettingEnum.PANEL_NAME, null);
+                String title = getSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
+                        (getTargetType()).getFriendlyName());
                 Query query = null;
                 if (isMasterDetail() && hasMasterEntity()) {
                     query = ContextUtil.getEntityFactory().buildQuery(getTargetType());
@@ -169,8 +170,6 @@ public class DefaultEntityViewPanel extends AbstractMutablePanel implements Enti
                 dialog.setL10nMode(getL10nMode());
                 dialog.show(new RenderSchemeDialogListener());
             }
-        } else if (CommandEnum.RELATED_PANELS.equals(command.getId())) {
-
         } else {
             super.processValidCommand(command);
         }

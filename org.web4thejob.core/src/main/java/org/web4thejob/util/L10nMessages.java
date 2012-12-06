@@ -49,6 +49,8 @@ public interface L10nMessages {
             "System Security");
     public static final L10nString L10N_NAME_DEFAULT_PANELS_MENU = new L10nString("name_default_panels_menu",
             "System Panels");
+    public static final L10nString L10N_NAME_DEFAULT_PARAMETERS_MENU = new L10nString("name_default_parameters_menu",
+            "System Parameters");
     public static final L10nString L10N_DEVELOPER_SIGNATURE = new L10nString("label_developer_signature",
             "Designed and developed by <a href=\"mailto:bissaias@hotmail.com\"> Veniamin Isaias</a>");
     public static final L10nString L10N_ICONS_SIGNATURE = new L10nString("label_icons_signature",

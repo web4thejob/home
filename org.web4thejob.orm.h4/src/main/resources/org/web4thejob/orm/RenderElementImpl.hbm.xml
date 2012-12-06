@@ -83,14 +83,24 @@
             <meta attribute="index">10</meta>
             <column name="`READ_ONLY`" not-null="true"/>
         </property>
+        <property name="propertyViewer" type="string">
+            <meta attribute="friendlyName">Property Viewer</meta>
+            <meta attribute="index">11</meta>
+            <column name="`PROP_VIEWER`" not-null="false"/>
+        </property>
+        <property name="propertyEditor" type="string">
+            <meta attribute="friendlyName">Property Editor</meta>
+            <meta attribute="index">12</meta>
+            <column name="`PROP_EDITOR`" not-null="false"/>
+        </property>
         <property name="colSpan" type="int">
             <meta attribute="friendlyName">Column Span</meta>
-            <meta attribute="index">11</meta>
+            <meta attribute="index">13</meta>
             <column name="`COL_SPAN`" not-null="true"/>
         </property>
         <property name="index" type="int" not-null="true" insert="false" update="false">
             <meta attribute="friendlyName">Index</meta>
-            <meta attribute="index">12</meta>
+            <meta attribute="index">14</meta>
             <column name="`INDEXNO`" not-null="true"/>
         </property>
     </class>

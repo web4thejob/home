@@ -65,6 +65,7 @@ class ParameterImpl extends AbstractHibernateEntity implements Parameter {
         return category;
     }
 
+
     @Override
     public void setCategory(Category category) {
         this.category = category;

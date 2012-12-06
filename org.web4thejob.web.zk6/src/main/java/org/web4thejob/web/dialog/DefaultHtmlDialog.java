@@ -80,7 +80,8 @@ public class DefaultHtmlDialog extends AbstractDialog implements HtmlDialog {
             editor.setWidth(ZkUtil.getDesktopWidthRatio(65));
             editor.setHeight(ZkUtil.getDesktopHeightRatio(45));
             editor.setValue(content);
-            editor.setFilebrowserImageBrowseUrl(CoreUtil.getParameterValue(Category.LOCATION, Key.IMAGES_REPOSITORY,
+            editor.setFilebrowserImageBrowseUrl(CoreUtil.getParameterValue(Category.LOCATION_PARAM,
+                    Key.IMAGES_REPOSITORY,
                     String.class, null));
             editor.setHflex("true");
             editor.setVflex("true");

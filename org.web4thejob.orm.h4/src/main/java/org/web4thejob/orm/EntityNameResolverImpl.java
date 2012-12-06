@@ -19,7 +19,7 @@
 package org.web4thejob.orm;
 
 import org.hibernate.EntityNameResolver;
-import org.web4thejob.orm.parameter.Parameter;
+import org.web4thejob.orm.parameter.*;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.OrderBy;
 import org.web4thejob.orm.query.Query;
@@ -63,6 +63,13 @@ public class EntityNameResolverImpl implements EntityNameResolver {
         else if (entity instanceof PanelDefinition) return PanelDefinition.class;
         else if (entity instanceof RoleMembers) return RoleMembers.class;
         else if (entity instanceof AuthorizationPolicy) return AuthorizationPolicy.class;
+
+        else if (entity instanceof EntityTypeEntityViewParameter) return EntityTypeEntityViewParameter.class;
+        else if (entity instanceof EntityTypeListViewParameter) return EntityTypeListViewParameter.class;
+        else if (entity instanceof EntityTypeQueryParameter) return EntityTypeQueryParameter.class;
+        else if (entity instanceof PrinterCharsetParameter) return PrinterCharsetParameter.class;
+        else if (entity instanceof LocationImagesRepoParameter) return LocationImagesRepoParameter.class;
+        else if (entity instanceof LocationParameter) return LocationParameter.class;
         else if (entity instanceof Parameter) return Parameter.class;
 
         else if (entity instanceof UserIdentity) return UserIdentity.class;

@@ -31,9 +31,6 @@ import java.util.*;
 public class CommandEnum implements Comparable<CommandEnum> {
     private static Map<String, CommandEnum> commandsRegistry = new HashMap<String, CommandEnum>();
 
-    public static final CommandEnum DESIGN_MODE = new CommandEnum("DESIGN_MODE", false);
-    public static final CommandEnum LOCALIZATION_MODE = new CommandEnum("LOCALIZATION_MODE", false);
-
     public static final CommandEnum CONFIGURE_SETTINGS = new CommandEnum("CONFIGURE_SETTINGS",
             CommandEnum.CATEGORY_DEFAULT, true, true);
 
@@ -66,6 +63,10 @@ public class CommandEnum implements Comparable<CommandEnum> {
             new CommandEnum[]{DESIGN_PANEL_ENTITY_VIEW,
                     DESIGN_PANEL_LIST_VIEW, DESIGN_PANEL_HTML_VIEW, DESIGN_PANEL_IFRAME_VIEW,
                     DESIGN_PANEL_TABBED_VIEW, DESIGN_PANEL_BORDERED_VIEW, DESIGN_PANEL_OTHER});
+
+    public static final CommandEnum DESIGN_MODE = new CommandEnum("DESIGN_MODE", false);
+    public static final CommandEnum LOCALIZATION_MODE = new CommandEnum("LOCALIZATION_MODE", false);
+
     public static final CommandEnum REFRESH_CONTEXT = new CommandEnum("REFRESH_CONTEXT",
             CommandEnum.CATEGORY_DEFAULT, true, false);
 

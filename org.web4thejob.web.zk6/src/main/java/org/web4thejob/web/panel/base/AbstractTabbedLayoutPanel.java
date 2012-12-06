@@ -79,6 +79,7 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
         new Tabs().setParent(tabbox);
         new Tabpanels().setParent(tabbox);
         //tabbox.setMold("accordion-lite");
+        //tabbox.setOrient("vertical");
     }
 
     // ------------------------ INTERFACE METHODS ------------------------

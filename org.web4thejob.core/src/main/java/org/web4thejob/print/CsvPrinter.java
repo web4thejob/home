@@ -257,7 +257,7 @@ public class CsvPrinter implements Printer {
     private BufferedWriter createFileStream(File file) throws IOException {
         final FileOutputStream out = new FileOutputStream(file);
 
-        String charset = CoreUtil.getParameterValue(Category.PRINTER, Key.CHARSET, String.class, "UTF-8");
+        String charset = CoreUtil.getParameterValue(Category.PRINTER_PARAM, Key.CHARSET, String.class, "UTF-8");
         if (charset.toUpperCase().equals("UTF-8")) {
             // UTF-8 BOM
             out.write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});

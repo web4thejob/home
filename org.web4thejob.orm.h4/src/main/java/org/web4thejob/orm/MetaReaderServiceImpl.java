@@ -208,7 +208,14 @@ import java.util.*;
 
     @Override
     public Collection<EntityMetadata> getEntityMetadatas() {
-        return Collections.unmodifiableCollection(metaCache.values());
+        List<EntityMetadata> metadatas = new ArrayList<EntityMetadata>(metaCache.values());
+        Collections.sort(metadatas, new Comparator<EntityMetadata>() {
+            @Override
+            public int compare(EntityMetadata o1, EntityMetadata o2) {
+                return (o1.getSchema() + o1.getFriendlyName()).compareTo(o2.getSchema() + o2.getFriendlyName());
+            }
+        });
+        return Collections.unmodifiableCollection(metadatas);
     }
 
     // -------------------------- OTHER METHODS --------------------------
@@ -328,7 +335,22 @@ import java.util.*;
                 appendMetadata(ImageHolder.class, new AnnotationMetadataImpl<ImageHolder>(getEntityType
                         (declaringType), field, field.getAnnotation(ImageHolder.class)));
             }
-
+            if (field.isAnnotationPresent(EntityTypeHolder.class)) {
+                appendMetadata(EntityTypeHolder.class, new AnnotationMetadataImpl<EntityTypeHolder>(getEntityType
+                        (declaringType), field, field.getAnnotation(EntityTypeHolder.class)));
+            }
+            if (field.isAnnotationPresent(PanelHolder.class)) {
+                appendMetadata(PanelHolder.class, new AnnotationMetadataImpl<PanelHolder>(getEntityType
+                        (declaringType), field, field.getAnnotation(PanelHolder.class)));
+            }
+            if (field.isAnnotationPresent(ControllerHolder.class)) {
+                appendMetadata(ControllerHolder.class, new AnnotationMetadataImpl<ControllerHolder>(getEntityType
+                        (declaringType), field, field.getAnnotation(ControllerHolder.class)));
+            }
+            if (field.isAnnotationPresent(QueryHolder.class)) {
+                appendMetadata(QueryHolder.class, new AnnotationMetadataImpl<QueryHolder>(getEntityType
+                        (declaringType), field, field.getAnnotation(QueryHolder.class)));
+            }
         }
     }
 }

@@ -488,9 +488,11 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         }
         EntityMetadata entityMetadata = ContextUtil.getMRS().getEntityMetadata(getTargetType());
         if (!entityMetadata.isReadOnly()) {
-            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.UPDATE, this));
             if (!entityMetadata.isDenyAddNew()) {
                 registerCommand(ContextUtil.getDefaultCommand(CommandEnum.ADDNEW, this));
+            }
+            if (!entityMetadata.isDenyUpdate()) {
+                registerCommand(ContextUtil.getDefaultCommand(CommandEnum.UPDATE, this));
             }
             if (!entityMetadata.isDenyDelete()) {
                 registerCommand(ContextUtil.getDefaultCommand(CommandEnum.DELETE, this));
@@ -671,7 +673,8 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         } else if (CommandEnum.PRINT.equals(command.getId())) {
 
             if (listbox.getModel() != null || getFinalQuery() != null) {
-                String title = getSettingValue(SettingEnum.PANEL_NAME, null);
+                String title = getSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
+                        (getTargetType()).getFriendlyName());
                 RenderScheme renderScheme = (RenderScheme) listbox.getAttribute(ListboxRenderer
                         .ATTRIB_RENDER_SCHEME);
                 Query query = getFinalQuery();

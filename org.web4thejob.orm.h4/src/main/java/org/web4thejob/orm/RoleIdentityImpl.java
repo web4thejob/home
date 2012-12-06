@@ -36,8 +36,6 @@ import java.util.Set;
     private int index = Integer.MAX_VALUE;
     private AuthorizationPolicy authorizationPolicy;
     private Set<RoleMembers> users = new HashSet<RoleMembers>(0);
-    @SuppressWarnings("unused")
-    private int version;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 

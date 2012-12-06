@@ -41,6 +41,7 @@ import java.util.List;
     private static final String META_TABLE_SUBSET = "tableSubset";
     private static final String META_TABLE_CACHED = "cached";
     private static final String META_DENY_ADDNEW = "deny-add-new";
+    private static final String META_DENY_UPDATE = "deny-update";
     private static final String META_DENY_DELETE = "deny-delete";
     private static final Logger logger = Logger.getLogger(EntityMetadataImpl.class);
     final private SortedSet<PropertyMetadata> propertySet = new TreeSet<PropertyMetadata>();
@@ -57,6 +58,7 @@ import java.util.List;
     final private boolean cached;
     final private boolean denyAddNew;
     final private boolean denyDelete;
+    final private boolean denyUpdate;
     private List<UniqueKeyConstraint> uniqueKeyConstraints;
 
     // --------------------------- CONSTRUCTORS ---------------------------
@@ -95,6 +97,12 @@ import java.util.List;
             denyAddNew = isAbstract;
         }
 
+        if (MetaUtil.hasMetaAttribute(this.persistentClass, META_DENY_UPDATE)) {
+            denyUpdate = Boolean.parseBoolean(MetaUtil.getMetaAttribute(this.persistentClass, META_DENY_UPDATE));
+        } else {
+            denyUpdate = false;
+        }
+
         if (MetaUtil.hasMetaAttribute(this.persistentClass, META_DENY_DELETE)) {
             denyDelete = Boolean.parseBoolean(MetaUtil.getMetaAttribute(this.persistentClass, META_DENY_DELETE));
         } else {
@@ -109,7 +117,7 @@ import java.util.List;
         // properties
         int i = 0;
         for (final String propertyName : classMetadata.getPropertyNames()) {
-            if (!isBackref(propertyName) && !isVersionProperty(i)) {
+            if (!isBackref(propertyName) && !isVersionProperty(i) && !isDiscriminatorDuplicate(propertyName)) {
                 propertyMetadata = new PropertyMetadataImpl(this, propertyName);
                 propertySet.add(propertyMetadata);
                 propertyMap.put(propertyMetadata.getName(), propertyMetadata);
@@ -135,16 +143,19 @@ import java.util.List;
         }
     }
 
+    private boolean isDiscriminatorDuplicate(String propertyName) {
+        if (persistentClass instanceof RootClass) return false;
+        if (persistentClass.getRootClass().getDiscriminator() == null) return false;
 
-    /*package*/ void addSubclassesAsProperties() {
-        for (Class<? extends Entity> subclass : subclasses) {
-            //add subclasses as virtual properties
-            SubclassPropertyMetadataImpl propertyMetadata = new SubclassPropertyMetadataImpl(this,
-                    (EntityMetadataImpl) ContextUtil.getMRS().getEntityMetadata(subclass));
-            propertySet.add(propertyMetadata);
-            propertyMap.put(propertyMetadata.getName(), propertyMetadata);
+        Object dcolumn = persistentClass.getRootClass().getDiscriminator().getColumnIterator().next();
+        Object pcolumn = persistentClass.getProperty(propertyName).getColumnIterator().next();
+        if (dcolumn instanceof Column && pcolumn instanceof Column) {
+            return ((Column) dcolumn).getName().equals(((Column) pcolumn).getName());
         }
+
+        return false;
     }
+
 
     @SuppressWarnings("unchecked")
     private Class<? extends Entity> getEntityType(String entityName) {
@@ -229,7 +240,21 @@ import java.util.List;
 
     @Override
     public PropertyMetadata getPropertyMetadata(String property) {
-        return propertyMap.get(property);
+        PropertyMetadata propertyMetadata = propertyMap.get(property);
+
+        if (propertyMetadata == null && subclasses != null) {
+            for (Class<? extends Entity> subtype : subclasses) {
+                EntityMetadata entityMetadata = MetaReaderServiceImpl.metaCache.get(subtype.getCanonicalName());
+                if (entityMetadata != null) {
+                    propertyMetadata = entityMetadata.getPropertyMetadata(property);
+                    if (propertyMetadata != null) {
+                        return propertyMetadata;
+                    }
+                }
+            }
+        }
+
+        return propertyMetadata;
     }
 
     @Override
@@ -303,6 +328,29 @@ import java.util.List;
     }
 
     @Override
+    public boolean isDenyUpdate() {
+        return denyUpdate;
+    }
+
+    @Override
+    public Object getVersionValue(Entity entity) {
+        if (entity == null) return null;
+        if (!versioned) return null;
+        if (!entity.getEntityType().equals(getEntityType())) return null;
+
+        return classMetadata.getPropertyValue(entity, persistentClass.getVersion().getName());
+    }
+
+    @Override
+    public void setVersionValue(Entity entity, Object value) {
+        if (entity == null) return;
+        if (!versioned) return;
+        if (!entity.getEntityType().equals(getEntityType())) return;
+
+        classMetadata.setPropertyValue(entity, persistentClass.getVersion().getName(), value);
+    }
+
+    @Override
     public List<Class<? extends Entity>> getSubclasses() {
         return subclasses;
     }
@@ -336,5 +384,10 @@ import java.util.List;
         }
         uniqueKeyConstraints = Collections.unmodifiableList(uniqueKeyConstraints);
 
+    }
+
+    @Override
+    public String getFullFriendlyName() {
+        return new StringBuilder().append("[").append(getSchema()).append("] ").append(getFriendlyName()).toString();
     }
 }

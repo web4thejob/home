@@ -166,7 +166,8 @@ public class EntityDropdownBox extends AbstractBox<Entity> {
     }
 
     private List<? extends Entity> getModel() {
-        Query defaultQuery = CoreUtil.getDefaultQueryForPath(renderElement.getPropertyPath());
+        Query defaultQuery = CoreUtil.getDefaultQueryForTargetType(renderElement.getPropertyPath().getLastStep()
+                .getAssociatedEntityMetadata().getEntityType());
         if (defaultQuery == null) {
             defaultQuery = ContextUtil.getEntityFactory().buildQuery(renderElement.getPropertyPath().getLastStep()
                     .getAssociatedEntityMetadata().getEntityType());

@@ -29,7 +29,8 @@ import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageAware;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.orm.Entity;
-import org.web4thejob.orm.PathMetadata;
+import org.web4thejob.orm.ORMUtil;
+import org.web4thejob.orm.PanelDefinition;
 import org.web4thejob.orm.parameter.Category;
 import org.web4thejob.orm.parameter.Parameter;
 import org.web4thejob.orm.query.Condition;
@@ -51,6 +52,7 @@ import java.util.*;
 public abstract class CoreUtil {
     public static final String TAG_MASTER_DETAIL = "MASTER_DETAIL";
     public static final String TAG_ENTITY_VIEW = "ENTITY_VIEW";
+    public static final String TAG_LIST_VIEW = "LIST_VIEW";
 
     private static final Map<Class<? extends Entity>, Set<Serializable>> systemLocks = new HashMap<Class<? extends
             Entity>, Set<Serializable>>();
@@ -102,6 +104,7 @@ public abstract class CoreUtil {
         }
         return defaultValue;
     }
+
 
     public static <T> T getParameterValue(Category category, String key, Class<T> clazz) {
         return getParameterValue(category, key, clazz, null);
@@ -175,7 +178,7 @@ public abstract class CoreUtil {
 
         Parameter parameter = ContextUtil.getDRS().findUniqueByQuery(query);
         if (parameter == null) {
-            parameter = ContextUtil.getEntityFactory().buildParameter();
+            parameter = ContextUtil.getEntityFactory().buildParameter(Parameter.class);
             parameter.setOwner(owner);
             parameter.setCategory(category);
             parameter.setKey(key);
@@ -187,6 +190,7 @@ public abstract class CoreUtil {
         } else if (value == null && !parameter.isNewInstance()) {
             ContextUtil.getDWS().delete(parameter);
         }
+
     }
 
     public static String describeClass(Class<?> clazz) {
@@ -224,6 +228,10 @@ public abstract class CoreUtil {
 
         if (panel instanceof EntityViewPanel) {
             sb.append(buildTagValue(TAG_ENTITY_VIEW, true));
+            sb.append(" ");
+        }
+        if (panel instanceof ListViewPanel) {
+            sb.append(buildTagValue(TAG_LIST_VIEW, true));
             sb.append(" ");
         }
         if (panel instanceof TargetTypeAware) {
@@ -286,12 +294,12 @@ public abstract class CoreUtil {
     }
 
     public static String getDefaultEntityViewName(Class<? extends Entity> entityType) {
-        return CoreUtil.getParameterValue(Category.DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE,
+        return CoreUtil.getParameterValue(Category.ENTITY_TYPE_ENTITY_VIEW_PARAM,
                 entityType.getCanonicalName(), String.class);
     }
 
     public static String getDefaultListViewName(Class<? extends Entity> entityType) {
-        return CoreUtil.getParameterValue(Category.DEFAULT_LIST_VIEW_FOR_TARGET_TYPE,
+        return CoreUtil.getParameterValue(Category.ENTITY_TYPE_LIST_VIEW_PARAM,
                 entityType.getCanonicalName(), String.class);
     }
 
@@ -312,8 +320,10 @@ public abstract class CoreUtil {
                 ((MessageAware) entityPanel).processMessage(ContextUtil.getMessage(MessageEnum
                         .BIND_DIRECT, entityPanel, MessageArgEnum.ARG_ITEM, entity));
 
-                CoreUtil.setParameterValue(Category.DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE,
+/*              TODO Reconsider. This messes security policy
+                CoreUtil.setParameterValue(Category.ENTITY_TYPE_ENTITY_VIEW_PARAM,
                         entity.getEntityType().getCanonicalName(), beainid);
+*/
             } else {
                 entityPanel = ContextUtil.getDefaultPanel(EntityViewPanel.class);
                 ((EntityViewPanel) entityPanel).setTargetType(entity.getEntityType());
@@ -353,30 +363,45 @@ public abstract class CoreUtil {
     }
 
     public static Query getDefaultQueryForTargetType(Class<? extends Entity> targetType) {
-        String name = CoreUtil.getParameterValue(Category.DEFAULT_QUERY_FOR_TARGET_TYPE,
+        String id = CoreUtil.getParameterValue(Category.ENTITY_TYPE_QUERY_PARAM,
                 targetType.getCanonicalName(), String.class, null);
-        if (StringUtils.hasText(name)) {
-            return getQuery(targetType, name);
+        if (StringUtils.hasText(id)) {
+            return ContextUtil.getDRS().findById(Query.class, Long.valueOf(id));
         }
         return null;
     }
 
-    public static Query getDefaultQueryForPath(PathMetadata pathMetadata) {
-        Query query = null;
+    public static Map<String, String> getRelatedPanelsMap(Class<? extends Entity> entityType,
+                                                          Class<? extends ContentPanel> panelType) {
 
-        String name = CoreUtil.getParameterValue(Category.DEFAULT_QUERY_FOR_PATH,
-                pathMetadata.getLastStep().getAssociatedEntityMetadata().getName(), String.class, null);
+        Map<String, Object> tags = new HashMap<String, Object>();
 
-        if (StringUtils.hasText(name)) {
-            query = getQuery(pathMetadata.getLastStep().getAssociatedEntityMetadata().getEntityType(), name);
+        if (panelType != null) {
+            if (EntityViewPanel.class.isAssignableFrom(panelType)) {
+                tags.put(CoreUtil.TAG_ENTITY_VIEW, true);
+            } else if (ListViewPanel.class.isAssignableFrom(panelType)) {
+                tags.put(CoreUtil.TAG_LIST_VIEW, true);
+            } else {
+                throw new UnsupportedOperationException("panel type not supported yet:" + panelType.getCanonicalName());
+            }
         }
 
-        if (query != null) {
-            return query;
-        } else {
-            return getDefaultQueryForTargetType(pathMetadata.getLastStep().getAssociatedEntityMetadata()
-                    .getEntityType());
+        if (entityType != null) {
+            tags.put(SettingEnum.TARGET_TYPE.name(), entityType.getCanonicalName());
         }
+
+        tags.put(CoreUtil.TAG_MASTER_DETAIL, false);
+
+        List<PanelDefinition> panelDefinitions = ORMUtil.getPanelsMatchingTags(tags);
+        if (panelDefinitions.isEmpty()) return Collections.emptyMap();
+
+        Map<String, String> map = new LinkedHashMap<String, String>(panelDefinitions.size());
+        for (PanelDefinition panelDefinition : ORMUtil.getPanelsMatchingTags(tags)) {
+            map.put(panelDefinition.getBeanId(), panelDefinition.getName());
+        }
+
+        return map;
+
+
     }
-
 }

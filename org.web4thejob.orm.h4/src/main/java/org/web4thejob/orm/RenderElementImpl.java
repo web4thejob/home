@@ -49,6 +49,8 @@ import java.io.Serializable;
     private String width;
     private String height;
     private PathMetadata propertyPath;
+    private String propertyViewer;
+    private String propertyEditor;
 
     @Override
     public boolean isReadOnly() {
@@ -216,5 +218,25 @@ import java.io.Serializable;
     public void setFlatPropertyPath(String flatPropertyPath) {
         this.flatPropertyPath = flatPropertyPath;
         this.propertyPath = null;
+    }
+
+    @Override
+    public String getPropertyViewer() {
+        return propertyViewer;
+    }
+
+    @Override
+    public void setPropertyViewer(String propertyViewer) {
+        this.propertyViewer = propertyViewer;
+    }
+
+    @Override
+    public String getPropertyEditor() {
+        return propertyEditor;
+    }
+
+    @Override
+    public void setPropertyEditor(String propertyEditor) {
+        this.propertyEditor = propertyEditor;
     }
 }

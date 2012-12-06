@@ -158,10 +158,10 @@ public class DefaultListboxRenderer implements ListboxRenderer {
                 listcell.setStyle("white-space:nowrap;");
 
                 PropertyBox propertyBox = new PropertyBox(element);
+                ZkUtil.setInactive(propertyBox, inactive);
                 propertyBox.setParent(listcell);
                 propertyBox.setTooltipLimit(40);
                 propertyBox.setEntity(data);
-                ZkUtil.setInactive(propertyBox, inactive);
             }
         }
 

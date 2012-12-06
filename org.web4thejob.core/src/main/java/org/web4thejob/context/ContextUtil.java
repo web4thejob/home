@@ -27,6 +27,7 @@ import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -37,15 +38,13 @@ import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.module.Module;
-import org.web4thejob.orm.DataReaderService;
-import org.web4thejob.orm.DataWriterService;
-import org.web4thejob.orm.EntityFactory;
-import org.web4thejob.orm.MetaReaderService;
+import org.web4thejob.orm.*;
 import org.web4thejob.security.AuthorizationBeanPostProcessor;
 import org.web4thejob.security.SecurityService;
 import org.web4thejob.setting.DefaultSetting;
 import org.web4thejob.setting.Setting;
 import org.web4thejob.setting.SettingEnum;
+import org.web4thejob.web.controller.ComponentController;
 import org.web4thejob.web.dialog.Dialog;
 import org.web4thejob.web.panel.Panel;
 
@@ -235,11 +234,6 @@ public class ContextUtil implements ApplicationContextAware {
         return rootContext.getBean(SecurityService.class);
     }
 
-    // ------------------------ INTERFACE METHODS ------------------------
-
-    // --------------------- Interface ApplicationContextAware
-    // ---------------------
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         rootContext = applicationContext;
@@ -247,6 +241,10 @@ public class ContextUtil implements ApplicationContextAware {
 
     public static boolean resourceExists(String location) {
         return rootContext.getResource(location).exists();
+    }
+
+    public static Resource getResource(String location) {
+        return rootContext.getResource(location);
     }
 
     public static List<Module> getModules() {
@@ -263,5 +261,18 @@ public class ContextUtil implements ApplicationContextAware {
         return Collections.unmodifiableList(modules);
     }
 
+    @SuppressWarnings("unchecked")
+    public static ComponentController getComponentController(Class<? extends Entity> entityType,
+                                                             Class<?> componentType) {
+        for (String bean : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(getSessionContext(),
+                ComponentController.class)) {
+            ComponentController controller = rootContext.getBean(bean, ComponentController.class);
+            if (controller.supportsEntity(entityType) && controller.supportsComponent(componentType)) {
+                return controller;
+            }
+        }
+
+        return null;
+    }
 
 }

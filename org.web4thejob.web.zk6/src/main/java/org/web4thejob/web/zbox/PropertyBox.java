@@ -26,18 +26,16 @@ import org.web4thejob.command.DefaultArbitraryDropdownCommandDecorator;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.message.MessageAware;
 import org.web4thejob.message.MessageEnum;
-import org.web4thejob.orm.Entity;
-import org.web4thejob.orm.ORMUtil;
-import org.web4thejob.orm.PanelDefinition;
-import org.web4thejob.orm.PathMetadata;
+import org.web4thejob.orm.*;
 import org.web4thejob.orm.annotation.*;
+import org.web4thejob.orm.query.Query;
 import org.web4thejob.orm.scheme.RenderElement;
 import org.web4thejob.print.CsvPrinter;
-import org.web4thejob.setting.SettingEnum;
 import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nMessages;
 import org.web4thejob.util.L10nString;
 import org.web4thejob.util.L10nUtil;
+import org.web4thejob.web.panel.EntityViewPanel;
 import org.web4thejob.web.panel.Panel;
 import org.web4thejob.web.util.MediaUtil;
 import org.web4thejob.web.util.ZkUtil;
@@ -51,7 +49,8 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author Veniamin Isaias
@@ -69,6 +68,9 @@ public class PropertyBox extends Hbox {
     private final boolean urlHolder;
     private final boolean mediaHolder;
     private final boolean imageHolder;
+    private final boolean entityTypeHolder;
+    private final boolean panelHolder;
+    private final boolean queryHolder;
     private MessageFormat formatter;
     private Entity entity;
     private A navigateLink;
@@ -99,12 +101,16 @@ public class PropertyBox extends Hbox {
 
     public PropertyBox(RenderElement renderElement) {
         if (renderElement != null) {
+            PropertyMetadata pm = renderElement.getPropertyPath().getLastStep();
             this.renderElement = renderElement;
-            this.emailHolder = renderElement.getPropertyPath().getLastStep().isAnnotatedWith(EmailHolder.class);
-            this.urlHolder = renderElement.getPropertyPath().getLastStep().isAnnotatedWith(UrlHolder.class);
-            this.colorHolder = renderElement.getPropertyPath().getLastStep().isAnnotatedWith(ColorHolder.class);
-            this.mediaHolder = renderElement.getPropertyPath().getLastStep().isAnnotatedWith(MediaHolder.class);
-            this.imageHolder = renderElement.getPropertyPath().getLastStep().isAnnotatedWith(ImageHolder.class);
+            this.emailHolder = pm.isAnnotatedWith(EmailHolder.class);
+            this.urlHolder = pm.isAnnotatedWith(UrlHolder.class);
+            this.colorHolder = pm.isAnnotatedWith(ColorHolder.class);
+            this.mediaHolder = pm.isAnnotatedWith(MediaHolder.class);
+            this.imageHolder = pm.isAnnotatedWith(ImageHolder.class);
+            this.entityTypeHolder = pm.isAnnotatedWith(EntityTypeHolder.class);
+            this.panelHolder = pm.isAnnotatedWith(PanelHolder.class);
+            this.queryHolder = pm.isAnnotatedWith(QueryHolder.class);
         } else {
             this.renderElement = null;
             this.emailHolder = false;
@@ -112,6 +118,9 @@ public class PropertyBox extends Hbox {
             this.colorHolder = false;
             this.mediaHolder = false;
             this.imageHolder = false;
+            this.entityTypeHolder = false;
+            this.panelHolder = false;
+            this.queryHolder = false;
         }
 
         setHflex("true");
@@ -149,6 +158,7 @@ public class PropertyBox extends Hbox {
         return html.getContent();
     }
 
+    @SuppressWarnings("unchecked")
     private String prepareContent(Object value) {
         String content;
         setTooltiptext("");
@@ -199,6 +209,30 @@ public class PropertyBox extends Hbox {
             image.setContent(MediaUtil.createThumbnail((byte[]) value));
             image.setAttribute("value", value);
             image.addEventListener(Events.ON_CLICK, new DownloadLinkListener());
+        } else if (entityTypeHolder) {
+            if (value instanceof String) {
+                content = ContextUtil.getMRS().getEntityMetadata((String) value).getFullFriendlyName();
+            } else {
+                content = ContextUtil.getMRS().getEntityMetadata((Class<? extends Entity>) value).getFullFriendlyName();
+            }
+        } else if (panelHolder) {
+            PanelDefinition panelDefinition = ORMUtil.getPanelDefinition((String) value);
+            if (panelDefinition != null) {
+                content = panelDefinition.getName();
+                ZkUtil.setInactive(html, false);
+            } else {
+                content = (String) value;
+                ZkUtil.setInactive(html, true);
+            }
+        } else if (queryHolder) {
+            Query query = ContextUtil.getDRS().findById(Query.class, Long.valueOf(value.toString()));
+            if (query != null) {
+                content = query.getName();
+                ZkUtil.setInactive(html, false);
+            } else {
+                content = value.toString();
+                ZkUtil.setInactive(html, true);
+            }
         } else {
             content = applyFormat(value);
         }
@@ -392,20 +426,7 @@ public class PropertyBox extends Hbox {
         public Map<String, String> getDropdownItems() {
             final Entity bindValue = (Entity) renderElement.getPropertyPath().getValue(entity);
             if (bindValue == null) return Collections.emptyMap();
-
-            Map<String, Object> tags = new HashMap<String, Object>();
-            tags.put(CoreUtil.TAG_ENTITY_VIEW, true);
-            tags.put(CoreUtil.TAG_MASTER_DETAIL, false);
-            tags.put(SettingEnum.TARGET_TYPE.name(), bindValue.getEntityType().getCanonicalName());
-            List<PanelDefinition> panelDefinitions = ORMUtil.getPanelsMatchingTags(tags);
-            if (panelDefinitions.isEmpty()) return Collections.emptyMap();
-
-            Map<String, String> map = new LinkedHashMap<String, String>(panelDefinitions.size());
-            for (PanelDefinition panelDefinition : ORMUtil.getPanelsMatchingTags(tags)) {
-                map.put(panelDefinition.getBeanId(), panelDefinition.getName());
-            }
-
-            return map;
+            return CoreUtil.getRelatedPanelsMap(bindValue.getEntityType(), EntityViewPanel.class);
         }
 
         @Override

@@ -53,8 +53,14 @@ import org.web4thejob.security.UserIdentity;
     }
 
     @Override
-    public Parameter buildParameter() {
-        return new ParameterImpl();
+    @SuppressWarnings("unchecked")
+    public <T extends Parameter> T buildParameter(Class<T> parameterType) {
+        try {
+            return (T) ContextUtil.getBean(CustomSessionFactoryBean.class).getConfiguration().getClassMapping
+                    (parameterType.getCanonicalName()).getMappedClass().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

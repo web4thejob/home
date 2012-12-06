@@ -53,9 +53,6 @@ import java.util.Set;
     private boolean enabled = true;
     private Set<RoleMembers> roles = new HashSet<RoleMembers>(0);
     private Locale locale;
-
-    @SuppressWarnings("unused")
-    private int version;
 // --------------------- GETTER / SETTER METHODS ---------------------
 
     @Override

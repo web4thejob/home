@@ -129,7 +129,8 @@ public class DefaultHtmlViewPanel extends AbstractMutablePanel implements HtmlVi
             CKeditor editor = new CKeditor();
             editor.setWidth(ZkUtil.getDesktopWidthRatio(65));
             editor.setHeight(ZkUtil.getDesktopHeightRatio(45));
-            editor.setFilebrowserImageBrowseUrl(CoreUtil.getParameterValue(Category.LOCATION, Key.IMAGES_REPOSITORY,
+            editor.setFilebrowserImageBrowseUrl(CoreUtil.getParameterValue(Category.LOCATION_PARAM,
+                    Key.IMAGES_REPOSITORY,
                     String.class, null));
             editor.setWidth("100%");
             editor.setVflex("true");

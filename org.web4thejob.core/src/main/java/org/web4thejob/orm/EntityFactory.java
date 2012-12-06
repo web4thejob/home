@@ -52,7 +52,7 @@ public interface EntityFactory {
 
     public Query buildQuery(String entityName);
 
-    public Parameter buildParameter();
+    public <T extends Parameter> T buildParameter(Class<T> parameterType);
 
     public RenderScheme buildRenderScheme(Class<? extends Entity> entityType);
 

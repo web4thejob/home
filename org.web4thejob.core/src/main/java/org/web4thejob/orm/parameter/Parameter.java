@@ -49,17 +49,18 @@ public interface Parameter extends Entity {
 
     public void setOwner(Identity owner);
 
-    public void setCategory(Category category);
-
-    public void setKey(String key);
-
-    public void setValue(String value);
-
     public Identity getOwner();
 
     public Category getCategory();
 
+    public void setCategory(Category category);
+
     public String getKey();
 
+    public void setKey(String key);
+
     public String getValue();
+
+    public void setValue(String value);
+
 }

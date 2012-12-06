@@ -143,7 +143,7 @@ public class EntityBox extends AbstractBox<Entity> implements MessageListener {
         Set<Setting<?>> settings = new HashSet<Setting<?>>(1);
         settings.add(ContextUtil.getSetting(SettingEnum.TARGET_TYPE, entityType));
 
-        Query defaultQuery = CoreUtil.getDefaultQueryForPath(renderElement.getPropertyPath());
+        Query defaultQuery = CoreUtil.getDefaultQueryForTargetType(entityType);
         if (defaultQuery != null) {
             settings.add(ContextUtil.getSetting(SettingEnum.PERSISTED_QUERY_NAME, defaultQuery.getName()));
         }

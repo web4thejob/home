@@ -88,4 +88,24 @@ public interface RenderElement extends Entity {
     public void setHeight(String height);
 
     public String getHeight();
+
+    /**
+     * @since 3.3.0
+     */
+    public String getPropertyViewer();
+
+    /**
+     * @since 3.3.0
+     */
+    public void setPropertyViewer(String propertyViewer);
+
+    /**
+     * @since 3.3.0
+     */
+    public String getPropertyEditor();
+
+    /**
+     * @since 3.3.0
+     */
+    public void setPropertyEditor(String propertyEditor);
 }

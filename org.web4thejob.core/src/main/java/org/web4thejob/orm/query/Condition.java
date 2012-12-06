@@ -19,6 +19,9 @@
 package org.web4thejob.orm.query;
 
 import org.web4thejob.orm.Entity;
+import org.web4thejob.orm.PropertyMetadata;
+import org.web4thejob.orm.annotation.ControllerHolder;
+import org.web4thejob.orm.annotation.EntityTypeHolder;
 import org.web4thejob.util.L10nUtil;
 
 import java.util.*;
@@ -120,68 +123,70 @@ public class Condition {
         return keyCache.get(key);
     }
 
-    public static List<Condition> getApplicableToType(Class<?> javaType) {
-        List<Condition> conditions = typeCache.get(javaType.getCanonicalName());
+    public static List<Condition> getApplicableToType(PropertyMetadata propertyMetadata) {
+        Class<?> javaType = propertyMetadata.getJavaType();
+        List<Condition> conditions = new ArrayList<Condition>();
 
-        if (conditions != null) {
-            return conditions;
+        if (propertyMetadata.isAnnotatedWith(ControllerHolder.class) || propertyMetadata.isAnnotatedWith
+                (EntityTypeHolder.class)) {
+            conditions.add(EQ);
+            conditions.add(NE);
+            conditions.add(IN);
+            conditions.add(NIN);
+            conditions.add(NL);
+            conditions.add(NNL);
+        } else if (Number.class.isAssignableFrom(javaType) || Integer.class.isAssignableFrom(javaType) || Date.class
+                .isAssignableFrom(javaType)) {
+            conditions.add(EQ);
+            conditions.add(NE);
+            conditions.add(GT);
+            conditions.add(GTE);
+            conditions.add(LT);
+            conditions.add(LTE);
+            conditions.add(IN);
+            conditions.add(NIN);
+            conditions.add(NL);
+            conditions.add(NNL);
+        } else if (Entity.class.isAssignableFrom(javaType)) {
+            conditions.add(EQ);
+            conditions.add(NE);
+            conditions.add(IN);
+            conditions.add(NIN);
+            conditions.add(NL);
+            conditions.add(NNL);
+        } else if (Locale.class.isAssignableFrom(javaType)) {
+            conditions.add(EQ);
+            conditions.add(NE);
+            conditions.add(IN);
+            conditions.add(NIN);
+            conditions.add(NL);
+            conditions.add(NNL);
+        } else if (Boolean.class.isAssignableFrom(javaType)) {
+            conditions.add(EQ);
+            conditions.add(NE);
+            conditions.add(NL);
+            conditions.add(NNL);
+        } else if (Collection.class.isAssignableFrom(javaType)) {
+            conditions.add(EX);
+            conditions.add(NEX);
         } else {
-            conditions = new ArrayList<Condition>();
-            if (Number.class.isAssignableFrom(javaType) || Integer.class.isAssignableFrom(javaType) || Date.class
-                    .isAssignableFrom(javaType)) {
-                conditions.add(EQ);
-                conditions.add(NE);
-                conditions.add(GT);
-                conditions.add(GTE);
-                conditions.add(LT);
-                conditions.add(LTE);
-                conditions.add(IN);
-                conditions.add(NIN);
-                conditions.add(NL);
-                conditions.add(NNL);
-            } else if (Entity.class.isAssignableFrom(javaType)) {
-                conditions.add(EQ);
-                conditions.add(NE);
-                conditions.add(IN);
-                conditions.add(NIN);
-                conditions.add(NL);
-                conditions.add(NNL);
-            } else if (Locale.class.isAssignableFrom(javaType)) {
-                conditions.add(EQ);
-                conditions.add(NE);
-                conditions.add(IN);
-                conditions.add(NIN);
-                conditions.add(NL);
-                conditions.add(NNL);
-            } else if (Boolean.class.isAssignableFrom(javaType)) {
-                conditions.add(EQ);
-                conditions.add(NE);
-                conditions.add(NL);
-                conditions.add(NNL);
-            } else if (Collection.class.isAssignableFrom(javaType)) {
-                conditions.add(EX);
-                conditions.add(NEX);
-            } else {
-                conditions.add(EQ);
-                conditions.add(NE);
-                conditions.add(SW);
-                conditions.add(NSW);
-                conditions.add(CN);
-                conditions.add(NCN);
-                conditions.add(EW);
-                conditions.add(NEW);
-                conditions.add(GT);
-                conditions.add(GTE);
-                conditions.add(LT);
-                conditions.add(LTE);
-                conditions.add(IN);
-                conditions.add(NIN);
-                conditions.add(NL);
-                conditions.add(NNL);
-            }
+            conditions.add(EQ);
+            conditions.add(NE);
+            conditions.add(SW);
+            conditions.add(NSW);
+            conditions.add(CN);
+            conditions.add(NCN);
+            conditions.add(EW);
+            conditions.add(NEW);
+            conditions.add(GT);
+            conditions.add(GTE);
+            conditions.add(LT);
+            conditions.add(LTE);
+            conditions.add(IN);
+            conditions.add(NIN);
+            conditions.add(NL);
+            conditions.add(NNL);
         }
-        typeCache.put(javaType.getCanonicalName(), conditions);
-
         return conditions;
     }
 

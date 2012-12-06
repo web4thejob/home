@@ -101,8 +101,9 @@ public abstract class AbstractHibernateEntity implements Entity {
     @SuppressWarnings("unchecked")
     public Class<? extends Entity> getEntityType() {
         final Class<? extends Entity> entityType = entityNameResolver.resolveEntityType(this);
-        if (entityType != null) return entityType;
-        else {
+        if (entityType != null) {
+            return entityType;
+        } else {
             if (this instanceof HibernateProxy) {
                 return ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass();
             } else {
@@ -191,5 +192,4 @@ public abstract class AbstractHibernateEntity implements Entity {
                 ((Entity) o).getIdentifierValue()).isEquals();
 
     }
-
 }
