@@ -77,8 +77,8 @@ public class SpringSecurityService implements SecurityService {
         if (userAdmin == null) {
             userAdmin = ContextUtil.getEntityFactory().buildUserIdentity();
             userAdmin.setCode(UserIdentity.USER_ADMIN);
-            userAdmin.setLastName("System");
-            userAdmin.setFirstName("Administrator");
+            userAdmin.setFirstName("System");
+            userAdmin.setLastName("Administrator");
             userAdmin.setPassword(encodePassword(userAdmin, UserIdentity.USER_ADMIN));
             userAdmin.setLocale(Locale.getDefault());
         }
