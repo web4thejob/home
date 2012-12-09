@@ -68,8 +68,8 @@ import java.util.List;
 
         Query query = ContextUtil.getEntityFactory().buildQuery(entity.getEntityType());
         for (String filter : defaultHolder.getAnnotation().filters()) {
-            query.addCriterion(filter, Condition.EQ, ContextUtil.getMRS().getPropertyMetadata(entity.getEntityType(),
-                    filter).getValue(entity));
+            query.addCriterion(new Path(filter), Condition.EQ, ContextUtil.getMRS().getPropertyMetadata(entity
+                    .getEntityType(), filter).getValue(entity));
         }
         List<Entity> existingEntities = ContextUtil.getDRS().findByQuery(query);
         PropertyMetadata propertyMetadata = ContextUtil.getMRS().getPropertyMetadata(entity.getEntityType(),

@@ -25,7 +25,9 @@ import org.web4thejob.context.ContextUtil;
 import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
+import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.EntityMetadata;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PropertyMetadata;
 import org.web4thejob.orm.annotation.Encrypted;
 import org.web4thejob.setting.SettingEnum;
@@ -36,9 +38,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
-import org.zkoss.zul.Tree;
-import org.zkoss.zul.Treechildren;
-import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.*;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -176,8 +176,6 @@ public class DefaultModelHierarchyPanel extends AbstractZkTargetTypeAwarePanel i
 
         for (PropertyMetadata propertyMetadata : entityMetadata.getPropertiesMetadata()) {
             if (propertyMetadata.isAssociationType()) {
-//                if (propertyMetadata.getAssociatedEntityMetadata().isAbstract()) {
-//                    continue;
                 if (propertyMetadata.equals(getBindPropertyMetadata())) {
                     continue;
                 } else if (!allowOneToMany && propertyMetadata.isOneToManyType()) {
@@ -217,6 +215,30 @@ public class DefaultModelHierarchyPanel extends AbstractZkTargetTypeAwarePanel i
                 treeitem.setOpen(false);
                 treeitem.addEventListener(Events.ON_OPEN, this);
                 treeitem.addEventListener(ON_OPEN_ECHO, this);
+
+                //polymorphic properties
+                for (Class<? extends Entity> subtype : propertyMetadata.getAssociatedEntityMetadata().getSubclasses()) {
+                    treeitem = new Treeitem();
+                    treeitem.setParent(parent.getTreechildren());
+                    new Treechildren().setParent(treeitem);
+                    treeitem.setOpen(false);
+                    treeitem.addEventListener(Events.ON_OPEN, this);
+                    treeitem.addEventListener(ON_OPEN_ECHO, this);
+
+                    PropertyMetadata subproperty = propertyMetadata.castForSubclass(subtype);
+                    treeitem.setAttribute(ATTRIB_PROPERTY_METADATA, subproperty);
+                    treeitem.addEventListener(Events.ON_DOUBLE_CLICK, this);
+
+                    if (treeitem.getTreerow() == null) {
+                        new Treerow().setParent(treeitem);
+                    }
+                    Treecell treecell = new Treecell(subproperty.getFriendlyName());
+
+                    treecell.setParent(treeitem.getTreerow());
+                    treecell.setStyle("white-space:nowrap;");
+                    treecell.setTooltiptext(treecell.getLabel());
+
+                }
             }
         }
     }
@@ -271,15 +293,15 @@ public class DefaultModelHierarchyPanel extends AbstractZkTargetTypeAwarePanel i
         propertyMetadata = (PropertyMetadata) treeitem.getAttribute(ATTRIB_PROPERTY_METADATA);
         if (propertyMetadata == null) return;
 
-        String steps = "";
+        Path path = new Path(true);
         while (treeitem != null && treeitem.hasAttribute(ATTRIB_PROPERTY_METADATA)) {
             propertyMetadata = (PropertyMetadata) treeitem.getAttribute(ATTRIB_PROPERTY_METADATA);
-            steps = propertyMetadata.getName() + (steps.length() > 0 ? "." + steps : "");
+            path.append(propertyMetadata);
             treeitem = treeitem.getParentItem();
         }
 
         Message message = ContextUtil.getMessage(MessageEnum.PATH_SELECTED, this, MessageArgEnum.ARG_ITEM,
-                ContextUtil.getMRS().getPropertyPath(getTargetType(), steps));
+                ContextUtil.getMRS().getPropertyPath(getTargetType(), path));
         dispatchMessage(message);
     }
 

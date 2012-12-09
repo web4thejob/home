@@ -22,6 +22,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.EntityFactory;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PropertyMetadata;
 import org.web4thejob.orm.annotation.Encrypted;
 import org.web4thejob.orm.query.Condition;
@@ -40,11 +41,11 @@ public abstract class RenderSchemeUtil {
                                                       Locale locale) {
         Query query = ContextUtil.getBean(EntityFactory.class).buildQuery(RenderScheme.class);
         query.setCached(true);
-        query.addCriterion(RenderScheme.FLD_FLAT_TARGET_TYPE, Condition.EQ, targetType.getName());
-        query.addCriterion(RenderScheme.FLD_SCHEME_TYPE, Condition.EQ, schemeType);
-        query.addCriterion(RenderScheme.FLD_LOCALE, Condition.EQ, locale);
-        query.addOrderBy(RenderScheme.FLD_INDEX);
-        query.addOrderBy(RenderScheme.FLD_ID);
+        query.addCriterion(new Path(RenderScheme.FLD_FLAT_TARGET_TYPE), Condition.EQ, targetType.getName());
+        query.addCriterion(new Path(RenderScheme.FLD_SCHEME_TYPE), Condition.EQ, schemeType);
+        query.addCriterion(new Path(RenderScheme.FLD_LOCALE), Condition.EQ, locale);
+        query.addOrderBy(new Path(RenderScheme.FLD_INDEX));
+        query.addOrderBy(new Path(RenderScheme.FLD_ID));
 
         RenderScheme renderScheme = ContextUtil.getDRS().findFirstByQuery(query);
         while (renderScheme == null && locale != null) {
@@ -70,12 +71,12 @@ public abstract class RenderSchemeUtil {
                                                SchemeType schemeType, Locale locale) {
         Query query = ContextUtil.getBean(EntityFactory.class).buildQuery(RenderScheme.class);
         query.setCached(true);
-        query.addCriterion(RenderScheme.FLD_NAME, Condition.EQ, name);
-        query.addCriterion(RenderScheme.FLD_FLAT_TARGET_TYPE, Condition.EQ, targetType.getName());
-        query.addCriterion(RenderScheme.FLD_SCHEME_TYPE, Condition.EQ, schemeType);
-        query.addCriterion(RenderScheme.FLD_LOCALE, Condition.EQ, locale);
-        query.addOrderBy(RenderScheme.FLD_INDEX);
-        query.addOrderBy(RenderScheme.FLD_ID);
+        query.addCriterion(new Path(RenderScheme.FLD_NAME), Condition.EQ, name);
+        query.addCriterion(new Path(RenderScheme.FLD_FLAT_TARGET_TYPE), Condition.EQ, targetType.getName());
+        query.addCriterion(new Path(RenderScheme.FLD_SCHEME_TYPE), Condition.EQ, schemeType);
+        query.addCriterion(new Path(RenderScheme.FLD_LOCALE), Condition.EQ, locale);
+        query.addOrderBy(new Path(RenderScheme.FLD_INDEX));
+        query.addOrderBy(new Path(RenderScheme.FLD_ID));
 
         RenderScheme renderScheme = ContextUtil.getDRS().findFirstByQuery(query);
         while (renderScheme == null && locale != null) {

@@ -26,6 +26,7 @@ import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.orm.EntityFactory;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PathMetadata;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.OrderBy;
@@ -306,13 +307,13 @@ public class DefaultOrderByPanel extends AbstractZkTargetTypeAwarePanel implemen
 
             if (enforceFixed && orderBy.isFixed()) {
                 listcell = new Listcell(ContextUtil.getMRS().getPropertyPath(getTargetType(),
-                        orderBy.getProperty()).getFriendlyName());
+                        new Path(orderBy.getProperty())).getFriendlyName());
                 listcell.setParent(item);
 
                 listcell = new Listcell();
                 listcell.setParent(item);
                 PropertyBox comp = new PropertyBox(ContextUtil.getMRS().getPropertyPath(OrderBy.class,
-                        OrderBy.FLD_DESCENDING));
+                        new Path(OrderBy.FLD_DESCENDING)));
                 comp.setParent(listcell);
                 ZkUtil.addBinding(dataBinder, comp, beanId, OrderBy.FLD_DESCENDING);
             } else {
@@ -326,7 +327,7 @@ public class DefaultOrderByPanel extends AbstractZkTargetTypeAwarePanel implemen
                 }
 
                 listcell = new Listcell(ContextUtil.getMRS().getPropertyPath(getTargetType(),
-                        orderBy.getProperty()).getFriendlyName());
+                        new Path(orderBy.getProperty())).getFriendlyName());
                 listcell.setParent(item);
 
                 listcell = new Listcell();

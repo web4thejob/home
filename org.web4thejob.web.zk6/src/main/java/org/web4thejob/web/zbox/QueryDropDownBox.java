@@ -20,6 +20,7 @@ package org.web4thejob.web.zbox;
 
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Entity;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PathMetadata;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
@@ -139,9 +140,9 @@ public class QueryDropDownBox extends AbstractBox<Query> {
 
             Query query = ContextUtil.getEntityFactory().buildQuery(Query.class);
             if (targetType != null) {
-                query.addCriterion(Query.FLD_FLAT_TARGET_TYPE, Condition.EQ, targetType.getCanonicalName());
+                query.addCriterion(new Path(Query.FLD_FLAT_TARGET_TYPE), Condition.EQ, targetType.getCanonicalName());
             }
-            query.addOrderBy(Query.FLD_NAME);
+            query.addOrderBy(new Path(Query.FLD_NAME));
             query.setCached(true);
             for (Entity entity : ContextUtil.getDRS().findByQuery(query)) {
                 query = (Query) entity;

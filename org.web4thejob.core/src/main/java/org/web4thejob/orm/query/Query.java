@@ -19,6 +19,7 @@
 package org.web4thejob.orm.query;
 
 import org.web4thejob.orm.Entity;
+import org.web4thejob.orm.Path;
 import org.web4thejob.security.Identity;
 
 import java.util.List;
@@ -36,22 +37,22 @@ public interface Query extends Entity {
     public static final String FLD_FLAT_TARGET_TYPE = "flatTargetType";
     public static final String FLD_ORDERINGS = "orderings";
 
-    public Criterion addCriterion(String property, Condition condition);
+    public Criterion addCriterion(Path property, Condition condition);
 
-    public Criterion addCriterion(String property, Condition condition, Object value);
+    public Criterion addCriterion(Path property, Condition condition, Object value);
 
-    public Criterion addCriterion(String property, Condition condition, Object value, boolean isFixed);
+    public Criterion addCriterion(Path property, Condition condition, Object value, boolean isFixed);
 
-    public Criterion addCriterion(String property, Condition condition, Object value, boolean isFixed,
+    public Criterion addCriterion(Path property, Condition condition, Object value, boolean isFixed,
                                   boolean isMaster);
 
     public Criterion addCriterion(Criterion criterion);
 
-    public OrderBy addOrderBy(String property);
+    public OrderBy addOrderBy(Path path);
 
-    public OrderBy addOrderBy(String property, boolean descending);
+    public OrderBy addOrderBy(Path path, boolean descending);
 
-    public OrderBy addOrderBy(String property, boolean descending, boolean isFixed);
+    public OrderBy addOrderBy(Path path, boolean descending, boolean isFixed);
 
     public List<Criterion> getCriteria();
 

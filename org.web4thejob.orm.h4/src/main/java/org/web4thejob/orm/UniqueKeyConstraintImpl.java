@@ -83,7 +83,7 @@ public class UniqueKeyConstraintImpl implements UniqueKeyConstraint {
     public Query getValidationQuery(Entity entity) {
         Query query = ContextUtil.getEntityFactory().buildQuery(entityMetadata.getEntityType());
         for (PropertyMetadata propertyMetadata : getPropertyMetadatas()) {
-            query.addCriterion(propertyMetadata.getName(), Condition.EQ, propertyMetadata.getValue(entity));
+            query.addCriterion(new Path(propertyMetadata), Condition.EQ, propertyMetadata.getValue(entity));
         }
         return query;
     }

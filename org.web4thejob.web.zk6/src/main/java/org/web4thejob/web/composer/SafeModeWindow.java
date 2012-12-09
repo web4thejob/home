@@ -23,6 +23,7 @@ import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.EntityMetadata;
 import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PanelDefinition;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.Query;
@@ -81,10 +82,10 @@ public class SafeModeWindow extends GenericForwardComposer<Window> {
 
     public void onClick$btnGo2(MouseEvent event) throws Exception {
         Query query = ContextUtil.getEntityFactory().buildQuery(PanelDefinition.class);
-        query.addCriterion(PanelDefinition.FLD_TAGS, Condition.CN, "[AUTO=true]");
+        query.addCriterion(new Path(PanelDefinition.FLD_TAGS), Condition.CN, "[AUTO=true]");
 
-        Criterion targetType = query.addCriterion(PanelDefinition.FLD_TAGS, Condition.CN);
-        Criterion panelType = query.addCriterion(PanelDefinition.FLD_TYPE, Condition.CN);
+        Criterion targetType = query.addCriterion(new Path(PanelDefinition.FLD_TAGS), Condition.CN);
+        Criterion panelType = query.addCriterion(new Path(PanelDefinition.FLD_TYPE), Condition.CN);
 
 
         for (EntityMetadata entityMetadata : ContextUtil.getMRS().getEntityMetadatas()) {

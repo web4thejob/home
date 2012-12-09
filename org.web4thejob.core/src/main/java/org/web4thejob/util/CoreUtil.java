@@ -31,6 +31,7 @@ import org.web4thejob.message.MessageEnum;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PanelDefinition;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.parameter.Category;
 import org.web4thejob.orm.parameter.Parameter;
 import org.web4thejob.orm.query.Condition;
@@ -93,9 +94,9 @@ public abstract class CoreUtil {
     public static <T> T getParameterValue(Identity owner, Category category, String key, Class<T> clazz,
                                           T defaultValue) {
         Query query = ContextUtil.getEntityFactory().buildQuery(Parameter.class);
-        query.addCriterion(Parameter.FLD_OWNER, Condition.EQ, owner);
-        query.addCriterion(Parameter.FLD_CATEGORY, Condition.EQ, category);
-        query.addCriterion(Parameter.FLD_KEY, Condition.EQ, key);
+        query.addCriterion(new Path(Parameter.FLD_OWNER), Condition.EQ, owner);
+        query.addCriterion(new Path(Parameter.FLD_CATEGORY), Condition.EQ, category);
+        query.addCriterion(new Path(Parameter.FLD_KEY), Condition.EQ, key);
         query.setCached(true);
 
         Parameter parameter = ContextUtil.getDRS().findUniqueByQuery(query);
@@ -117,9 +118,9 @@ public abstract class CoreUtil {
         if (result == null) {
             Query query = ContextUtil.getEntityFactory().buildQuery(RoleMembers.class);
             query.setCached(true);
-            query.addCriterion(RoleMembers.FLD_USER, Condition.EQ, ContextUtil.getSessionContext()
+            query.addCriterion(new Path(RoleMembers.FLD_USER), Condition.EQ, ContextUtil.getSessionContext()
                     .getSecurityContext().getUserIdentity());
-            query.addOrderBy(RoleMembers.FLD_ROLE + "." + RoleIdentity.FLD_INDEX);
+            query.addOrderBy(new Path(RoleMembers.FLD_ROLE).append(RoleIdentity.FLD_INDEX));
             for (Entity members : ContextUtil.getDRS().findByQuery(query)) {
                 result = getParameterValue(ContextUtil.getMRS().deproxyEntity(((RoleMembers) members).getRole()),
                         category, key, clazz, null);
@@ -150,8 +151,8 @@ public abstract class CoreUtil {
 
         Query query = ContextUtil.getEntityFactory().buildQuery(RoleMembers.class);
         query.setCached(true);
-        query.addCriterion(RoleMembers.FLD_USER, Condition.EQ, owner);
-        query.addOrderBy(RoleMembers.FLD_ROLE + "." + RoleIdentity.FLD_INDEX);
+        query.addCriterion(new Path(RoleMembers.FLD_USER), Condition.EQ, owner);
+        query.addOrderBy(new Path(RoleMembers.FLD_ROLE).append(RoleIdentity.FLD_INDEX));
         for (Entity members : ContextUtil.getDRS().findByQuery(query)) {
             oldValue = getParameterValue(ContextUtil.getMRS().deproxyEntity(((RoleMembers) members).getRole()),
                     category, key, value.getClass(), null);
@@ -172,9 +173,9 @@ public abstract class CoreUtil {
 
 
         Query query = ContextUtil.getEntityFactory().buildQuery(Parameter.class);
-        query.addCriterion(Parameter.FLD_OWNER, Condition.EQ, owner);
-        query.addCriterion(Parameter.FLD_CATEGORY, Condition.EQ, category);
-        query.addCriterion(Parameter.FLD_KEY, Condition.EQ, key);
+        query.addCriterion(new Path(Parameter.FLD_OWNER), Condition.EQ, owner);
+        query.addCriterion(new Path(Parameter.FLD_CATEGORY), Condition.EQ, category);
+        query.addCriterion(new Path(Parameter.FLD_KEY), Condition.EQ, key);
 
         Parameter parameter = ContextUtil.getDRS().findUniqueByQuery(query);
         if (parameter == null) {
@@ -356,8 +357,8 @@ public abstract class CoreUtil {
 
     public static Query getQuery(Class<? extends Entity> targetType, String name) {
         Query lookup = ContextUtil.getEntityFactory().buildQuery(Query.class);
-        lookup.addCriterion(Query.FLD_FLAT_TARGET_TYPE, Condition.EQ, targetType.getCanonicalName());
-        lookup.addCriterion(Query.FLD_NAME, Condition.EQ, name);
+        lookup.addCriterion(new Path(Query.FLD_FLAT_TARGET_TYPE), Condition.EQ, targetType.getCanonicalName());
+        lookup.addCriterion(new Path(Query.FLD_NAME), Condition.EQ, name);
         lookup.setCached(true);
         return ContextUtil.getDRS().findUniqueByQuery(lookup);
     }

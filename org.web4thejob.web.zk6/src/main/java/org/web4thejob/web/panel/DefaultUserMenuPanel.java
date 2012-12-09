@@ -26,6 +26,7 @@ import org.web4thejob.context.ContextUtil;
 import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.orm.PanelDefinition;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.security.UnauthorizedResourceException;
@@ -98,7 +99,7 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
             String sid = XMLUtil.getTextualValue(node);
             if (ContextUtil.getSessionContext().getSecurityContext().isAccessible(sid)) {
                 Query query = ContextUtil.getEntityFactory().buildQuery(PanelDefinition.class);
-                query.addCriterion(PanelDefinition.FLD_BEANID, Condition.EQ, XMLUtil.getTextualValue(node));
+                query.addCriterion(new Path(PanelDefinition.FLD_BEANID), Condition.EQ, XMLUtil.getTextualValue(node));
                 PanelDefinition panelDefinition = ContextUtil.getDRS().findUniqueByQuery(query);
                 if (panelDefinition == null) {
                     return null;

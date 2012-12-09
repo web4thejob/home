@@ -28,6 +28,7 @@ import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.OrderBy;
@@ -157,7 +158,7 @@ public class DefaultEntityViewPanel extends AbstractMutablePanel implements Enti
                 Query query = null;
                 if (isMasterDetail() && hasMasterEntity()) {
                     query = ContextUtil.getEntityFactory().buildQuery(getTargetType());
-                    query.addCriterion(getBindProperty(), Condition.EQ, getMasterEntity(), true, true);
+                    query.addCriterion(new Path(getBindProperty()), Condition.EQ, getMasterEntity(), true, true);
                 }
 
                 File file = ContextUtil.getBean(Printer.class).print(title, renderScheme, query, getTargetEntity());
@@ -236,7 +237,7 @@ public class DefaultEntityViewPanel extends AbstractMutablePanel implements Enti
                     finalQuery.addOrderBy(orderBy);
                 }
 
-                finalQuery.addCriterion(getBindProperty(), Condition.EQ, getMasterEntity(), true);
+                finalQuery.addCriterion(new Path(getBindProperty()), Condition.EQ, getMasterEntity(), true);
 
                 return finalQuery;
             } else {

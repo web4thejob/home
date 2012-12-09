@@ -19,6 +19,7 @@
 package org.web4thejob.orm;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.scheme.RenderElement;
 import org.web4thejob.orm.scheme.RenderScheme;
@@ -139,7 +140,8 @@ import java.io.Serializable;
                 throw new IllegalStateException("renderScheme cannot be null.");
             }
 
-            propertyPath = ContextUtil.getMRS().getPropertyPath(getRenderScheme().getTargetType(), flatPropertyPath);
+            propertyPath = ContextUtil.getMRS().getPropertyPath(getRenderScheme().getTargetType(), StringUtils
+                    .delimitedListToStringArray(flatPropertyPath, Path.DELIMITER));
         }
         return propertyPath;
     }

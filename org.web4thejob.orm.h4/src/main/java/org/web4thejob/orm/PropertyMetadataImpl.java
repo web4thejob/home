@@ -79,15 +79,27 @@ import java.util.Set;
     // --------------------------- CONSTRUCTORS ---------------------------
 
     public PropertyMetadataImpl(EntityMetadataImpl entityMetadata, String propertyName) {
+        this(entityMetadata, propertyName, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected PropertyMetadataImpl(EntityMetadataImpl entityMetadata, String propertyName,
+                                   Class<? extends Entity> subclassAssociation) {
         this.entityMetadata = entityMetadata;
         this.property = entityMetadata.getPersistentClass().getProperty(propertyName);
 
         if (property.getType() instanceof AssociationType) {
-            associatedEntityName = ((AssociationType) property.getType()).getAssociatedEntityName(ContextUtil.getBean
-                    (SessionFactoryImplementor.class));
+            String tempName = ((AssociationType) property.getType()).getAssociatedEntityName(ContextUtil
+                    .getBean(SessionFactoryImplementor.class));
+
+            if (subclassAssociation != null) {
+                tempName = subclassAssociation.getCanonicalName();
+            }
+            associatedEntityName = tempName;
         } else {
             associatedEntityName = null;
         }
+
 
         int maxLength = 0;
         boolean hasFormula = false;
@@ -366,10 +378,11 @@ import java.util.Set;
     public boolean isAssociatedWith(PropertyMetadata propertyMetadata) {
         if (!(isAssociationType() && propertyMetadata.isAssociationType())) {
             return false;
-        } else if (!getAssociatedEntityMetadata().equals(propertyMetadata.getEntityMetadata())) {
+        } else if (!getAssociatedEntityMetadata().getEntityType().isAssignableFrom(propertyMetadata.getEntityMetadata
+                ().getEntityType())) {
             return false;
         } else if (isOneToOneType() && propertyMetadata.isOneToOneType()) {
-            // OneToOne have no columns so since the entity type is the same
+            // OneToOne has no columns so since the entity type is the same
             // (checked above) it is safe to assume that properties are
             // associated.
             return true;
@@ -412,6 +425,18 @@ import java.util.Set;
     @Override
     public boolean isTextType() {
         return property.getType() instanceof TextType;
+    }
+
+    @Override
+    public PropertyMetadata castForSubclass(Class<? extends Entity> subclass) {
+        if (isAssociationType()) {
+            for (Class<? extends Entity> subtype : getAssociatedEntityMetadata().getSubclasses()) {
+                if (subtype.equals(subclass)) {
+                    return new SubclassPropertyMetadataImpl(entityMetadata, subtype, getName());
+                }
+            }
+        }
+        return null;
     }
 
     @Override

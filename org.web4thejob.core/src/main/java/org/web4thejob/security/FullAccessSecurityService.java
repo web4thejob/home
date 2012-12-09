@@ -19,6 +19,7 @@
 package org.web4thejob.security;
 
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 
@@ -34,7 +35,7 @@ public class FullAccessSecurityService implements SecurityService {
     @Override
     public UserIdentity getAdministratorIdentity() {
         Query query = ContextUtil.getEntityFactory().buildQuery(UserIdentity.class);
-        query.addCriterion(UserIdentity.FLD_USERNAME, Condition.EQ, UserIdentity.USER_ADMIN);
+        query.addCriterion(new Path(UserIdentity.FLD_USERNAME), Condition.EQ, UserIdentity.USER_ADMIN);
         UserIdentity userAdmin = ContextUtil.getDRS().findUniqueByQuery(query);
         if (userAdmin == null) {
             userAdmin = ContextUtil.getEntityFactory().buildUserIdentity();

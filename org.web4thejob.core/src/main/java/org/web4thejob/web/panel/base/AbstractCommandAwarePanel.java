@@ -26,6 +26,7 @@ import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.PanelDefinition;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.security.UnauthorizedResourceException;
@@ -382,7 +383,7 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         PanelDefinition panelDefinition = null;
         if (!asNew && isPersisted()) {
             Query query = ContextUtil.getEntityFactory().buildQuery(PanelDefinition.class);
-            query.addCriterion(PanelDefinition.FLD_BEANID, Condition.EQ, getBeanName());
+            query.addCriterion(new Path(PanelDefinition.FLD_BEANID), Condition.EQ, getBeanName());
             panelDefinition = ContextUtil.getDRS().findUniqueByQuery(query);
         }
 

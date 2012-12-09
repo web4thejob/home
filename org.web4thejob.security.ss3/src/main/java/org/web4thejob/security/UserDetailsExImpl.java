@@ -23,6 +23,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Entity;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 
@@ -60,7 +61,7 @@ public class UserDetailsExImpl implements UserDetailsEx {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 Query query = ContextUtil.getEntityFactory().buildQuery(RoleMembers.class);
-                query.addCriterion(RoleMembers.FLD_USER, Condition.EQ, userIdentity);
+                query.addCriterion(new Path(RoleMembers.FLD_USER), Condition.EQ, userIdentity);
                 for (Entity roleMembers : ContextUtil.getDRS().findByQuery(query)) {
                     RoleIdentity roleIdentity = ContextUtil.getMRS().deproxyEntity(((RoleMembers) roleMembers)
                             .getRole());

@@ -27,6 +27,7 @@ import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PanelDefinition;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.parameter.*;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.OrderBy;
@@ -317,7 +318,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             scheme.setName(scheme.getName() + "\\user bound");
             scheme.getElements().clear();
             RenderElement renderElement = scheme.addElement(ContextUtil.getMRS().getPropertyPath(RoleMembers
-                    .class, RoleMembers.FLD_ROLE));
+                    .class, new Path(RoleMembers.FLD_ROLE)));
             renderElement.setFriendlyName(ContextUtil.getMRS().getEntityMetadata(RoleIdentity.class).getFriendlyName());
             renderElement = scheme.addElement(ContextUtil.getMRS().getPropertyPath(RoleMembers.class,
                     new String[]{RoleMembers.FLD_ROLE, RoleIdentity.FLD_AUTHORIZATION_POLICY}));
@@ -473,7 +474,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             Query query = ContextUtil.getEntityFactory().buildQuery(Identity.class);
             query.setName("by code");
             query.setCached(true);
-            query.addOrderBy(Identity.FLD_CODE);
+            query.addOrderBy(new Path(Identity.FLD_CODE));
             ContextUtil.getDWS().save(query);
 
             EntityTypeQueryParameter entityTypeQueryParameter = ContextUtil.getEntityFactory().buildParameter

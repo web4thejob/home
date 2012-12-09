@@ -119,4 +119,9 @@ public interface PropertyMetadata {
     public String getHeight();
 
     public boolean isTextType();
+
+    /**
+     * @since 3.3.0
+     */
+    public PropertyMetadata castForSubclass(Class<? extends Entity> subclass);
 }

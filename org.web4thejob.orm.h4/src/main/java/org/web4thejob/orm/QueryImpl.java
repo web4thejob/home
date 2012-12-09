@@ -19,7 +19,6 @@
 package org.web4thejob.orm;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.annotation.UserIdHolder;
 import org.web4thejob.orm.query.*;
@@ -188,27 +187,27 @@ import java.util.List;
     // --------------------- Interface Query ---------------------
 
     @Override
-    public Criterion addCriterion(String property, Condition condition) {
+    public Criterion addCriterion(Path property, Condition condition) {
         return addCriterion(property, condition, null, false, false);
     }
 
     @Override
-    public Criterion addCriterion(String property, Condition condition, Object value) {
+    public Criterion addCriterion(Path property, Condition condition, Object value) {
         return addCriterion(property, condition, value, false, false);
     }
 
     @Override
-    public Criterion addCriterion(String property, Condition condition, Object value, boolean isFixed) {
+    public Criterion addCriterion(Path property, Condition condition, Object value, boolean isFixed) {
         return addCriterion(property, condition, value, isFixed, false);
     }
 
     @Override
-    public Criterion addCriterion(String property, Condition condition, Object value, boolean isFixed,
+    public Criterion addCriterion(Path property, Condition condition, Object value, boolean isFixed,
                                   boolean isMaster) {
         final CriterionImpl criterion = new CriterionImpl(isMaster);
         criterion.setQuery(this);
         criterion.setPropertyPath(ContextUtil.getMRS().getPropertyPath(getTargetType(),
-                StringUtils.tokenizeToStringArray(property, ".")));
+                property));
         criterion.setCondition(condition);
         criterion.setValue(value);
         criterion.setFixed(isFixed);
@@ -225,20 +224,20 @@ import java.util.List;
     }
 
     @Override
-    public OrderBy addOrderBy(String property) {
+    public OrderBy addOrderBy(Path property) {
         return addOrderBy(property, false, false);
     }
 
     @Override
-    public OrderBy addOrderBy(String property, boolean descending) {
+    public OrderBy addOrderBy(Path property, boolean descending) {
         return addOrderBy(property, descending, false);
     }
 
     @Override
-    public OrderBy addOrderBy(String property, boolean descending, boolean isFixed) {
+    public OrderBy addOrderBy(Path property, boolean descending, boolean isFixed) {
         final OrderByImpl orderBy = new OrderByImpl();
         orderBy.setQuery(this);
-        orderBy.setProperty(property);
+        orderBy.setProperty(property.toString());
         orderBy.setDescending(descending);
         orderBy.setFixed(isFixed);
         orderings.add(orderBy);

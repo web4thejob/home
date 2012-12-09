@@ -49,7 +49,7 @@ public interface MetaReaderService {
 
     public PropertyMetadata getPropertyMetadata(String entityType, String property);
 
-    public PathMetadata getPropertyPath(Class<? extends Entity> entityType, String path);
+    public PathMetadata getPropertyPath(Class<? extends Entity> entityType, Path path);
 
     public PathMetadata getPropertyPath(Class<? extends Entity> entityType, String[] path);
 

@@ -63,11 +63,11 @@ public class RenderSchemesTest extends AbstractHibernateDependentTest {
         renderScheme1.setColSpan(2);
 
         RenderElement element1 = renderScheme1.addElement(metaReaderService.getPropertyPath(Master1.class,
-                Master1.FLD_REFERENCE1 + "." + Reference1.FLD_NAME));
+                new Path().append(Master1.FLD_REFERENCE1).append(Reference1.FLD_NAME)));
         dataWriterService.save(renderScheme1);
 
         RenderElement element2 = renderScheme1.addElement(metaReaderService.getPropertyPath(Master1.class,
-                Master1.FLD_DETAILS));
+                new Path(Master1.FLD_DETAILS)));
         dataWriterService.save(renderScheme1);
 
         renderScheme1 = dataReaderService.refresh(renderScheme1);
@@ -107,7 +107,7 @@ public class RenderSchemesTest extends AbstractHibernateDependentTest {
         renderScheme1.setColSpan(2);
 
         final RenderElement element = renderScheme1.addElement(metaReaderService.getPropertyPath(Master1.class,
-                Master1.FLD_REFERENCE1 + "." + Reference1.FLD_NAME));
+                new Path(Master1.FLD_REFERENCE1).append(Reference1.FLD_NAME)));
         element.setFormat("123");
         dataWriterService.save(renderScheme1);
 

@@ -25,6 +25,7 @@ import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.orm.Entity;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PropertyMetadata;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;
@@ -220,8 +221,8 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
         String queryName = getSettingValue(SettingEnum.PERSISTED_QUERY_NAME, null);
         if (StringUtils.hasText(queryName)) {
             Query lookup = ContextUtil.getEntityFactory().buildQuery(Query.class);
-            lookup.addCriterion(Query.FLD_FLAT_TARGET_TYPE, Condition.EQ, getTargetType().getCanonicalName());
-            lookup.addCriterion(Query.FLD_NAME, Condition.EQ, queryName);
+            lookup.addCriterion(new Path(Query.FLD_FLAT_TARGET_TYPE), Condition.EQ, getTargetType().getCanonicalName());
+            lookup.addCriterion(new Path(Query.FLD_NAME), Condition.EQ, queryName);
 
             Query query = ContextUtil.getDRS().findUniqueByQuery(lookup);
             if (query != null) {

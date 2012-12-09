@@ -22,6 +22,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.orm.hibernate4.HibernateObjectRetrievalFailureException;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
+import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;
@@ -160,7 +161,8 @@ import java.util.List;
                 throw new IllegalStateException("query cannot be null.");
             }
 
-            propertyPath = ContextUtil.getMRS().getPropertyPath(query.getTargetType(), flatPropertyPath);
+            propertyPath = ContextUtil.getMRS().getPropertyPath(query.getTargetType(), StringUtils
+                    .delimitedListToStringArray(flatPropertyPath, Path.DELIMITER));
         }
         return propertyPath;
     }

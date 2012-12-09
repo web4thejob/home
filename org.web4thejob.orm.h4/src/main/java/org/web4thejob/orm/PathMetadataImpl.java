@@ -34,12 +34,12 @@ import java.util.List;
     final private List<PropertyMetadata> steps;
     final private String path;
 
-    public PathMetadataImpl(Class<? extends Entity> entityType, String property) {
-        this(entityType, new String[]{property});
+    public PathMetadataImpl(Class<? extends Entity> entityType, Path nodes) {
+        this(entityType, StringUtils.delimitedListToStringArray(nodes.toString(), Path.DELIMITER));
     }
 
     public PathMetadataImpl(Class<? extends Entity> entityType, String[] path) {
-        this.path = StringUtils.arrayToDelimitedString(path, ".");
+        this.path = StringUtils.arrayToDelimitedString(path, Path.DELIMITER);
         steps = new ArrayList<PropertyMetadata>();
 
         EntityMetadata entityMetadata = ContextUtil.getMRS().getEntityMetadata(entityType);
@@ -104,6 +104,12 @@ import java.util.List;
     public <T, E extends Entity> T getValue(E rootEntity) {
         Object value = rootEntity;
         for (final PropertyMetadata step : steps) {
+
+            //could happen with polymorphic paths
+            if (!step.getEntityMetadata().getEntityType().isInstance(value)) {
+                return null;
+            }
+
             value = step.getValue((E) value);
             if (value == null) {
                 return null;

@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Entity;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PropertyMetadata;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
@@ -222,9 +223,9 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
         List<Element> elements = new ArrayList<Element>();
 
         Query query = ContextUtil.getEntityFactory().buildQuery(RoleIdentity.class);
-        query.addCriterion(RoleIdentity.FLD_USERS + "." + RoleMembers.FLD_USER + "." + UserIdentity.FLD_ID,
+        query.addCriterion(new Path(RoleIdentity.FLD_USERS).append(RoleMembers.FLD_USER).append(UserIdentity.FLD_ID),
                 Condition.EQ, ((getUserIdentity() != null) ? getUserIdentity().getId() : -1));
-        query.addOrderBy(RoleIdentity.FLD_INDEX);
+        query.addOrderBy(new Path(RoleIdentity.FLD_INDEX));
         PropertyMetadata propertyMetadata = ContextUtil.getMRS().getPropertyMetadata(RoleIdentity.class,
                 RoleIdentity.FLD_AUTHORIZATION_POLICY);
 

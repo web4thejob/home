@@ -28,6 +28,7 @@ import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.Entity;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PathMetadata;
 import org.web4thejob.orm.annotation.ImageHolder;
 import org.web4thejob.setting.SettingEnum;
@@ -83,7 +84,7 @@ public class DefaultMediaViewPanel extends AbstractMutablePanel implements Media
 
         if (StringUtils.hasText(getSettingValue(SettingEnum.MEDIA_PROPERTY, ""))) {
             PathMetadata pathMetadata = ContextUtil.getMRS().getPropertyPath(getTargetType(),
-                    getSettingValue(SettingEnum.MEDIA_PROPERTY, ""));
+                    new Path(getSettingValue(SettingEnum.MEDIA_PROPERTY, "")));
             dataBinder = new DataBinder();
 
             if (pathMetadata.getLastStep().isAnnotatedWith(ImageHolder.class)) {
@@ -137,7 +138,7 @@ public class DefaultMediaViewPanel extends AbstractMutablePanel implements Media
         if (command.getId().equals(CommandEnum.UPDATE)) {
             if (hasTargetEntity()) {
                 PathMetadata pathMetadata = ContextUtil.getMRS().getPropertyPath(getTargetType(),
-                        getSettingValue(SettingEnum.MEDIA_PROPERTY, ""));
+                        new Path(getSettingValue(SettingEnum.MEDIA_PROPERTY, "")));
 
                 Dialog dialog = ContextUtil.getDefaultDialog(ValueInputDialog.class, pathMetadata,
                         pathMetadata.getValue(getTargetEntity()));
@@ -146,7 +147,7 @@ public class DefaultMediaViewPanel extends AbstractMutablePanel implements Media
         } else if (command.getId().equals(CommandEnum.ADDNEW)) {
             if (hasTargetType()) {
                 PathMetadata pathMetadata = ContextUtil.getMRS().getPropertyPath(getTargetType(),
-                        getSettingValue(SettingEnum.MEDIA_PROPERTY, ""));
+                        new Path(getSettingValue(SettingEnum.MEDIA_PROPERTY, "")));
 
                 Dialog dialog = ContextUtil.getDefaultDialog(ValueInputDialog.class, pathMetadata, null);
                 dialog.show(new DialogListener());
@@ -176,7 +177,7 @@ public class DefaultMediaViewPanel extends AbstractMutablePanel implements Media
                 byte[] media = message.getArg(messageArgEnum, byte[].class);
 
                 PathMetadata pathMetadata = ContextUtil.getMRS().getPropertyPath(getTargetType(),
-                        getSettingValue(SettingEnum.MEDIA_PROPERTY, ""));
+                        new Path(getSettingValue(SettingEnum.MEDIA_PROPERTY, "")));
                 pathMetadata.getLastStep().setValue(entity, media);
 
                 ContextUtil.getDWS().save(entity);

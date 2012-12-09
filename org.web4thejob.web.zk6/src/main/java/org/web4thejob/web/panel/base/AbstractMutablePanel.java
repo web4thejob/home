@@ -218,7 +218,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
             Set<ConstraintViolation<Entity>> violations = getTargetEntity().validate();
             for (final ConstraintViolation<Entity> violation : violations) {
                 final PathMetadata pathMetadata = ContextUtil.getMRS().getPropertyPath(getTargetType(),
-                        violation.getPropertyPath().toString());
+                        StringUtils.delimitedListToStringArray(violation.getPropertyPath().toString(), "."));
 
                 final Component comp = getBoundComponent(pathMetadata);
                 if (comp != null) {
@@ -243,12 +243,12 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
                 //user entered pks should be tested for uniquness, otherwise hibernate will
                 //update an existing entry instead of inserting a new one.
                 Query query = ContextUtil.getEntityFactory().buildQuery(getTargetType());
-                query.addCriterion(propertyMetadata.getName(), Condition.EQ,
+                query.addCriterion(new Path(propertyMetadata), Condition.EQ,
                         propertyMetadata.getValue(getTargetEntity()));
 
                 if (ContextUtil.getDRS().findUniqueByQuery(query) != null) {
                     Component component = getBoundComponent(ContextUtil.getMRS().getPropertyPath(getTargetType(),
-                            propertyMetadata.getName()));
+                            new Path(propertyMetadata.getName())));
                     if (component != null) {
                         Clients.wrongValue(component, AbstractZkBindablePanel.L10N_MSG_UNIQUE_KEY_VIOLATION.toString
                                 (propertyMetadata.getFriendlyName()));
@@ -312,7 +312,8 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
                         if (constraint.isViolated(entity)) {
                             for (PropertyMetadata propertyMetadata : constraint.getPropertyMetadatas()) {
                                 Component component = getBoundComponent(ContextUtil.getMRS().getPropertyPath
-                                        (constraint.getEntityMetadata().getEntityType(), propertyMetadata.getName()));
+                                        (constraint.getEntityMetadata().getEntityType(),
+                                                new Path(propertyMetadata.getName())));
                                 if (component != null) {
                                     Clients.scrollIntoView(component);
                                     Clients.wrongValue(component,
@@ -851,7 +852,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
                 }
 
                 finalQuery = (Query) activeQuery.clone();
-                finalQuery.addCriterion(getBindProperty(), Condition.EQ, getMasterEntity(), true);
+                finalQuery.addCriterion(new Path(getBindProperty()), Condition.EQ, getMasterEntity(), true);
 
                 return finalQuery;
             } else {

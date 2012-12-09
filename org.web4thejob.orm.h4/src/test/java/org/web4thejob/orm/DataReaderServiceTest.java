@@ -58,7 +58,7 @@ public class DataReaderServiceTest extends AbstractHibernateDependentTest {
         Assert.assertNotNull(master1);
 
         final Query query = entityFactory.buildQuery(Master1.class);
-        query.addOrderBy(metaReaderService.getEntityMetadata(Master1.class).getIdentifierName(), true);
+        query.addOrderBy(new Path(metaReaderService.getEntityMetadata(Master1.class).getIdentifierName()), true);
 
         Assert.assertEquals(master1, dataReaderService.findFirstByQuery(query));
     }
@@ -76,8 +76,8 @@ public class DataReaderServiceTest extends AbstractHibernateDependentTest {
         Assert.assertNotNull(reference1);
 
         final Query query = entityFactory.buildQuery(Master1.class);
-        query.addCriterion(Master1.FLD_REFERENCE1, Condition.EQ, reference1);
-        query.addCriterion(Master1.FLD_NAME, Condition.EQ, Master1.class.getName());
+        query.addCriterion(new Path(Master1.FLD_REFERENCE1), Condition.EQ, reference1);
+        query.addCriterion(new Path(Master1.FLD_NAME), Condition.EQ, Master1.class.getName());
         Assert.assertEquals(2, query.getCriteria().size());
         final Master1 master1 = dataReaderService.findFirstByQuery(query);
         Assert.assertNotNull(master1);
@@ -89,10 +89,10 @@ public class DataReaderServiceTest extends AbstractHibernateDependentTest {
         for (int i = 1; i <= 50; i++) {
             query = entityFactory.buildQuery(Master2.class);
             query.setName(UUID.randomUUID().toString());
-            query.addCriterion(Master2.FLD_KEY, Condition.EQ, "123");
-            query.addCriterion(Master2.FLD_DETAILS + "." + Detail.FLD_FCLASS, Condition.EQ, Master2.class);
-            query.addOrderBy(Master2.FLD_KEY, true);
-            query.addOrderBy(Master2.FLD_NAME, false);
+            query.addCriterion(new Path(Master2.FLD_KEY), Condition.EQ, "123");
+            query.addCriterion(new Path(Master2.FLD_DETAILS).append(Detail.FLD_FCLASS), Condition.EQ, Master2.class);
+            query.addOrderBy(new Path(Master2.FLD_KEY), true);
+            query.addOrderBy(new Path(Master2.FLD_NAME), false);
             query.setOwner(ContextUtil.getBean(SecurityService.class).getAdministratorIdentity());
             ContextUtil.getDWS().save(query);
         }
@@ -106,7 +106,7 @@ public class DataReaderServiceTest extends AbstractHibernateDependentTest {
             if (i == 0) {
                 Assert.assertEquals(Master2.FLD_KEY, criterion.getPropertyPath().getPath());
             } else {
-                Assert.assertEquals(Master2.FLD_DETAILS + "." + Detail.FLD_FCLASS,
+                Assert.assertEquals(new Path(Master2.FLD_DETAILS).append(Detail.FLD_FCLASS).toString(),
                         criterion.getPropertyPath().getPath());
             }
             i++;
@@ -142,11 +142,11 @@ public class DataReaderServiceTest extends AbstractHibernateDependentTest {
 
         final Query query1 = entityFactory.buildQuery(Master1.class);
         query1.setName(UUID.randomUUID().toString());
-        query1.addCriterion(Master1.FLD_ID, Condition.EQ, 123);
-        query1.addCriterion(Master1.FLD_DETAILS + "." + Detail.FLD_FCLASS, Condition.EQ, Master2.class);
-        Criterion criterion = query1.addCriterion(Master1.FLD_REFERENCE1, Condition.EQ, reference1);
-        query1.addOrderBy(Master1.FLD_ID, true);
-        query1.addOrderBy(Master1.FLD_NAME, false);
+        query1.addCriterion(new Path(Master1.FLD_ID), Condition.EQ, 123);
+        query1.addCriterion(new Path(Master1.FLD_DETAILS).append(Detail.FLD_FCLASS), Condition.EQ, Master2.class);
+        Criterion criterion = query1.addCriterion(new Path(Master1.FLD_REFERENCE1), Condition.EQ, reference1);
+        query1.addOrderBy(new Path(Master1.FLD_ID), true);
+        query1.addOrderBy(new Path(Master1.FLD_NAME), false);
         query1.setOwner(ContextUtil.getBean(SecurityService.class).getAdministratorIdentity());
         ContextUtil.getDWS().save(query1);
 

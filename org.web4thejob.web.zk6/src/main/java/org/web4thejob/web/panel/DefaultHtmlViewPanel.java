@@ -21,6 +21,7 @@ package org.web4thejob.web.panel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PathMetadata;
 import org.web4thejob.orm.parameter.Category;
 import org.web4thejob.orm.parameter.Key;
@@ -78,7 +79,7 @@ public class DefaultHtmlViewPanel extends AbstractMutablePanel implements HtmlVi
 
         if (StringUtils.hasText(getSettingValue(SettingEnum.HTML_PROPERTY, ""))) {
             PathMetadata pathMetadata = ContextUtil.getMRS().getPropertyPath(getTargetType(),
-                    getSettingValue(SettingEnum.HTML_PROPERTY, ""));
+                    new Path(getSettingValue(SettingEnum.HTML_PROPERTY, "")));
             dataBinder = new DataBinder();
 
             if (getMutableMode() == MutableMode.READONLY) {

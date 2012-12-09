@@ -47,17 +47,18 @@ public class ORMUtil {
 
     public static PanelDefinition getUserDesktop() {
         Query query = ContextUtil.getEntityFactory().buildQuery(PanelDefinition.class);
-        query.addCriterion(PanelDefinition.FLD_TYPE, Condition.CN, DesktopLayoutPanel.class.getSimpleName());
-        Criterion owner = query.addCriterion(PanelDefinition.FLD_OWNER, Condition.EQ, ContextUtil.getSessionContext()
-                .getSecurityContext().getUserIdentity());
+        query.addCriterion(new Path(PanelDefinition.FLD_TYPE), Condition.CN, DesktopLayoutPanel.class.getSimpleName());
+        Criterion owner = query.addCriterion(new Path(PanelDefinition.FLD_OWNER), Condition.EQ,
+                ContextUtil.getSessionContext()
+                        .getSecurityContext().getUserIdentity());
         PanelDefinition panelDefinition = ContextUtil.getDRS().findUniqueByQuery(query);
 
         if (panelDefinition == null) {
             Query roleMembers = ContextUtil.getEntityFactory().buildQuery(RoleMembers.class);
             roleMembers.setCached(true);
-            roleMembers.addCriterion(RoleMembers.FLD_USER, Condition.EQ, ContextUtil.getSessionContext()
+            roleMembers.addCriterion(new Path(RoleMembers.FLD_USER), Condition.EQ, ContextUtil.getSessionContext()
                     .getSecurityContext().getUserIdentity());
-            roleMembers.addOrderBy(RoleMembers.FLD_ROLE + "." + RoleIdentity.FLD_INDEX);
+            roleMembers.addOrderBy(new Path(RoleMembers.FLD_ROLE).append(RoleIdentity.FLD_INDEX));
 
             for (Entity entity : ContextUtil.getDRS().findByQuery(roleMembers)) {
                 owner.setValue(ContextUtil.getMRS().deproxyEntity(((RoleMembers) entity).getRole()));
@@ -75,7 +76,7 @@ public class ORMUtil {
 
     public static PanelDefinition getPanelDefinition(String beanid) {
         Query query = ContextUtil.getEntityFactory().buildQuery(PanelDefinition.class);
-        query.addCriterion(PanelDefinition.FLD_BEANID, Condition.EQ, beanid);
+        query.addCriterion(new Path(PanelDefinition.FLD_BEANID), Condition.EQ, beanid);
         query.setCached(true);
         return ContextUtil.getDRS().findUniqueByQuery(query);
     }
@@ -90,8 +91,8 @@ public class ORMUtil {
 
                     EntityMetadata target = renderElement.getPropertyPath().getLastStep().getEntityMetadata();
                     Subquery subquery = new Subquery(Subquery.SubqueryType.TYPE_NOT_EXISTS, target);
-                    subquery.addCriterion(ContextUtil.getMRS().getPropertyPath(target.getEntityType(),
-                            ((MasterDetailTypeAware) panel).getBindProperty()), Condition.EQ,
+                    subquery.addCriterion(ContextUtil.getMRS().getPropertyPath(target.getEntityType(), new Path(
+                            ((MasterDetailTypeAware) panel).getBindProperty())), Condition.EQ,
                             ((BindCapable) panel).getMasterEntity());
                     subquery.addCriterion(renderElement.getPropertyPath(), Condition.EQ,
                             Subquery.MASTER_ID_PLACEHOLDER);
@@ -134,9 +135,10 @@ public class ORMUtil {
     public static List<PanelDefinition> getPanelsMatchingTags(Map<String, Object> tags) {
         Query query = ContextUtil.getEntityFactory().buildQuery(PanelDefinition.class);
         for (String tag : tags.keySet()) {
-            query.addCriterion(PanelDefinition.FLD_TAGS, Condition.CN, CoreUtil.buildTagValue(tag, tags.get(tag)));
+            query.addCriterion(new Path(PanelDefinition.FLD_TAGS), Condition.CN, CoreUtil.buildTagValue(tag,
+                    tags.get(tag)));
         }
-        query.addOrderBy(PanelDefinition.FLD_NAME);
+        query.addOrderBy(new Path(PanelDefinition.FLD_NAME));
         query.setCached(true);
 
         List<PanelDefinition> panels = new ArrayList<PanelDefinition>();

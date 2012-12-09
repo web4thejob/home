@@ -31,7 +31,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
-import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.annotation.*;
 import org.web4thejob.orm.query.Condition;
@@ -134,8 +133,8 @@ import java.util.*;
     }
 
     @Override
-    public PathMetadata getPropertyPath(Class<? extends Entity> entityType, String path) {
-        return getPropertyPath(entityType, StringUtils.tokenizeToStringArray(path, "."));
+    public PathMetadata getPropertyPath(Class<? extends Entity> entityType, Path path) {
+        return new PathMetadataImpl(entityType, path);
     }
 
     @Override
@@ -157,7 +156,8 @@ import java.util.*;
 
     @Override
     public PathMetadata getPropertyPath(PropertyMetadata propertyMetadata) {
-        return new PathMetadataImpl(propertyMetadata.getEntityMetadata().getEntityType(), propertyMetadata.getName());
+        return new PathMetadataImpl(propertyMetadata.getEntityMetadata().getEntityType(),
+                new Path(propertyMetadata.getName()));
     }
 
     @Override
@@ -224,7 +224,7 @@ import java.util.*;
         UserIdentity userAdmin = ContextUtil.getSecurityService().getAdministratorIdentity();
 
         Query query = ContextUtil.getEntityFactory().buildQuery(RoleIdentity.class);
-        query.addCriterion(RoleIdentity.FLD_AUTHORITY, Condition.EQ, RoleIdentity.ROLE_ADMINISTRATOR);
+        query.addCriterion(new Path(RoleIdentity.FLD_AUTHORITY), Condition.EQ, RoleIdentity.ROLE_ADMINISTRATOR);
         RoleIdentity roleAdmin = ContextUtil.getDRS().findUniqueByQuery(query);
         if (roleAdmin == null) {
             roleAdmin = ContextUtil.getEntityFactory().buildRoleIdentity();
@@ -233,8 +233,8 @@ import java.util.*;
         }
 
         query = ContextUtil.getEntityFactory().buildQuery(RoleMembers.class);
-        query.addCriterion(RoleMembers.FLD_ROLE, Condition.EQ, roleAdmin);
-        query.addCriterion(RoleMembers.FLD_USER, Condition.EQ, userAdmin);
+        query.addCriterion(new Path(RoleMembers.FLD_ROLE), Condition.EQ, roleAdmin);
+        query.addCriterion(new Path(RoleMembers.FLD_USER), Condition.EQ, userAdmin);
         RoleMembers adminMembers = ContextUtil.getDRS().findUniqueByQuery(query);
         if (adminMembers == null) {
             adminMembers = ContextUtil.getEntityFactory().buildRoleMembers();

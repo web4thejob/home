@@ -19,6 +19,7 @@
 package org.web4thejob.command;
 
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.web.panel.QueryPanel;
@@ -43,9 +44,9 @@ public class QueryLookupCommandDecorator extends AbstractLookupCommandDecorator<
     @Override
     protected Query getRefreshQuery() {
         Query query = ContextUtil.getEntityFactory().buildQuery(Query.class);
-        query.addCriterion(Query.FLD_FLAT_TARGET_TYPE, Condition.EQ, ((QueryPanel) command.getOwner()).getTargetType
-                ().getCanonicalName());
-        query.addOrderBy(Query.FLD_NAME);
+        query.addCriterion(new Path(Query.FLD_FLAT_TARGET_TYPE), Condition.EQ, ((QueryPanel) command.getOwner())
+                .getTargetType().getCanonicalName());
+        query.addOrderBy(new Path(Query.FLD_NAME));
         query.setCached(true);
         return query;
     }

@@ -29,6 +29,7 @@ import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.Entity;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PropertyMetadata;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
@@ -309,7 +310,7 @@ public class DefaultTabbedEntityViewPanel extends AbstractMutablePanel implement
                 Query query = null;
                 if (isMasterDetail() && hasMasterEntity()) {
                     query = ContextUtil.getEntityFactory().buildQuery(getTargetType());
-                    query.addCriterion(getBindProperty(), Condition.EQ, getMasterEntity(), true, true);
+                    query.addCriterion(new Path(getBindProperty()), Condition.EQ, getMasterEntity(), true, true);
                 }
 
                 File file = ContextUtil.getBean(Printer.class).print(title, renderSchemes, query,

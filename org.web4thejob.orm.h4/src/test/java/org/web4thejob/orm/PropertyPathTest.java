@@ -51,7 +51,7 @@ public class PropertyPathTest extends AbstractHibernateDependentTest {
         final PathMetadata pathMetadata = metaReaderService.getPropertyPath(Master1.class, path);
         Assert.assertNotNull(pathMetadata);
         Assert.assertEquals(pathMetadata.getSteps().size(), 2);
-        Assert.assertEquals(pathMetadata.getPath(), StringUtils.arrayToDelimitedString(path, "."));
+        Assert.assertEquals(pathMetadata.getPath(), StringUtils.arrayToDelimitedString(path, Path.DELIMITER));
         Assert.assertTrue(pathMetadata.getFirstStep().getAssociatedEntityMetadata().equals(metaReaderService
                 .getEntityMetadata(Reference1.class)));
         Assert.assertTrue(pathMetadata.getLastStep().getAssociatedEntityMetadata().equals(metaReaderService
@@ -60,7 +60,7 @@ public class PropertyPathTest extends AbstractHibernateDependentTest {
         final Master1 master1 = dataReaderService.getOne(Master1.class);
 
         final Query query = entityFactory.buildQuery(Reference2.class);
-        query.addCriterion(Reference2.FLD_REFERENCES1 + "." + Reference1.FLD_MASTERS1 + "." + Master1.FLD_ID,
+        query.addCriterion(new Path(Reference2.FLD_REFERENCES1).append(Reference1.FLD_MASTERS1).append(Master1.FLD_ID),
                 Condition.EQ, master1.getId());
 
         final Reference2 reference2 = dataReaderService.findFirstByQuery(query);

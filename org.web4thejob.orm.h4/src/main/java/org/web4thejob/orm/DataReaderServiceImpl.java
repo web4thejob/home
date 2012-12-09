@@ -197,7 +197,7 @@ import java.util.Map;
 
         for (final OrderBy orderBy : query.getOrderings()) {
             PathMetadata pathMetadata = ContextUtil.getMRS().getPropertyPath(query.getTargetType(),
-                    orderBy.getProperty());
+                    StringUtils.delimitedListToStringArray(orderBy.getProperty(), Path.DELIMITER));
 
             String property;
             if (pathMetadata.isMultiStep()) {
@@ -303,7 +303,7 @@ import java.util.Map;
             for (PropertyMetadata propertyMetadata : target.getPropertiesMetadata()) {
                 if (criterion.getPropertyPath().getLastStep().isAssociatedWith(propertyMetadata)) {
                     subquery.addCriterion(ContextUtil.getMRS().getPropertyPath(target.getEntityType(),
-                            propertyMetadata.getName()), Condition.EQ, Subquery.MASTER_ID_PLACEHOLDER);
+                            new Path(propertyMetadata.getName())), Condition.EQ, Subquery.MASTER_ID_PLACEHOLDER);
                     break;
                 }
             }

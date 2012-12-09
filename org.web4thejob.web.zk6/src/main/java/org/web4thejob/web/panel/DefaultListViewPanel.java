@@ -30,6 +30,7 @@ import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.EntityMetadata;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PropertyMetadata;
 import org.web4thejob.orm.annotation.DefaultHolder;
 import org.web4thejob.orm.query.*;
@@ -387,7 +388,7 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
                     finalQuery.addOrderBy(orderBy);
                 }
 
-                finalQuery.addCriterion(getBindProperty(), Condition.EQ, getMasterEntity(), true);
+                finalQuery.addCriterion(new Path(getBindProperty()), Condition.EQ, getMasterEntity(), true);
 
                 return finalQuery;
             } else {

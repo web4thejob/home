@@ -34,19 +34,20 @@ public class OrderByTest extends AbstractHibernateDependentTest {
 
     @Test
     public void orderOnReferencedEntityTest() {
-        String field = Master1.FLD_REFERENCE1 + "." + Reference1.FLD_REFERENCE2 + "." + Reference2.FLD_NAME;
+        Path path = new Path(Master1.FLD_REFERENCE1).append(Reference1.FLD_REFERENCE2).append(Reference2.FLD_NAME);
 
         Query query = ContextUtil.getEntityFactory().buildQuery(Master1.class);
-        query.addCriterion(field, Condition.SW, "A");
-        query.addOrderBy(field, false);
+        query.addCriterion(path, Condition.SW, "A");
+        query.addOrderBy(path, false);
         ContextUtil.getDRS().findFirstByQuery(query);
 
         query = ContextUtil.getEntityFactory().buildQuery(Master1.class);
-        query.addOrderBy(field, false);
+        query.addOrderBy(path, false);
         ContextUtil.getDRS().findFirstByQuery(query);
 
+
         query = ContextUtil.getEntityFactory().buildQuery(Master1.class);
-        query.addOrderBy(Master1.FLD_REFERENCE1, false);
+        query.addOrderBy(new Path(Master1.FLD_REFERENCE1), false);
         ContextUtil.getDRS().findFirstByQuery(query);
 
     }

@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 
@@ -36,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
         Query query = ContextUtil.getEntityFactory().buildQuery(UserIdentity.class);
-        query.addCriterion(UserIdentity.FLD_USERNAME, Condition.EQ, username);
+        query.addCriterion(new Path(UserIdentity.FLD_USERNAME), Condition.EQ, username);
         UserIdentity userIdentity = ContextUtil.getDRS().findUniqueByQuery(query);
 
         if (userIdentity == null) {

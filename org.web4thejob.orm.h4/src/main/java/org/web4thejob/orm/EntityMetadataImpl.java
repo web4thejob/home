@@ -242,15 +242,14 @@ import java.util.List;
     public PropertyMetadata getPropertyMetadata(String property) {
         PropertyMetadata propertyMetadata = propertyMap.get(property);
 
-        if (propertyMetadata == null && subclasses != null) {
-            for (Class<? extends Entity> subtype : subclasses) {
-                EntityMetadata entityMetadata = MetaReaderServiceImpl.metaCache.get(subtype.getCanonicalName());
-                if (entityMetadata != null) {
-                    propertyMetadata = entityMetadata.getPropertyMetadata(property);
-                    if (propertyMetadata != null) {
-                        return propertyMetadata;
-                    }
-                }
+        if (propertyMetadata == null) {
+            StringTokenizer tokenizer = new StringTokenizer(property, "()", false);
+            if (tokenizer.hasMoreTokens()) {
+                String type = tokenizer.nextToken();
+                String name = tokenizer.nextToken();
+
+                propertyMetadata = propertyMap.get(name);
+                return propertyMetadata.castForSubclass(ContextUtil.getEntityFactory().toEntityType(type));
             }
         }
 
