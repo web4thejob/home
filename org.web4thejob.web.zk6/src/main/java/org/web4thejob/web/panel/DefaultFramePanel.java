@@ -39,7 +39,6 @@ import java.io.Serializable;
 @Scope("prototype")
 public class DefaultFramePanel extends AbstractZkBindablePanel implements FramePanel {
     private final Iframe iframe = new Iframe();
-    private Entity masterEntity;
     private Entity targetEntity;
 
     public DefaultFramePanel() {

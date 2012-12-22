@@ -51,7 +51,6 @@ import org.web4thejob.web.util.ZkUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.ListModelList;
@@ -151,12 +150,14 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         if (Events.ON_SELECT.equals(event.getName())) {
             setTargetEntity((Entity) listbox.getModel().getElementAt(listbox.getSelectedIndex()));
         } else if (Events.ON_DOUBLE_CLICK.equals(event.getName())) {
-            if (getSettingValue(SettingEnum.DISPATCH_DOUBLE_CLICK, false)) {
-                dispatchMessage(ContextUtil.getMessage(MessageEnum.ENTITY_ACCEPTED, this, MessageArgEnum.ARG_ITEM,
-                        getTargetEntity()));
-            } else if (hasCommand(CommandEnum.UPDATE)) {
-                Clients.showBusy(null);
-                Events.echoEvent(ON_DOUBLE_CLICK_ECHO, event.getTarget(), null);
+            if (hasTargetEntity()) {
+                if (getSettingValue(SettingEnum.DISPATCH_DOUBLE_CLICK, false)) {
+                    dispatchMessage(ContextUtil.getMessage(MessageEnum.ENTITY_ACCEPTED, this, MessageArgEnum.ARG_ITEM,
+                            getTargetEntity()));
+                } else if (hasCommand(CommandEnum.UPDATE)) {
+                    Clients.showBusy(null);
+                    Events.echoEvent(ON_DOUBLE_CLICK_ECHO, event.getTarget(), null);
+                }
             }
         } else if (ON_DOUBLE_CLICK_ECHO.equals(event.getName())) {
             Clients.clearBusy();

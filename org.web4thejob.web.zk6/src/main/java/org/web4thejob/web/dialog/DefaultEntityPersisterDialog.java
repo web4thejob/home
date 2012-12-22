@@ -68,7 +68,7 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
     private final boolean allowMultipleNew;
     private final MutableMode mutableMode;
     private MutablePanel mutablePanel;
-    private Class<? extends MutablePanel> mutableType = EntityViewPanel.class;
+    private Class<? extends MutablePanel> mutableType = MutableEntityViewPanel.class;
     private boolean dirty;
 
     protected DefaultEntityPersisterDialog(Entity entity, Set<Setting<?>> settings, MutableMode mutableMode) {

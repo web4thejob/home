@@ -31,7 +31,6 @@ import org.web4thejob.orm.PanelDefinition;
 import org.web4thejob.util.L10nString;
 import org.web4thejob.util.L10nUtil;
 import org.web4thejob.web.panel.*;
-import org.web4thejob.web.panel.Panel;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.*;
@@ -120,7 +119,7 @@ public class DefaultSelectPanelDialog extends AbstractDialog implements SelectPa
                 }
 
                 boolean featured = name.equals(StringUtils.uncapitalize(DefaultListViewPanel.class.getSimpleName()))
-                        || name.equals(StringUtils.uncapitalize(DefaultEntityViewPanel.class.getSimpleName()));
+                        || name.equals(StringUtils.uncapitalize(DefaultMutableEntityViewPanel.class.getSimpleName()));
 
                 Listcell cell = new Listcell(name);
                 cell.setParent(item);

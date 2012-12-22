@@ -236,7 +236,7 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
     @Override
     public Map<String, String> getDropdownItems() {
         if (!hasTargetType()) return Collections.emptyMap();
-        return CoreUtil.getRelatedPanelsMap(getTargetType(), EntityViewPanel.class);
+        return CoreUtil.getRelatedPanelsMap(getTargetType(), MutableEntityViewPanel.class);
     }
 
     @Override

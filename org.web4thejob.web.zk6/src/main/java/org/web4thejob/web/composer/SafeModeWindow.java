@@ -29,8 +29,8 @@ import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.security.AuthorizationPolicy;
 import org.web4thejob.setting.SettingEnum;
-import org.web4thejob.web.panel.EntityViewPanel;
 import org.web4thejob.web.panel.ListViewPanel;
+import org.web4thejob.web.panel.MutableEntityViewPanel;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -95,10 +95,10 @@ public class SafeModeWindow extends GenericForwardComposer<Window> {
                         .append(entityMetadata.getName()).append("]");
                 targetType.setValue(sb.toString());
 
-                panelType.setValue(EntityViewPanel.class.getCanonicalName());
+                panelType.setValue(MutableEntityViewPanel.class.getCanonicalName());
                 PanelDefinition panelDefinition = ContextUtil.getDRS().findFirstByQuery(query);
                 if (panelDefinition == null) {
-                    EntityViewPanel panel = ContextUtil.getDefaultPanel(EntityViewPanel.class);
+                    MutableEntityViewPanel panel = ContextUtil.getDefaultPanel(MutableEntityViewPanel.class);
                     panel.setTargetType(entityMetadata.getEntityType());
                     panel.setSettingValue(SettingEnum.PANEL_NAME, entityMetadata.getFriendlyName());
                     ORMUtil.persistPanel(panel, "Entity view of " + entityMetadata.getName(), "[AUTO=true]");
@@ -133,6 +133,8 @@ public class SafeModeWindow extends GenericForwardComposer<Window> {
         out = StringUtils.replace(out, "org.w4tj.panel.", "org.web4thejob.web.panel.");
         out = StringUtils.replace(out, "org.w4tj.dialog.", "org.web4thejob.web.dialog.");
         out = StringUtils.replace(out, "org.w4tj.composer.", "org.web4thejob.web.composer.");
+        out = StringUtils.replace(out, "org.web4thejob.web.panel.DefaultEntityViewPanel",
+                "org.web4thejob.web.panel.DefaultMutableEntityViewPanel");
         return out;
     }
 

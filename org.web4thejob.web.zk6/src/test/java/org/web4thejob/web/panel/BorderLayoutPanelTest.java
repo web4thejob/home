@@ -81,11 +81,11 @@ public class BorderLayoutPanelTest extends AbstractWebApplicationContextTest {
 
     @Before
     public void prepare() {
-        list.add(ContextUtil.getDefaultPanel(EntityViewPanel.class));// center
-        list.add(ContextUtil.getDefaultPanel(EntityViewPanel.class));// north
-        list.add(ContextUtil.getDefaultPanel(EntityViewPanel.class));// south
-        list.add(ContextUtil.getDefaultPanel(EntityViewPanel.class));// west
-        list.add(ContextUtil.getDefaultPanel(EntityViewPanel.class));// east
+        list.add(ContextUtil.getDefaultPanel(MutableEntityViewPanel.class));// center
+        list.add(ContextUtil.getDefaultPanel(MutableEntityViewPanel.class));// north
+        list.add(ContextUtil.getDefaultPanel(MutableEntityViewPanel.class));// south
+        list.add(ContextUtil.getDefaultPanel(MutableEntityViewPanel.class));// west
+        list.add(ContextUtil.getDefaultPanel(MutableEntityViewPanel.class));// east
     }
 
 }

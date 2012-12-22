@@ -155,7 +155,7 @@ public class DefaultPlaceholderPanel extends AbstractZkContentPanel implements P
             dialog.show(new SelectPanelResponse());
         } else if (CommandEnum.DESIGN_PANEL_ENTITY_VIEW.equals(command.getId())) {
             new SelectPanelResponse().processMessage(ContextUtil.getMessage(MessageEnum.AFFIRMATIVE_RESPONSE, this,
-                    MessageArgEnum.ARG_ITEM, ContextUtil.getDefaultPanel(EntityViewPanel.class)));
+                    MessageArgEnum.ARG_ITEM, ContextUtil.getDefaultPanel(MutableEntityViewPanel.class)));
         } else if (CommandEnum.DESIGN_PANEL_LIST_VIEW.equals(command.getId())) {
             new SelectPanelResponse().processMessage(ContextUtil.getMessage(MessageEnum.AFFIRMATIVE_RESPONSE, this,
                     MessageArgEnum.ARG_ITEM, ContextUtil.getDefaultPanel(ListViewPanel.class)));

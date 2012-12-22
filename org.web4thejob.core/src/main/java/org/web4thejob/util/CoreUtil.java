@@ -326,10 +326,10 @@ public abstract class CoreUtil {
                         entity.getEntityType().getCanonicalName(), beainid);
 */
             } else {
-                entityPanel = ContextUtil.getDefaultPanel(EntityViewPanel.class);
-                ((EntityViewPanel) entityPanel).setTargetType(entity.getEntityType());
+                entityPanel = ContextUtil.getDefaultPanel(MutableEntityViewPanel.class);
+                ((MutableEntityViewPanel) entityPanel).setTargetType(entity.getEntityType());
                 entityPanel.render();
-                ((EntityViewPanel) entityPanel).setTargetEntity(entity);
+                ((MutableEntityViewPanel) entityPanel).setTargetEntity(entity);
             }
 
 

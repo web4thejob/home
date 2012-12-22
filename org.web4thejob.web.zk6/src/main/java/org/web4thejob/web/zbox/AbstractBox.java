@@ -77,6 +77,7 @@ public abstract class AbstractBox<T> extends Hbox implements RawValueBox<T>, Eve
         super.setPack("start");
         super.setSpacing("5px");
         super.setHflex("true");
+        this.addEventListener("onEdit", this);
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -88,7 +89,7 @@ public abstract class AbstractBox<T> extends Hbox implements RawValueBox<T>, Eve
         if (event.getName().equals(Events.ON_CLICK) && (event.getTarget().hasAttribute("edit") || event.getTarget()
                 .hasAttribute("novalue"))) {
             Clients.showBusy(null);
-            Events.echoEvent("onEdit", event.getTarget(), null);
+            Events.echoEvent("onEdit", this, null);
         } else if (event.getName().equals(Events.ON_CLICK) && event.getTarget().hasAttribute("clear")) {
             onClear();
         } else if (event.getName().equals("onEdit")) {
@@ -135,7 +136,6 @@ public abstract class AbstractBox<T> extends Hbox implements RawValueBox<T>, Eve
             _novalueLink.setTooltiptext(L10N_BUTTON_CLICK_FOR_VALUE.toString());
             _novalueLink.setAttribute("novalue", true);
             _novalueLink.addEventListener(Events.ON_CLICK, this);
-            _novalueLink.addEventListener("onEdit", this);
             _novalueLink.setStyle(NOVALUE_STYLE);
             _novalueLink.setTabindex(1);
         }
@@ -162,7 +162,6 @@ public abstract class AbstractBox<T> extends Hbox implements RawValueBox<T>, Eve
         editLink.setTooltiptext(L10N_BUTTON_EDIT.toString());
         editLink.setAttribute("edit", true);
         editLink.addEventListener(Events.ON_CLICK, this);
-        editLink.addEventListener("onEdit", this);
         editLink.setTabindex(2);
 
         return editLink;

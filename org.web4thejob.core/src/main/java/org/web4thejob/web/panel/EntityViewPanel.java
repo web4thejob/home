@@ -19,14 +19,8 @@
 package org.web4thejob.web.panel;
 
 /**
- * <p>Defines the api of content panels able to manage one single {@link org.web4thejob.orm.Entity Entity} instance at
- * a
- * time.</p>
- *
  * @author Veniamin Isaias
  * @since 1.0.0
  */
-
-public interface EntityViewPanel extends ContentPanel, MasterDetailTypeAware, MutablePanel {
-
+public interface EntityViewPanel extends ContentPanel, MasterDetailTypeAware {
 }

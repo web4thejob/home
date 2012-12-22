@@ -16,28 +16,11 @@
  * along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.web4thejob.orm;
-
-import org.web4thejob.orm.annotation.ControllerHolder;
-import org.web4thejob.orm.annotation.PanelHolder;
-import org.web4thejob.orm.parameter.Category;
-import org.web4thejob.orm.parameter.EntityTypeEntityViewParameter;
-import org.web4thejob.web.panel.MutableEntityViewPanel;
+package org.web4thejob.web.panel;
 
 /**
  * @author Veniamin Isaias
  * @since 3.3.0
  */
-class EntityTypeEntityViewParameterImpl extends AbstractEntityTypeViewParameterImpl implements
-        EntityTypeEntityViewParameter {
-
-    @PanelHolder(panelType = MutableEntityViewPanel.class)
-    @ControllerHolder
-    private String value;
-
-    public EntityTypeEntityViewParameterImpl() {
-        setCategory(Category.ENTITY_TYPE_ENTITY_VIEW_PARAM);
-    }
-
-
+public interface NavigationChainPanel extends EntityViewPanel, BindCapable {
 }

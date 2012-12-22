@@ -23,8 +23,8 @@ import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.parameter.Category;
 import org.web4thejob.orm.parameter.EntityTypeViewParameter;
-import org.web4thejob.web.panel.EntityViewPanel;
 import org.web4thejob.web.panel.ListViewPanel;
+import org.web4thejob.web.panel.MutableEntityViewPanel;
 import org.web4thejob.web.zbox.PanelDropDownBox;
 import org.zkoss.zkplus.databind.DataBinder;
 
@@ -56,7 +56,7 @@ public class EditablePanelHolderController<E extends EntityTypeViewParameter, B 
             component.reset();
 
             if (entity.getCategory() == Category.ENTITY_TYPE_ENTITY_VIEW_PARAM) {
-                component.setPanelType(EntityViewPanel.class);
+                component.setPanelType(MutableEntityViewPanel.class);
             } else if (entity.getCategory() == Category.ENTITY_TYPE_LIST_VIEW_PARAM) {
                 component.setPanelType(ListViewPanel.class);
             } else {

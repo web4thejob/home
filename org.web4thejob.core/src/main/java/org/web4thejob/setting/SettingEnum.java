@@ -37,9 +37,9 @@ public class SettingEnum implements Comparable<SettingEnum> {
 
     public static final SettingEnum OBSOLETE_SETTING_PLACEHOLDER = new SettingEnum("OBSOLETE_SETTING_PLACEHOLDER",
             String.class);
-    public static final SettingEnum PANEL_NAME = new SettingEnum("PANEL_NAME", String.class);
     public static final SettingEnum TARGET_TYPE = new SettingEnum("TARGET_TYPE", Class.class, Entity.class);
     public static final SettingEnum MASTER_TYPE = new SettingEnum("MASTER_TYPE", Class.class, Entity.class);
+    public static final SettingEnum PANEL_NAME = new SettingEnum("PANEL_NAME", String.class);
     public static final SettingEnum BIND_PROPERTY = new SettingEnum("BIND_PROPERTY", String.class);
     public static final SettingEnum HTML_PROPERTY = new SettingEnum("HTML_PROPERTY", String.class);
     public static final SettingEnum URL_PROPERTY = new SettingEnum("URL_PROPERTY", String.class);

@@ -35,7 +35,7 @@ import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nMessages;
 import org.web4thejob.util.L10nString;
 import org.web4thejob.util.L10nUtil;
-import org.web4thejob.web.panel.EntityViewPanel;
+import org.web4thejob.web.panel.MutableEntityViewPanel;
 import org.web4thejob.web.panel.Panel;
 import org.web4thejob.web.util.MediaUtil;
 import org.web4thejob.web.util.ZkUtil;
@@ -426,7 +426,7 @@ public class PropertyBox extends Hbox {
         public Map<String, String> getDropdownItems() {
             final Entity bindValue = (Entity) renderElement.getPropertyPath().getValue(entity);
             if (bindValue == null) return Collections.emptyMap();
-            return CoreUtil.getRelatedPanelsMap(bindValue.getEntityType(), EntityViewPanel.class);
+            return CoreUtil.getRelatedPanelsMap(bindValue.getEntityType(), MutableEntityViewPanel.class);
         }
 
         @Override

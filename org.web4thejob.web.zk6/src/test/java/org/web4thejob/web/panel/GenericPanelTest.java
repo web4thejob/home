@@ -36,7 +36,7 @@ public class GenericPanelTest extends AbstractWebApplicationContextTest {
         Assert.assertNotNull(layout);
 
         for (int i = 1; i <= 5; i++) {
-            final Panel content = ContextUtil.getDefaultPanel(EntityViewPanel.class);
+            final Panel content = ContextUtil.getDefaultPanel(MutableEntityViewPanel.class);
             content.setParent(layout);
             content.setIndex(i);
             Assert.assertEquals(layout, content.getParent());

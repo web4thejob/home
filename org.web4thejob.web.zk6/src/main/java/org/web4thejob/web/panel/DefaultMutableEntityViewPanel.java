@@ -57,7 +57,8 @@ import java.util.Set;
 
 @org.springframework.stereotype.Component
 @Scope("prototype")
-public class DefaultEntityViewPanel extends AbstractMutablePanel implements EntityViewPanel {
+public class DefaultMutableEntityViewPanel extends AbstractMutablePanel implements MutableEntityViewPanel,
+        MutablePanel {
 // ------------------------------ FIELDS ------------------------------
 
     private final Grid grid;
@@ -68,11 +69,11 @@ public class DefaultEntityViewPanel extends AbstractMutablePanel implements Enti
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public DefaultEntityViewPanel() {
+    public DefaultMutableEntityViewPanel() {
         this(MutableMode.READONLY);
     }
 
-    public DefaultEntityViewPanel(MutableMode mutableMode) {
+    public DefaultMutableEntityViewPanel(MutableMode mutableMode) {
         super(mutableMode);
         grid = buildGrid();
         ZkUtil.setParentOfChild((Component) base, grid);

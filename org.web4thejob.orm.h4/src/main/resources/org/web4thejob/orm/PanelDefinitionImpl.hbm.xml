@@ -39,6 +39,8 @@
             <property name="beanId" type="string">
                 <meta attribute="friendlyName">Bean Id</meta>
                 <meta attribute="index">2</meta>
+                <meta attribute="disable-user-insert">true</meta>
+                <meta attribute="disable-user-update">true</meta>
                 <column name="`BEANID`" length="255" not-null="true"/>
             </property>
         </natural-id>

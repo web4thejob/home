@@ -40,14 +40,13 @@ import org.web4thejob.web.dialog.Dialog;
 import org.web4thejob.web.dialog.PasswordDialog;
 import org.web4thejob.web.dialog.SelectPanelDialog;
 import org.web4thejob.web.panel.base.AbstractBorderLayoutPanel;
+import org.web4thejob.web.util.ZkUtil;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Veniamin Isaias
@@ -99,7 +98,7 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
             SessionInfoPanel panel = ContextUtil.getDefaultPanel(SessionInfoPanel.class);
             dispatchMessage(ContextUtil.getMessage(MessageEnum.ADOPT_ME, panel));
         } else if (CommandEnum.DESIGN_PANEL_ENTITY_VIEW.equals(command.getId())) {
-            displayPanelForDesign(ContextUtil.getDefaultPanel(EntityViewPanel.class));
+            displayPanelForDesign(ContextUtil.getDefaultPanel(MutableEntityViewPanel.class));
         } else if (CommandEnum.DESIGN_PANEL_LIST_VIEW.equals(command.getId())) {
             displayPanelForDesign(ContextUtil.getDefaultPanel(ListViewPanel.class));
         } else if (CommandEnum.DESIGN_PANEL_HTML_VIEW.equals(command.getId())) {
@@ -258,6 +257,14 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
             }
         }
     }
+
+    @Override
+    public <T extends Panel> List<T> getActiveInstances(Class<T> panelType) {
+        List<T> list = new ArrayList<T>();
+        ZkUtil.appendPanelsOfType((Component) base, panelType, list);
+        return list;
+    }
+
 
 // -------------------------- INNER CLASSES --------------------------
 

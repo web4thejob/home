@@ -20,7 +20,7 @@ package org.web4thejob.orm.scheme;
 
 /**
  * <p>Defines eligible types for schemes. Schemes of type {@link SchemeType#ENTITY_SCHEME ENTITY_SCHEME} are used by
- * {@link org.web4thejob.web.panel.EntityViewPanel EntityViewPanel} panels, while schemes of type {@link
+ * {@link org.web4thejob.web.panel.MutableEntityViewPanel MutableEntityViewPanel} panels, while schemes of type {@link
  * SchemeType#LIST_SCHEME
  * LIST_SCHEME} are used by
  * {@link org.web4thejob.web.panel.ListViewPanel ListViewPanel} panels.</p>
