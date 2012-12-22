@@ -63,6 +63,9 @@ public class DefaultHtmlViewPanel extends AbstractMutablePanel implements HtmlVi
         super.registerSettings();
         registerSetting(SettingEnum.HTML_PROPERTY, null);
         registerSetting(SettingEnum.PANEL_STYLE, null);
+        registerSetting(SettingEnum.PERSISTED_QUERY_DIALOG, null);
+        registerSetting(SettingEnum.PERSISTED_QUERY_NAME, null);
+        registerSetting(SettingEnum.RUN_QUERY_ON_STARTUP, false);
     }
 
     @Override
