@@ -1,18 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr" style="height: 100%">
 <head>
     <meta http-equiv=Content-Type content="text/html; charset=UTF-8">
     <link rel="shortcut icon" href="favicon.ico">
     <title>web4thejob.org >> Login Page</title>
     <script type="text/javascript" src="./js/loginSupport.js"></script>
 </head>
-<body onload="handleLogin();" style="font-family:arial, sans-serif; background-color: #FFFFFF; height: 100%;">
+<body onload="handleLogin();"
+      style="font-family:arial, sans-serif; background-color: #FFFFFF; height: 100%;;margin: 0px;">
 <table style="height: 100%; width: 100%">
     <tbody>
     <tr valign="middle" style="height: 300px">
         <td align="center">
-            <a href="http://web4thejob.org"><img style="border-style: none;" src="img/w4tj_logo_vertical_full.png"
+            <a href="http://web4thejob.org"><img style="border-style: none;margin-top:50px;margin-bottom:20px;"
+                                                 src="img/w4tj_logo_vertical_full.png"
                                                  title="Put your logo here"/></a>
         </td>
     </tr>
@@ -26,7 +28,7 @@
                             <span>User Name:</span>
                         </td>
                         <td align="left">
-                            <input type="text" name="j_username" style="width:150px">
+                            <input type="text" name="j_username" value="" style="width:150px">
                         </td>
                     </tr>
                     <tr>
@@ -34,7 +36,7 @@
                             <span>Password:</span>
                         </td>
                         <td align="left">
-                            <input type="password" name="j_password" style="width:150px"/>
+                            <input type="password" name="j_password" value="" style="width:150px"/>
                         </td>
                     </tr>
                     <tr>
@@ -57,10 +59,13 @@
             </form>
         </td>
     </tr>
+    <tr style="height: 50px; text-align:right;" valign="middle">
+        <td>
+            <a href="http://web4thejob.org"><img style="border-style: none;margin-right: 10px;"
+                                                 src="img/w4tj_powered.png"></a>
+        </td>
+    </tr>
     </tbody>
 </table>
-<div style="display: block; position: absolute; top:94%; width: 98%">
-    <a href="http://web4thejob.org"><img style="border-style: none;" src="img/w4tj_powered.png" align="right"></a>
-</div>
 </body>
 </html>
