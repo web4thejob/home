@@ -15,11 +15,10 @@
   ~ GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public License
-  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
+  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses />.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -31,7 +30,7 @@
     <groupId>org.web4thejob</groupId>
     <artifactId>web4thejob</artifactId>
     <name>web4thejob descriptor</name>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>3.3.0</version>
     <packaging>pom</packaging>
     <url>http://web4thejob.org</url>
     <inceptionYear>2009</inceptionYear>
@@ -55,9 +54,9 @@
     </developers>
 
     <scm>
-        <url>http://web4thejob.googlecode.com/svn/trunk</url>
-        <connection>scm:svn:http://web4thejob.googlecode.com/svn/trunk</connection>
-        <developerConnection>scm:svn:https://web4thejob.googlecode.com/svn/trunk</developerConnection>
+        <url>http://web4thejob.googlecode.com/svn/tags/web4thejob-3.3.0</url>
+        <connection>scm:svn:http://web4thejob.googlecode.com/svn/tags/web4thejob-3.3.0</connection>
+        <developerConnection>scm:svn:https://web4thejob.googlecode.com/svn/tags/web4thejob-3.3.0</developerConnection>
     </scm>
 
     <licenses>
