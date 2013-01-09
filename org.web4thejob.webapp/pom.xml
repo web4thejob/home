@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.web4thejob</groupId>
         <artifactId>web4thejob</artifactId>
-        <version>3.2.1-SNAPSHOT</version>
+        <version>3.3.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -106,7 +106,7 @@
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.26</version>
                 <configuration>
-                    <useTestClasspath>true</useTestClasspath>
+                    <useTestClasspath>false</useTestClasspath>
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                             <port>8080</port>
@@ -129,6 +129,7 @@
                             <goal>start-server</goal>
                         </goals>
                         <configuration>
+                            <skip>true</skip>
                             <background>true</background>
                         </configuration>
                     </execution>

@@ -76,6 +76,7 @@
                 <prop key="hibernate.jdbc.use_get_generated_keys">true</prop>
                 <prop key="hibernate.dialect">${datasource.dialect}</prop>
                 <prop key="hibernate.default_schema">${datasource.default_schema}</prop>
+                <!--<prop key="hibernate.default_catalog">${datasource.default_schema}</prop>-->
                 <prop key="hibernate.show_sql">${datasource.show_sql}</prop>
 
                 <prop key="hibernate.cache.use_second_level_cache">true</prop>
@@ -92,8 +93,6 @@
         <property name="classpathMappingResources">
             <array>
                 <value>classpath*:org/web4thejob/orm/**/*.hbm.xml</value>
-                <!--<value>classpath*:job/physioactive/**/*.hbm.xml</value>-->
-                <!--<value>classpath*:job/myprojects/**/*.hbm.xml</value>-->
                 <value>${joblet.resources}</value>
             </array>
         </property>
