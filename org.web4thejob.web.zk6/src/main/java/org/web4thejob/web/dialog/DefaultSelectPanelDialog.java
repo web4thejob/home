@@ -101,7 +101,7 @@ public class DefaultSelectPanelDialog extends AbstractDialog implements SelectPa
         header.setParent(listboxPanels.getListhead());
         header.setSort("auto");
 
-        for (Panel panel : ContextUtil.getSessionContext().getPanels(ContentPanel.class)) {
+        for (org.web4thejob.web.panel.Panel panel : ContextUtil.getSessionContext().getPanels(ContentPanel.class)) {
             if (panel != null) {
                 Listitem item = new Listitem();
                 item.setParent(listboxPanels);
@@ -170,7 +170,7 @@ public class DefaultSelectPanelDialog extends AbstractDialog implements SelectPa
         header.setParent(listboxLayouts.getListhead());
         header.setSort("auto");
 
-        for (Panel panel : ContextUtil.getSessionContext().getPanels(LayoutPanel.class)) {
+        for (org.web4thejob.web.panel.Panel panel : ContextUtil.getSessionContext().getPanels(LayoutPanel.class)) {
             if (panel != null && !ContentPanel.class.isInstance(panel)) {
                 Listitem item = new Listitem();
                 item.setParent(listboxLayouts);
