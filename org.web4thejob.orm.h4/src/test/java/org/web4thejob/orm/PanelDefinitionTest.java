@@ -47,7 +47,7 @@ public class PanelDefinitionTest extends AbstractHibernateDependentTest {
 
         PanelDefinition definition = entityFactory.buildPanelDefinition();
         definition.setBeanId("123");
-        definition.setDefinition("1");
+        definition.setDefinition(sb.toString());
         definition.setDescription(sb.toString());
         definition.setName("fdsbfhsd");
         definition.setType("123");

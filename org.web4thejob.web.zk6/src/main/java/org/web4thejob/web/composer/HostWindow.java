@@ -48,19 +48,9 @@ public class HostWindow implements Composer<Window>, EventListener<ClientInfoEve
 //            Module coreModule = ContextUtil.getModules().get(0);
 //            hostWindow.setTitle(coreModule.getProjectName() + " v" + coreModule.getVersion());
 
-            PanelDefinition desktop = ORMUtil.getUserDesktop();
-
-            DesktopLayoutPanel desktopLayoutPanel = null;
-            if (desktop != null) {
-                //if error, fall back to default desktop
-                desktopLayoutPanel = (DesktopLayoutPanel) ContextUtil.getPanelSafe(desktop.getBeanId());
-            }
-            if (desktopLayoutPanel == null) {
-                desktopLayoutPanel = ContextUtil.getBean(DesktopLayoutPanel.class);
-            }
-
             Executions.getCurrent().getSession().setAttribute(Attributes.PREFERRED_LOCALE, CoreUtil.getUserLocale());
 
+            DesktopLayoutPanel desktopLayoutPanel = getUserDesktop();
             desktopLayoutPanel.attach(hostWindow);
             desktopLayoutPanel.render();
 
@@ -88,4 +78,21 @@ public class HostWindow implements Composer<Window>, EventListener<ClientInfoEve
         ContextUtil.getSessionContext().setAttribute(SessionInfoPanel.ATTRIB_CLIENT_INFO, event);
     }
 
+    public DesktopLayoutPanel getUserDesktop() {
+        DesktopLayoutPanel desktopLayoutPanel = null;
+
+        PanelDefinition desktop = ORMUtil.getUserDesktop();
+        if (desktop != null) {
+            desktopLayoutPanel = (DesktopLayoutPanel) ContextUtil.getPanelSafe(desktop.getBeanId());
+        }
+        if (desktopLayoutPanel == null) {
+            //if error, fall back to default desktop
+            desktopLayoutPanel = ContextUtil.getBean(DesktopLayoutPanel.class);
+        }
+
+        ContextUtil.getSessionContext().setAttribute(org.web4thejob.web.panel.Attributes.ATTRIB_DESKTOP,
+                desktopLayoutPanel);
+
+        return desktopLayoutPanel;
+    }
 }

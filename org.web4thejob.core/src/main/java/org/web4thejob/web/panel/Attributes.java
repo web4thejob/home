@@ -30,5 +30,6 @@ public interface Attributes {
     public static final String ATTRIB_PANEL = "regionPanel";
     public static final String ATTRIB_DATA_BINDER = "dataBinder";
     public static final String ATTRIB_CUT_PASTE_PANEL = "cut-paste-panel";
+    public static final String ATTRIB_DESKTOP = "user-desktop";
 
 }

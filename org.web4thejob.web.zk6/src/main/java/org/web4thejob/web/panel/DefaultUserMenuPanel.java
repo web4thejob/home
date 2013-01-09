@@ -88,7 +88,7 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
             }
         }
 
-
+        rootItem.setOpen(true);
     }
 
     private Treeitem appendTreeNode(Element node, Treeitem parentItem) {
@@ -133,6 +133,7 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
         cell.setParent(item.getTreerow());
         cell.setStyle("white-space:nowrap;");
         item.setTooltiptext(name);
+        item.setAttribute(DefaultMenuAuthorizationPanel.ELEMENT_MENU, name);
 
         return item;
     }
@@ -194,5 +195,56 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
             rendered = false;
         }
         super.processMessage(message);
+    }
+
+    @Override
+    public String findNextPanel(String beanid) {
+        boolean found = false;
+
+        for (Component component : treeMenu.getItems()) {
+            if (component.hasAttribute(DefaultMenuAuthorizationPanel.ELEMENT_PANEL)) {
+                if (found) {
+                    return (String) component.getAttribute(DefaultMenuAuthorizationPanel.ELEMENT_PANEL);
+                }
+
+                found = beanid.equals(component.getAttribute(DefaultMenuAuthorizationPanel.ELEMENT_PANEL));
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public String findPreviousPanel(String beanid) {
+        String previd = null;
+
+        for (Component component : treeMenu.getItems()) {
+            if (component.hasAttribute(DefaultMenuAuthorizationPanel.ELEMENT_PANEL)) {
+                if (beanid.equals(component.getAttribute(DefaultMenuAuthorizationPanel.ELEMENT_PANEL)) && previd !=
+                        null) {
+                    return previd;
+
+                }
+
+                previd = (String) component.getAttribute(DefaultMenuAuthorizationPanel.ELEMENT_PANEL);
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean select(String beanid) {
+        for (Component component : treeMenu.getItems()) {
+            if (beanid.equals(component.getAttribute(DefaultMenuAuthorizationPanel.ELEMENT_PANEL)) || beanid.equals
+                    (component.getAttribute(DefaultMenuAuthorizationPanel.ELEMENT_MENU))) {
+                ((Treeitem) component).setSelected(true);
+                if (((Treeitem) component).getParentItem() != null) {
+                    ((Treeitem) component).getParentItem().setOpen(true);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

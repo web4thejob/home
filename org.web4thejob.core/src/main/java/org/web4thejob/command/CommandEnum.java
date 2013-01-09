@@ -57,7 +57,6 @@ public class CommandEnum implements Comparable<CommandEnum> {
             false,
             true);
 
-    public static final CommandEnum HIDE_SETTINGS = new CommandEnum("HIDE_SETTINGS");
     public static final CommandEnum DESIGN_PANEL = new CommandEnum("DESIGN_PANEL", CommandEnum.CATEGORY_DEFAULT,
             true, true,
             new CommandEnum[]{DESIGN_PANEL_ENTITY_VIEW,
@@ -126,10 +125,11 @@ public class CommandEnum implements Comparable<CommandEnum> {
             true, true);
     public static final CommandEnum DESTROY_PANEL = new CommandEnum("DESTROY_PANEL", CommandEnum.CATEGORY_DEFAULT,
             true, true);
+    public static final CommandEnum RUNNING_MODE = new CommandEnum("RUNNING_MODE");
 
     public static final CommandEnum DESIGN = new CommandEnum("DESIGN", CommandEnum.CATEGORY_DEFAULT, true, true,
-            new CommandEnum[]{CONFIGURE_SETTINGS, SAVE_PANEL, SAVE_PANEL_AS, HIDE_SETTINGS,
-                    RENDER_SETTINGS, HIGHLIGHT_PANEL, CUT, PASTE, DESTROY_PANEL});
+            new CommandEnum[]{CONFIGURE_SETTINGS, SAVE_PANEL, SAVE_PANEL_AS,
+                    RENDER_SETTINGS, HIGHLIGHT_PANEL, CUT, PASTE, DESTROY_PANEL, RUNNING_MODE});
 
     // always last
     public static final CommandEnum LOCALIZE = new CommandEnum("LOCALIZE", CommandEnum.CATEGORY_DEFAULT, true, true);

@@ -18,6 +18,8 @@
 
 package org.web4thejob.web.panel;
 
+import java.util.List;
+
 /**
  * <p>Marker interface for desktop panels.</p>
  *
@@ -26,5 +28,7 @@ package org.web4thejob.web.panel;
  */
 
 public interface DesktopLayoutPanel extends LayoutPanel {
+
+    public <T extends Panel> List<T> getActiveInstances(Class<T> panelType);
 
 }

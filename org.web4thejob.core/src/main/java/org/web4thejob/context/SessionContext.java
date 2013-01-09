@@ -23,6 +23,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.web4thejob.security.SecurityContext;
+import org.web4thejob.web.panel.DesktopLayoutPanel;
 import org.web4thejob.web.panel.Panel;
 
 import java.util.List;
@@ -58,6 +59,7 @@ public interface SessionContext extends ConfigurableApplicationContext {
     @CacheEvict(value = "session-cache", allEntries = true)
     public void refresh() throws BeansException, IllegalStateException;
 
+    public DesktopLayoutPanel getUserDesktop();
 }
 
 

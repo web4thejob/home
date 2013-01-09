@@ -780,4 +780,16 @@ public abstract class ZkUtil {
         }
 
     }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends org.web4thejob.web.panel.Panel> void appendPanelsOfType(Component parent,
+                                                                                     Class<T> panelType, List<T> list) {
+        for (Component child : parent.getChildren()) {
+            if (panelType.isInstance(child.getAttribute(OWNING_PANEL))) {
+                list.add((T) child.getAttribute(OWNING_PANEL));
+            }
+            appendPanelsOfType(child, panelType, list);
+        }
+    }
+
 }

@@ -146,6 +146,8 @@ import java.util.List;
     private boolean isDiscriminatorDuplicate(String propertyName) {
         if (persistentClass instanceof RootClass) return false;
         if (persistentClass.getRootClass().getDiscriminator() == null) return false;
+        if (persistentClass.getProperty(propertyName) == null) return false;
+        if (!persistentClass.getProperty(propertyName).getColumnIterator().hasNext()) return false;
 
         Object dcolumn = persistentClass.getRootClass().getDiscriminator().getColumnIterator().next();
         Object pcolumn = persistentClass.getProperty(propertyName).getColumnIterator().next();

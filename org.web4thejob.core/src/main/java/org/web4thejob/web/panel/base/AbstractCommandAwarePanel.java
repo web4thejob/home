@@ -316,7 +316,7 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         if (CommandEnum.LOCALIZE.equals(command.getId())) {
             final Dialog dialog = ContextUtil.getDefaultDialog(LocalizationDialog.class, this);
             dialog.show(null);
-        } else if (CommandEnum.HIDE_SETTINGS.equals(command.getId())) {
+        } else if (CommandEnum.RUNNING_MODE.equals(command.getId())) {
             setInDesignMode(false);
             render();
         } else if (CommandEnum.RENDER_SETTINGS.equals(command.getId())) {

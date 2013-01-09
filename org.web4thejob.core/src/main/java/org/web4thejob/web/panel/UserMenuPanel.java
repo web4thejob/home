@@ -24,4 +24,10 @@ package org.web4thejob.web.panel;
  */
 
 public interface UserMenuPanel extends ContentPanel {
+
+    public String findNextPanel(String beanid);
+
+    public String findPreviousPanel(String beanid);
+
+    public boolean select(String beanid);
 }

@@ -57,5 +57,6 @@ public enum MessageEnum {
     BIND_DIRECT,
 
     PANEL_COPY_START,
-    PANEL_COPY_END
+    PANEL_COPY_END,
+    EXECUTE_SECURED_RESOURCE
 }

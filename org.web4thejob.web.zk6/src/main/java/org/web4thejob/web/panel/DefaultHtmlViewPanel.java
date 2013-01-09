@@ -74,7 +74,7 @@ public class DefaultHtmlViewPanel extends AbstractMutablePanel implements HtmlVi
         arrangeForMutableMode();
     }
 
-    private void arrangeForMutableMode() {
+    protected void arrangeForMutableMode() {
         if (comp != null) {
             comp.detach();
             comp = null;

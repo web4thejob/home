@@ -32,6 +32,8 @@ import org.springframework.core.io.Resource;
 import org.web4thejob.orm.PanelDefinition;
 import org.web4thejob.security.SecurityContext;
 import org.web4thejob.util.CoreUtil;
+import org.web4thejob.web.panel.Attributes;
+import org.web4thejob.web.panel.DesktopLayoutPanel;
 import org.web4thejob.web.panel.Panel;
 
 import java.io.IOException;
@@ -49,6 +51,8 @@ public class DefaultSessionContext extends AbstractRefreshableApplicationContext
 
     @Autowired
     private SecurityContext securityContext;
+
+    private DesktopLayoutPanel desktopLayoutPanel;
 
     @Override
     protected void loadBeanDefinitions(final DefaultListableBeanFactory beanFactory) throws BeansException,
@@ -142,5 +146,10 @@ public class DefaultSessionContext extends AbstractRefreshableApplicationContext
             }
         }
         return false;
+    }
+
+    @Override
+    public DesktopLayoutPanel getUserDesktop() {
+        return getAttribute(Attributes.ATTRIB_DESKTOP);
     }
 }

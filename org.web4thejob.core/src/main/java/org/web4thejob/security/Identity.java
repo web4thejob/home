@@ -27,7 +27,9 @@ import org.web4thejob.orm.Entity;
  * @since 1.0.4
  */
 public interface Identity extends Entity {
+    public static final String FLD_ID = "id";
     public static final String FLD_CODE = "code";
+    public static final String FLD_EMAIL = "email";
 
     public void setId(long id);
 
