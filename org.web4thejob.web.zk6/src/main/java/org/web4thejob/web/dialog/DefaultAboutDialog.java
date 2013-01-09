@@ -24,6 +24,8 @@ import org.web4thejob.util.L10nMessages;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.*;
 
+import java.util.Calendar;
+
 /**
  * @author Veniamin Isaias
  * @since 1.0.0
@@ -46,7 +48,7 @@ public class DefaultAboutDialog extends AbstractDialog implements AboutDialog {
     protected void prepareContentLayout() {
         super.prepareContentLayout();
         window.setMaximizable(false);
-        window.setHeight("500px");
+        window.setHeight("550px");
         window.setWidth("600px");
     }
 
@@ -67,10 +69,13 @@ public class DefaultAboutDialog extends AbstractDialog implements AboutDialog {
         vbox.setPack("center");
         vbox.setSpacing("10px");
 
+        Separator separator = new Separator();
+        separator.setParent(vbox);
+
         A image = new A();
         image.setParent(vbox);
         image.setImage("img/w4tj_logo_vertical_full.png");
-        image.setHref("http://www.web4thejob.org");
+        image.setHref("http://web4thejob.org");
         image.setTarget("_blank");
 
         Label label = new Label();
@@ -78,16 +83,19 @@ public class DefaultAboutDialog extends AbstractDialog implements AboutDialog {
         label.setStyle("font-size:16pt;");
         label.setValue("version " + ContextUtil.getModules().get(0).getVersion());
 
-        label = new Label();
-        label.setParent(vbox);
-        label.setStyle("font-size:12pt;");
-        label.setValue("Copyright 2012");
+        Html html = new Html();
+        html.setParent(vbox);
+        html.setZclass("z-label");
+        html.setStyle("font-size:12pt;");
+        html.setContent("Copyright &copy; 2012" +
+                (java.util.Calendar.getInstance().get(Calendar.YEAR) > 2012 ? "-" + java.util.Calendar.getInstance()
+                        .get(Calendar.YEAR) : "") + " Veniamin Isaias");
 
         Space space = new Space();
         space.setSpacing("20px");
         space.setParent(vbox);
 
-        Html html = new Html();
+        html = new Html();
         html.setParent(vbox);
         html.setZclass("z-label");
         html.setStyle("font-size:12pt;color:#0097D9;");
