@@ -58,7 +58,29 @@ public class PanelDefinitionTest extends AbstractHibernateDependentTest {
 
     @Test(expected = DataIntegrityViolationException.class)
     public void uniqueNameCheck() {
-        persistenceTest();
-        persistenceTest();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i <= 1000000; i++) {
+            sb.append("a");
+        }
+
+        PanelDefinition definition1 = entityFactory.buildPanelDefinition();
+        definition1.setBeanId("the-same-beanid");
+        definition1.setDefinition(sb.toString());
+        definition1.setDescription(sb.toString());
+        definition1.setName("AAA");
+        definition1.setType("123");
+        definition1.setOwner(ContextUtil.getBean(SecurityService.class).getAdministratorIdentity());
+        dataWriterService.save(definition1);
+        Assert.assertTrue(definition1.getId() > 0);
+
+        PanelDefinition definition2 = entityFactory.buildPanelDefinition();
+        definition2.setBeanId("the-same-beanid");
+        definition2.setDefinition(sb.toString());
+        definition2.setDescription(sb.toString());
+        definition2.setName("BBB");
+        definition2.setType("456");
+        definition2.setOwner(ContextUtil.getBean(SecurityService.class).getAdministratorIdentity());
+        dataWriterService.save(definition2);
+
     }
 }
