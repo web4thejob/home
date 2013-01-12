@@ -1,20 +1,61 @@
-v3.2.1
+v3.3.1
 -----------------------------------------------------------
-1. Addition of org.web4thejob.orm.serial.CurrentUser
-2. Highlight color of unsaved panels changed to red.
-3. Upon creation child panels inherit the hightlight state of their parent.
-4. Notifications for changes in persisted criterion (values+conditions) and orderby (descending) entities are cancelled.
-5. Change notifications in query and render schemes are supressed when the user does not have the UPDATE command.
-6. New home_header.png
-7. Addition of w4tj_powered.png at login.html
-8. By default the locale of the admin user created by the First Use Wizard is set to Locale.getDefault()
-9. RenderSchemeUtil.createDefaultRenderScheme uses Locale.getDefault() in order to resolve the problem of multiple unwanted locale generations during a ContextRefreshedEvent
-10. Introduction of AdhocConstraintViolation for raising custom bussiness constraint violations.
-11. Added Identity Email
-12. Navigation links for non-admins appear only if DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE parameter is set
-13. New Parameter Categories: DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE, DEFAULT_LIST_VIEW_FOR_TARGET_TYPE,DEFAULT_QUERY_FOR_TARGET_TYPE, DEFAULT_QUERY_FOR_PATH
-14. Function extractFormatForDatebox for applying render element formats to Datebox
-15. Use of CoreUtil.getDefaultListViewName for listbox generation
+1 . Change of Command names
+2 . Dashboard panel
+3 . Project wide Copyright update
+4 . Correction with zk imports
+5 . Sandbox requirements
+6 . Visual improvements
+7 . Default query for HtmlViewPanel
+8 . Introduction of NavigationChainPanel
+9 . Polymorphic ModelHierarchyPanel
+10. Removal of clear command from Authorization Policy editor
+11. Usage of user full name
+12. Parameters polymorphism
+13. Remember me service with cookies
+14. Upgrade of base framework components: springframework 3.1.3.RELEASE, springsecurity 3.1.3.RELEASE, joda 2.1, hsqldb 2.2.9
+15. User name and Role authority become common field as Identity.code and email gets uk constraint
+16. Use of natural-id tag
+17. UK constraints are applied on superclasses also
+18. Schema selection textbox in sm for creating joblet panels
+19. Restrict sm.zul to admins only
+20. New labels for messages and settings
+21. Minimal configuration for ehcache
+22. Improvements in wizard's startup menu
+23. Addition and honor of deny-delete entity meta attribute
+24. Default render schemes don't include surrogate ids
+25. Correction of layers module ordinal number
+26. Addition of SCLASS setting
+27. Addition of DISABLE_CROSS_TAB_BINDING setting
+28. Desktop backround image
+29. Initial support for orm inheritance
+30. Desktop is now a traditional BorderLayoutPanel
+31. Addition of UserMenuPanel
+32. Support for multi line schema script
+33. Correction in extractFormatForDatebox
+34. Removal of unecessary save of admin user
+35. If not user desktop exists, look for role desktop
+36. Refresh context after panel deletion
+37. Introduction of AdhocConstraintViolation for raising custom bussiness constraint violations
+38. Transfer of functions from ORMUtil to CoreUtil
+39. Use of CoreUtil.getDefaultListViewName for listbox generation
+40. Function extractFormatForDatebox for applying render element formats to Datebox
+41. New Parameter Categories: DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE, DEFAULT_LIST_VIEW_FOR_TARGET_TYPE,DEFAULT_QUERY_FOR_TARGET_TYPE, DEFAULT_QUERY_FOR_PATH
+42. NOT_OK icon
+43. Usage of CoreUtil.getDefaultQueryForPath()
+44. applyCurrentCritriaValues calls Entity.calculate() after criteria application
+45. Navigation links for non-admins appear only if DEFAULT_ENTITY_VIEW_FOR_TARGET_TYPE parameter is set
+46. Get editable components based on render elements
+47. Avoid setting parameter value when it is already set for Role
+48. Added Identity Email
+49. Administrators can disable navigation links by defining the default entity view panel for a target type and then by revoking this panel.
+50. RenderSchemeUtil.createDefaultRenderScheme uses Locale.getDefault() in order to resolve the problem of multiple unwanted locale generations during a ContextRefreshedEvent
+51. By default the locale of the admin user created by the First Use Wizard is set to Locale.getDefault()
+52. Change notifications in query and render schemes are supressed when the user does not have the UPDATE command
+53. Notifications for changes in persisted criterion (values+conditions) and orderby (descending) entities are cancelled
+54. Upon creation child panels inherit the hightlight state of their parent
+55. Highlight color of unsaved panels changed to red
+56. login page enhancements
 
 v3.2.0
 -----------------------------------------------------------
