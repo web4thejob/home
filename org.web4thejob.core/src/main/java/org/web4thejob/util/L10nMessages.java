@@ -45,8 +45,11 @@ public interface L10nMessages {
             "Click");
     public static final L10nString L10N_MSG_PREPARE_FIRST_USE = new L10nString("label_prepare_first_use",
             "Preparing environment for first use...");
+    public static final L10nString L10N_NAME_DEFAULT_ADMINISTRATORS_MENU = new L10nString
+            ("name_default_administrators_menu",
+            "Administrative Access");
     public static final L10nString L10N_NAME_DEFAULT_SECURITY_MENU = new L10nString("name_default_security_menu",
-            "System Security");
+            "Security Panels");
     public static final L10nString L10N_NAME_DEFAULT_PANELS_MENU = new L10nString("name_default_panels_menu",
             "System Panels");
     public static final L10nString L10N_NAME_DEFAULT_PARAMETERS_MENU = new L10nString("name_default_parameters_menu",

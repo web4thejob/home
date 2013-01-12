@@ -15,7 +15,7 @@
             font-size:14.0pt;line-height:115%;color:#4F81BD;
         }
         .contentLink {
-            font-size:14.0pt;line-height:115%;color:#B2BD50;
+            font-size:14.0pt;line-height:115%;color:#6E9B1C;
         }
     </style>
 
@@ -45,10 +45,12 @@
             <south border="none" height="40px" collapsible="false" splittable="false">
                 <hlayout hflex="true" vflex="true">
                     <hbox hflex="true" vflex="true" pack="start" align="center" style="margin-left:10px;">
-                        <button id="btnPrev" label="Previous" disabled="true" width="120px" mold="trendy"/>
+                        <button id="btnPrev" label="Previous" disabled="true" width="120px" mold="trendy"
+                            image="../img/CMD_MOVE_LEFT.png"/>
                     </hbox>
                     <hbox hflex="true" vflex="true" pack="end" align="center" style="margin-right:10px;">
-                        <button id="btnNext" label="Next" disabled="false" width="120px" mold="trendy"/>
+                        <button id="btnNext" label="Next" disabled="false" width="120px" mold="trendy"
+                            image="../img/CMD_MOVE_RIGHT.png" dir="reverse"/>
                     </hbox>
                 </hlayout>
             </south>

@@ -25,6 +25,7 @@ import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.orm.query.Subquery;
 import org.web4thejob.orm.scheme.RenderElement;
+import org.web4thejob.security.Identity;
 import org.web4thejob.security.RoleIdentity;
 import org.web4thejob.security.RoleMembers;
 import org.web4thejob.util.CoreUtil;
@@ -107,7 +108,8 @@ public class ORMUtil {
         return null;
     }
 
-    public static String persistPanel(org.web4thejob.web.panel.Panel panel, String description, String extraTags) {
+    public static String persistPanel(org.web4thejob.web.panel.Panel panel, String description, String extraTags,
+                                      Identity owner) {
         String xml = panel.toSpringXml();
         String beanid = XMLUtil.getRootElementId(xml);
         PanelDefinition panelDefinition = ContextUtil.getEntityFactory().buildPanelDefinition();
@@ -115,6 +117,7 @@ public class ORMUtil {
         panelDefinition.setName(CoreUtil.cleanPanelName(panel.toString()));
         panelDefinition.setType(CoreUtil.describeClass(panel.getClass()));
         panelDefinition.setDescription(description);
+        panelDefinition.setOwner(owner);
 
         String tags = CoreUtil.tagPanel(panel);
         if (!StringUtils.hasText(extraTags)) {
@@ -126,6 +129,10 @@ public class ORMUtil {
         panelDefinition.setDefinition(XMLUtil.toSpringBeanXmlResource(xml));
         ContextUtil.getDWS().save(panelDefinition);
         return beanid;
+    }
+
+    public static String persistPanel(org.web4thejob.web.panel.Panel panel, String description, String extraTags) {
+        return persistPanel(panel, description, extraTags, null);
     }
 
     public static String persistPanel(org.web4thejob.web.panel.Panel panel) {

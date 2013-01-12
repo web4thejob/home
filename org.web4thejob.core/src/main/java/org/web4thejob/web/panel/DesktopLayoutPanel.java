@@ -21,7 +21,7 @@ package org.web4thejob.web.panel;
 import java.util.List;
 
 /**
- * <p>Marker interface for desktop panels.</p>
+ * <p>Marker interface for the Desktop panel.</p>
  *
  * @author Veniamin Isaias
  * @since 1.0.0
@@ -30,5 +30,10 @@ import java.util.List;
 public interface DesktopLayoutPanel extends LayoutPanel {
 
     public <T extends Panel> List<T> getActiveInstances(Class<T> panelType);
+
+    /**
+     * @since 3.3.1
+     */
+    public boolean addTab(Panel child);
 
 }

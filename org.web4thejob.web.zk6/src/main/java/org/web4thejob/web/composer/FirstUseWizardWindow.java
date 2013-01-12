@@ -29,6 +29,7 @@ import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PanelDefinition;
 import org.web4thejob.orm.Path;
 import org.web4thejob.orm.parameter.*;
+import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.OrderBy;
 import org.web4thejob.orm.query.Query;
@@ -257,6 +258,11 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
                     .class).getFriendlyName());
             beanIds.put(policies, ORMUtil.persistPanel(policies));
 
+            FramePanel dashboard = ContextUtil.getDefaultPanel(FramePanel.class);
+            dashboard.setSettingValue(SettingEnum.TARGET_URL, "http://web4thejob.sourceforge.net/dashboard/index.php");
+            dashboard.setSettingValue(SettingEnum.PANEL_NAME, "My Dashboard");
+            beanIds.put(dashboard, ORMUtil.persistPanel(dashboard));
+
             //----------------------------------------------------------------------------------------------------------
             //Parameters
             //----------------------------------------------------------------------------------------------------------
@@ -419,25 +425,40 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             queriesElements.render();
             beanIds.put(queriesElements, ORMUtil.persistPanel(queriesElements));
 
+            // The default desktop
+            DesktopLayoutPanel desktop = ContextUtil.getDefaultPanel(DesktopLayoutPanel.class);
+            desktop.addTab(dashboard);
+            desktop.render();
+            Query adminRoleQuery = ContextUtil.getEntityFactory().buildQuery(RoleIdentity.class);
+            adminRoleQuery.addCriterion(new Path(RoleIdentity.FLD_CODE), Condition.EQ, RoleIdentity.ROLE_ADMINISTRATOR);
+            beanIds.put(desktop, ORMUtil.persistPanel(desktop, "Administrator's default Desktop", null,
+                    (Identity) ContextUtil.getDRS()
+                    .findUniqueByQuery(adminRoleQuery)));
+
             ContextUtil.getSessionContext().refresh();
 
+            // ---------------------------------------------------------------------------------------------------
+            // Authorization Menu
+            // ---------------------------------------------------------------------------------------------------
             AuthorizationPolicyPanel policyPanel = ContextUtil.getDefaultPanel(AuthorizationPolicyPanel.class);
             policyPanel.render();
             MenuAuthorizationPanel<Treeitem> menuAuthorizationPanel = (MenuAuthorizationPanel<Treeitem>) policyPanel
                     .getMenuAuthorizationPanel();
             Treeitem rootItem = menuAuthorizationPanel.getRootItem();
+
+            Treeitem panelsMenu = menuAuthorizationPanel.renderAddedMenu(rootItem,
+                    L10nMessages.L10N_NAME_DEFAULT_PANELS_MENU.toString());
+            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(dashboard)));
+            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(panels)));
+            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(schemeElements)));
+            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(queriesElements)));
+            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(moduleInfoPanel)));
+
             Treeitem securityMenu = menuAuthorizationPanel.renderAddedMenu(rootItem,
                     L10nMessages.L10N_NAME_DEFAULT_SECURITY_MENU.toString());
             menuAuthorizationPanel.renderAddedPanel(securityMenu, ContextUtil.getPanel(beanIds.get(userRoles)));
             menuAuthorizationPanel.renderAddedPanel(securityMenu, ContextUtil.getPanel(beanIds.get(policies)));
             menuAuthorizationPanel.renderAddedPanel(securityMenu, ContextUtil.getPanel(beanIds.get(roles)));
-
-            Treeitem panelsMenu = menuAuthorizationPanel.renderAddedMenu(rootItem,
-                    L10nMessages.L10N_NAME_DEFAULT_PANELS_MENU.toString());
-            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(panels)));
-            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(schemeElements)));
-            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(queriesElements)));
-            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(moduleInfoPanel)));
 
             Treeitem paramsMenu = menuAuthorizationPanel.renderAddedMenu(rootItem,
                     L10nMessages.L10N_NAME_DEFAULT_PARAMETERS_MENU.toString());
@@ -450,7 +471,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
 
 
             AuthorizationPolicy authorizationPolicy = ContextUtil.getEntityFactory().buildAuthorizationPolicy();
-            authorizationPolicy.setName(L10nMessages.L10N_NAME_DEFAULT_SECURITY_MENU.toString());
+            authorizationPolicy.setName(L10nMessages.L10N_NAME_DEFAULT_ADMINISTRATORS_MENU.toString());
             authorizationPolicy.setDefinition(policyPanel.getDefinition());
             ContextUtil.getDWS().save(authorizationPolicy);
 

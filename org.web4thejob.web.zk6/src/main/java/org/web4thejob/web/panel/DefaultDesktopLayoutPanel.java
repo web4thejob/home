@@ -225,6 +225,8 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
             setSettingValue(SettingEnum.CENTER_ENABLED, true);
             setSettingValue(SettingEnum.WEST_ENABLED, true);
             setSettingValue(SettingEnum.WEST_OPEN, true);
+            setSettingValue(SettingEnum.WEST_SPLITTABLE, true);
+            setSettingValue(SettingEnum.WEST_COLLAPSIBLE, true);
             setSettingValue(SettingEnum.WEST_WIDTH, "250px");
             setSettingValue(SettingEnum.NORTH_ENABLED, false);
             setSettingValue(SettingEnum.EAST_ENABLED, false);
@@ -264,6 +266,16 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
         List<T> list = new ArrayList<T>();
         ZkUtil.appendPanelsOfType((Component) base, panelType, list);
         return list;
+    }
+
+    @Override
+    public boolean addTab(Panel child) {
+        Panel center = getCenter();
+        if (center instanceof ParentCapable) {
+            return ((ParentCapable) center).getSubpanels().add(child);
+        }
+
+        return false;
     }
 
 
