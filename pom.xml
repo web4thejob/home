@@ -18,7 +18,8 @@
   ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses />.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -33,7 +34,7 @@
     <version>3.3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>http://web4thejob.org</url>
-    <inceptionYear>2009</inceptionYear>
+    <inceptionYear>2012</inceptionYear>
     <description>Open source java framework for the rapid development of data centric web applications.</description>
     <organization>
         <name>web4thejob.org</name>
@@ -147,6 +148,16 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9</version>
+                <configuration>
+                    <windowtitle>web4thejob.org</windowtitle>
+                    <doctitle>web4thejob v${project.version} API</doctitle>
+                    <header>web4thejob v${project.version} API</header>
+                    <keywords>true</keywords>
+                    <top>&lt;!--#include virtual="{@docRoot}/theme.html"--&gt;</top>
+                    <notree>true</notree>
+                    <nodeprecated>true</nodeprecated>
+                    <nohelp>true</nohelp>
+                </configuration>
             </plugin>
         </plugins>
 
@@ -192,5 +203,27 @@
             <url>http://mavensync.zkoss.org/maven2</url>
         </repository>
     </repositories>
+
+    <profiles>
+        <profile>
+            <id>aggregate-javadoc</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>aggregate-jar</goal>
+                                </goals>
+                                <phase>install</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
