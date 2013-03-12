@@ -40,8 +40,8 @@ public class PanelDefinitionTest extends AbstractHibernateDependentTest {
 
     @Test
     public void persistenceTest() {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i <= 1000000; i++) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= 1000000; i++) {
             sb.append("a");
         }
 
@@ -58,8 +58,8 @@ public class PanelDefinitionTest extends AbstractHibernateDependentTest {
 
     @Test(expected = DataIntegrityViolationException.class)
     public void uniqueNameCheck() {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i <= 1000000; i++) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= 1000000; i++) {
             sb.append("a");
         }
 
