@@ -29,6 +29,16 @@
     <context:annotation-config/>
     <context:component-scan base-package="org.web4thejob"/>
 
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass" value="org.springframework.util.Log4jConfigurer"/>
+        <property name="targetMethod" value="initLogging"/>
+        <property name="arguments">
+            <list>
+                <value>classpath:org/web4thejob/conf/log4j.xml</value>
+            </list>
+        </property>
+    </bean>
+
     <import resource="classpath:org/web4thejob/conf/security-config.xml"/>
     <import resource="classpath:org/web4thejob/conf/cache-config.xml"/>
     <import resource="classpath:org/web4thejob/conf/orm-config.xml"/>
