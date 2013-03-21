@@ -20,7 +20,12 @@ package org.web4thejob.context;
 
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.web4thejob.security.SecurityUtil;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StringUtils;
+import org.web4thejob.orm.DatasourceProperties;
+
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author Veniamin Isaias
@@ -31,8 +36,19 @@ public class WebApplicationContextInitializer implements ApplicationContextIniti
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
-        if (!SecurityUtil.isFirstUse()) {
+        if (isSystemInstalled()) {
             applicationContext.getEnvironment().addActiveProfile("installed");
         }
+    }
+
+    private boolean isSystemInstalled() {
+        Properties datasource = new Properties();
+        try {
+            datasource.load(new ClassPathResource(DatasourceProperties.PATH).getInputStream());
+        } catch (IOException e) {
+            return false;
+        }
+
+        return StringUtils.hasText(datasource.getProperty(DatasourceProperties.INSTALLED));
     }
 }
