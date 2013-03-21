@@ -18,6 +18,7 @@
 
 package org.web4thejob.orm;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.web4thejob.orm.query.Query;
 
@@ -33,6 +34,7 @@ import java.util.List;
  */
 
 @Transactional
+@Repository
 public interface DataReaderService {
 
     public <E extends Entity> E findById(Class<E> entityType, Serializable id);

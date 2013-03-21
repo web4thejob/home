@@ -27,6 +27,7 @@ import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -37,7 +38,9 @@ import org.web4thejob.message.DefaultMessage;
 import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
+import org.web4thejob.module.Joblet;
 import org.web4thejob.module.Module;
+import org.web4thejob.module.SystemJoblet;
 import org.web4thejob.orm.*;
 import org.web4thejob.security.AuthorizationBeanPostProcessor;
 import org.web4thejob.security.SecurityService;
@@ -49,10 +52,7 @@ import org.web4thejob.web.dialog.Dialog;
 import org.web4thejob.web.panel.Panel;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>Utility class providing convinient methods for invoking fundamental framework beans.</p>
@@ -234,11 +234,6 @@ public class ContextUtil implements ApplicationContextAware {
         return rootContext.getBean(SecurityService.class);
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        rootContext = applicationContext;
-    }
-
     public static boolean resourceExists(String location) {
         return rootContext.getResource(location).exists();
     }
@@ -261,6 +256,30 @@ public class ContextUtil implements ApplicationContextAware {
         return Collections.unmodifiableList(modules);
     }
 
+    /**
+     * @since 3.4.0
+     */
+    public static List<Joblet> getJoblets() {
+        final List<Joblet> joblets = new ArrayList<Joblet>();
+
+        for (String bean : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(getSessionContext(), Joblet.class)) {
+            try {
+                joblets.add(rootContext.getBean(bean, Joblet.class));
+            } catch (BeansException e) {
+                //ignore
+            }
+        }
+        Collections.sort(joblets);
+        return Collections.unmodifiableList(joblets);
+    }
+
+    /**
+     * @since 3.4.0
+     */
+    public static Joblet getSystemJoblet() {
+        return rootContext.getBean(SystemJoblet.class);
+    }
+
     @SuppressWarnings("unchecked")
     public static ComponentController getComponentController(Class<? extends Entity> entityType,
                                                              Class<?> componentType) {
@@ -275,4 +294,29 @@ public class ContextUtil implements ApplicationContextAware {
         return null;
     }
 
+    /**
+     * @since 3.4.0
+     */
+    public static List<String> getActiveProfiles() {
+        return Collections.unmodifiableList(Arrays.asList(rootContext.getEnvironment().getActiveProfiles()));
+    }
+
+    /**
+     * @since 3.4.0
+     */
+    public static void addActiveProfile(String profile) {
+        ((ConfigurableApplicationContext) rootContext).getEnvironment().addActiveProfile(profile);
+    }
+
+    /**
+     * @since 3.4.0
+     */
+    public static void refresh() {
+        ((ConfigurableApplicationContext) rootContext).refresh();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        rootContext = applicationContext;
+    }
 }

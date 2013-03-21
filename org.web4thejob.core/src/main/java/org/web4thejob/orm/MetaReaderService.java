@@ -18,6 +18,8 @@
 
 package org.web4thejob.orm;
 
+import org.springframework.stereotype.Service;
+
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
@@ -34,6 +36,7 @@ import java.util.List;
  * @since 1.0.0
  */
 
+@Service
 public interface MetaReaderService {
 
     public <E extends Entity> E deproxyEntity(E entity);

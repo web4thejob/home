@@ -20,7 +20,6 @@ package org.web4thejob.orm;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.scheme.RenderScheme;
 import org.web4thejob.orm.scheme.RenderSchemeUtil;
@@ -32,7 +31,7 @@ import org.web4thejob.util.CoreUtil;
  * @since 1.0.0
  */
 
-@Component
+
 /* package */class MappingInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
     public void onApplicationEvent(ContextRefreshedEvent event) {

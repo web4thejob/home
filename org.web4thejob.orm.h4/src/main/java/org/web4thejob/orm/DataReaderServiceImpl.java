@@ -23,7 +23,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.query.*;
@@ -40,7 +39,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 
-@Repository
+
 /* package */class DataReaderServiceImpl implements DataReaderService {
     // ------------------------------ FIELDS ------------------------------
 

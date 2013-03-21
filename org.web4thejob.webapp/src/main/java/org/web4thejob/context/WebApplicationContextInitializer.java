@@ -16,28 +16,23 @@
  * along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.web4thejob.orm;
+package org.web4thejob.context;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.web4thejob.security.SecurityUtil;
 
 /**
- * <p>Service for writing {@link Entity} instances to the application datastore. Usually invoked through
- * {@link org.web4thejob.context.ContextUtil#getDWS() ContextUtil.getDWS()}.</p>
- *
  * @author Veniamin Isaias
- * @since 1.0.0
+ * @since 3.4.0
  */
 
-@Transactional
-@Repository
-public interface DataWriterService {
+public class WebApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-    public <E extends Entity> void delete(E entity);
-
-    public <E extends Entity> void save(E entity);
-
-    public <E extends Entity> void save(List<E> entities);
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+        if (!SecurityUtil.isFirstUse()) {
+            applicationContext.getEnvironment().addActiveProfile("installed");
+        }
+    }
 }

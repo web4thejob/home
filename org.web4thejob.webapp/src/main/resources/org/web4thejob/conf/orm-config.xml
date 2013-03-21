@@ -66,7 +66,6 @@
             <props>
                 <prop key="hibernate.jdbc.use_get_generated_keys">true</prop>
                 <prop key="hibernate.dialect">${datasource.dialect}</prop>
-                <prop key="hibernate.default_schema">${datasource.default_schema}</prop>
                 <prop key="hibernate.show_sql">${datasource.show_sql}</prop>
 
                 <prop key="hibernate.cache.use_second_level_cache">true</prop>
@@ -74,9 +73,6 @@
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
                 <prop key="hibernate.cache.">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
                 <prop key="net.sf.ehcache.configurationResourceName">/org/web4thejob/conf/orm-ehcache.xml</prop>
-
-                <prop key="hibernate.hbm2ddl.auto">${datasource.hbm2ddl}</prop>
-                <!--<prop key="hibernate.hbm2ddl.import_files">${datasource.sql_file}</prop>-->
             </props>
         </property>
 
@@ -98,5 +94,11 @@
             <ref bean="sessionFactory"/>
         </property>
     </bean>
+
+    <bean class="org.web4thejob.orm.MetaReaderServiceImpl"/>
+    <bean class="org.web4thejob.orm.DataReaderServiceImpl"/>
+    <bean class="org.web4thejob.orm.DataWriterServiceImpl"/>
+    <bean class="org.web4thejob.orm.serial.MyXStreamMarshaller"/>
+    <bean class="org.web4thejob.orm.MappingInitializer"/>
 </beans>
 

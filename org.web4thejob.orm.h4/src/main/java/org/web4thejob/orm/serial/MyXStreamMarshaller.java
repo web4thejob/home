@@ -26,7 +26,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.xstream.XStreamMarshaller;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 import org.web4thejob.orm.Entity;
 
@@ -37,7 +36,7 @@ import java.lang.reflect.Field;
  * @since 1.0.0
  */
 
-@Component
+
 public class MyXStreamMarshaller extends XStreamMarshaller {
 
     @Autowired

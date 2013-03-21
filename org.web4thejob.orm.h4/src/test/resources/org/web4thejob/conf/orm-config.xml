@@ -90,5 +90,12 @@
     <bean class="org.web4thejob.security.FullAccessSecurityService"/>
     <bean class="org.web4thejob.security.FullAccessSecurityContext"/>
     <bean class="org.web4thejob.context.DefaultSessionContext"/>
+
+    <bean class="org.web4thejob.orm.MetaReaderServiceImpl"/>
+    <bean class="org.web4thejob.orm.DataReaderServiceImpl"/>
+    <bean class="org.web4thejob.orm.DataWriterServiceImpl"/>
+    <bean class="org.web4thejob.orm.serial.MyXStreamMarshaller"/>
+    <bean class="org.web4thejob.orm.MappingInitializer"/>
+
 </beans>
 

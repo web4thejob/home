@@ -26,7 +26,6 @@ import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.util.ReflectionUtils;
@@ -49,7 +48,7 @@ import java.util.*;
  * @since 1.0.0
  */
 
-@Service
+
 /* package */class MetaReaderServiceImpl implements MetaReaderService {
     // ------------------------------ FIELDS ------------------------------
 

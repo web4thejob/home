@@ -18,6 +18,7 @@
 
 package org.web4thejob.web.composer;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.web4thejob.context.ContextUtil;
@@ -25,6 +26,8 @@ import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
+import org.web4thejob.module.Joblet;
+import org.web4thejob.orm.DatasourceProperties;
 import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PanelDefinition;
 import org.web4thejob.orm.Path;
@@ -46,14 +49,17 @@ import org.web4thejob.web.panel.*;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * @author Veniamin Isaias
@@ -67,16 +73,26 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
     private Component stepContainer;
     private Label stepTitle;
     private List<Step> steps = new ArrayList<Step>(3);
-
     private Step step;
 
     @Override
     public void doAfterCompose(Window comp) throws Exception {
         super.doAfterCompose(comp);
+        btnNext.addEventListener(Events.ON_CLICK + "Echo", new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Clients.clearBusy();
+                if (step.canContinue()) {
+                    stepContainer.getChildren().clear();
+                    renderStep(steps.indexOf(step) + 1);
+                }
+            }
+        });
 
-        steps.add(new Step1());
-        steps.add(new Step2());
-        steps.add(new Step3());
+        steps.add(new WelcomeStep());
+        steps.add(new LicenseStep());
+        steps.add(new DatasourceStep());
+        steps.add(new AdminPasswordStep());
         renderStep(0);
     }
 
@@ -93,24 +109,8 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
     }
 
     public void onClick$btnNext(MouseEvent event) throws Exception {
-        stepContainer.getChildren().clear();
-        renderStep(steps.indexOf(step) + 1);
-    }
-
-
-    private abstract class Step {
-
-        public abstract void render();
-    }
-
-    private class Step1 extends Step {
-        Html body;
-
-        @Override
-        public void render() {
-            stepTitle.setValue(L10nUtil.getMessage(getClass(), "title", "Welcome!"));
-            getBody(stepContainer, L10nUtil.getMessage(getClass(), "body", ""));
-        }
+        Clients.showBusy(step.getWaitMessage());
+        Events.echoEvent(Events.ON_CLICK + "Echo", btnNext, null);
     }
 
     private Html getBody(Component parent, String content) {
@@ -124,14 +124,41 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
         return body;
     }
 
-    private class Step2 extends Step {
+    private abstract class Step {
+
+        public abstract void render();
+
+        public String getWaitMessage() {
+            return null;
+        }
+
+        public boolean canContinue() {
+            return true;
+        }
+    }
+
+    private class WelcomeStep extends Step {
+        @Override
+        public void render() {
+            stepTitle.setValue(L10nUtil.getMessage(getClass(), "title", "Welcome!"));
+            getBody(stepContainer, L10nUtil.getMessage(getClass(), "body", ""));
+        }
+    }
+
+    private class LicenseStep extends Step {
+        private Vbox vlayout;
 
         @Override
         public void render() {
-            FirstUseWizardWindow.this.btnNext.setDisabled(true);
             stepTitle.setValue(L10nUtil.getMessage(getClass(), "title", "License Agreement"));
 
-            Vbox vlayout = new Vbox();
+            if (vlayout != null) {
+                vlayout.setParent(stepContainer);
+                return;
+            }
+
+            FirstUseWizardWindow.this.btnNext.setDisabled(true);
+            vlayout = new Vbox();
             vlayout.setHflex("true");
             vlayout.setVflex("true");
             vlayout.setParent(stepContainer);
@@ -159,7 +186,216 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
         }
     }
 
-    private class Step3 extends Step {
+    private class DatasourceStep extends Step {
+        private Vbox vlayout;
+        private Textbox dialect;
+        private Textbox driver;
+        private Textbox url;
+        private Textbox user;
+        private Textbox password;
+        private Textbox initial_ddl;
+        private Button test;
+        private Properties datasource;
+
+        @Override
+        public String getWaitMessage() {
+            return "Creating the datasource and installing the system joblet...";
+        }
+
+        @Override
+        public void render() {
+            stepTitle.setValue("Datasource setup");
+
+            if (vlayout != null) {
+                vlayout.setParent(stepContainer);
+                return;
+            }
+
+            vlayout = new Vbox();
+            vlayout.setHflex("true");
+            vlayout.setVflex("true");
+            vlayout.setParent(stepContainer);
+
+            getBody(vlayout, "<p>Provide the database connection string</p>").setVflex("false");
+
+            datasource = new Properties();
+            try {
+                datasource.load(new ClassPathResource(DatasourceProperties.PATH).getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Grid grid = new Grid();
+            grid.setParent(vlayout);
+            grid.setHflex("true");
+            grid.setSpan(true);
+            new Columns().setParent(grid);
+            new Rows().setParent(grid);
+            Column col;
+            Row row;
+
+            col = new Column();
+            col.setParent(grid.getColumns());
+            col.setWidth("150px");
+            col = new Column();
+            col.setParent(grid.getColumns());
+
+            row = new Row();
+            row.setParent(grid.getRows());
+            new Label("Hibernate Dialect").setParent(row);
+            dialect = new Textbox(datasource.getProperty(DatasourceProperties.DIALECT));
+            dialect.setParent(row);
+            dialect.setHflex("true");
+
+            row = new Row();
+            row.setParent(grid.getRows());
+            new Label("Driver Class").setParent(row);
+            driver = new Textbox(datasource.getProperty(DatasourceProperties.DRIVER));
+            driver.setParent(row);
+            driver.setHflex("true");
+
+            row = new Row();
+            row.setParent(grid.getRows());
+            new Label("JDBC Url").setParent(row);
+            url = new Textbox(datasource.getProperty(DatasourceProperties.URL));
+            url.setParent(row);
+            url.setHflex("true");
+
+            row = new Row();
+            row.setParent(grid.getRows());
+            new Label("User name").setParent(row);
+            user = new Textbox(datasource.getProperty(DatasourceProperties.USER));
+            user.setParent(row);
+
+            row = new Row();
+            row.setParent(grid.getRows());
+            new Label("Password").setParent(row);
+            password = new Textbox(datasource.getProperty(DatasourceProperties.PASSWORD));
+            password.setParent(row);
+            password.setType("password");
+
+            row = new Row();
+            row.setParent(grid.getRows());
+            new Label("Initial DDL").setParent(row);
+            initial_ddl = new Textbox(datasource.getProperty(DatasourceProperties.INITIAL_DDL));
+            initial_ddl.setParent(row);
+            initial_ddl.setHflex("true");
+            initial_ddl.setMultiline(true);
+            initial_ddl.setRows(3);
+
+            row = new Row();
+            row.setParent(grid.getRows());
+            test = new Button("Test Connectivity");
+            test.setMold("trendy");
+            test.setParent(row);
+            test.setAutodisable("self");
+            test.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
+                @Override
+                public void onEvent(MouseEvent event) throws Exception {
+
+                    Properties connInfo = new Properties();
+                    connInfo.setProperty(DatasourceProperties.DRIVER, driver.getText().trim());
+                    connInfo.setProperty(DatasourceProperties.URL, url.getText().trim());
+                    connInfo.setProperty(DatasourceProperties.USER, user.getText().trim());
+                    connInfo.setProperty(DatasourceProperties.PASSWORD, password.getText().trim());
+
+                    if (isConnectionValid(connInfo)) {
+                        Clients.showNotification("Connection succeeded!", "info", test, "after_center", 3000, true);
+                    } else {
+                        Clients.showNotification("Connection failed.", "error", test, "after_center", 3000, true);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public boolean canContinue() {
+            if (ContextUtil.getSystemJoblet().isInstalled()) return true;
+
+            Properties connInfo = new Properties();
+            connInfo.setProperty(DatasourceProperties.DIALECT, dialect.getText().trim());
+            connInfo.setProperty(DatasourceProperties.DRIVER, driver.getText().trim());
+            connInfo.setProperty(DatasourceProperties.URL, url.getText().trim());
+            connInfo.setProperty(DatasourceProperties.USER, user.getText().trim());
+            connInfo.setProperty(DatasourceProperties.PASSWORD, password.getText().trim());
+            connInfo.setProperty(DatasourceProperties.INITIAL_DDL, initial_ddl.getText().trim());
+
+            if (isConnectionValid(connInfo)) {
+                if (installJoblets(connInfo)) {
+                    return true;
+                } else {
+                    Clients.showNotification("Joblet installation failed.", "error", null, null, 3000, true);
+                }
+            } else {
+                Clients.showNotification("Connection failed.", "error", null, null, 3000, true);
+            }
+
+            return false;
+        }
+
+        private boolean installJoblets(Properties connInfo) {
+
+            try {
+                Joblet systemJoblet = ContextUtil.getSystemJoblet();
+                List<? extends Exception> errors = systemJoblet.install(connInfo);
+
+                if (errors == null || errors.isEmpty()) {
+                    saveDatasourceProperties(connInfo);
+                    ContextUtil.addActiveProfile("installed");
+                    ContextUtil.refresh();
+                    return true;
+                } else {
+                    for (Exception e : errors) {
+                        e.printStackTrace();
+                    }
+                }
+
+                return false;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        private void saveDatasourceProperties(Properties connInfo) throws IOException {
+            datasource.setProperty(DatasourceProperties.DIALECT, connInfo.getProperty(DatasourceProperties.DIALECT));
+            datasource.setProperty(DatasourceProperties.DRIVER, connInfo.getProperty(DatasourceProperties.DRIVER));
+            datasource.setProperty(DatasourceProperties.URL, connInfo.getProperty(DatasourceProperties.URL));
+            datasource.setProperty(DatasourceProperties.USER, connInfo.getProperty(DatasourceProperties.USER));
+            datasource.setProperty(DatasourceProperties.PASSWORD, connInfo.getProperty(DatasourceProperties.PASSWORD));
+            datasource.setProperty(DatasourceProperties.INITIAL_DDL, connInfo.getProperty(DatasourceProperties
+                    .INITIAL_DDL));
+            datasource.setProperty(DatasourceProperties.INSTALLED, ContextUtil.getSystemJoblet().getVersion());
+
+
+            FileOutputStream out = new FileOutputStream(new ClassPathResource(DatasourceProperties.PATH).getFile());
+            datasource.store(out, "Datasource properties");
+        }
+
+        private boolean isConnectionValid(Properties connInfo) {
+
+            try {
+                Class.forName(connInfo.getProperty(DatasourceProperties.DRIVER));
+            } catch (java.lang.ClassNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+            try {
+                Connection conn;
+                conn = DriverManager.getConnection(connInfo.getProperty(DatasourceProperties.URL),
+                        connInfo.getProperty(DatasourceProperties.USER), connInfo.getProperty(DatasourceProperties
+                        .PASSWORD));
+                conn.close();
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+
+    private class AdminPasswordStep extends Step {
 
         @Override
         public void render() {
@@ -433,7 +669,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             adminRoleQuery.addCriterion(new Path(RoleIdentity.FLD_CODE), Condition.EQ, RoleIdentity.ROLE_ADMINISTRATOR);
             beanIds.put(desktop, ORMUtil.persistPanel(desktop, "Administrator's default Desktop", null,
                     (Identity) ContextUtil.getDRS()
-                    .findUniqueByQuery(adminRoleQuery)));
+                            .findUniqueByQuery(adminRoleQuery)));
 
             ContextUtil.getSessionContext().refresh();
 
@@ -512,3 +748,4 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
     }
 
 }
+

@@ -21,7 +21,6 @@ package org.web4thejob.orm;
 import org.hibernate.LockOptions;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.annotation.DefaultHolder;
 import org.web4thejob.orm.query.Condition;
@@ -34,7 +33,7 @@ import java.util.List;
  * @since 1.0.0
  */
 
-@Repository
+
 /* package */class DataWriterServiceImpl implements DataWriterService {
 
     @Autowired

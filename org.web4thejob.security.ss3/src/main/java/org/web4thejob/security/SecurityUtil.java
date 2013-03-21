@@ -40,9 +40,15 @@ public class SecurityUtil {
 
     public static boolean isFirstUse() {
         if (firstUse) {
-            UserIdentity admin = ContextUtil.getSecurityService().getAdministratorIdentity();
-            firstUse = admin.getPassword().equals(ContextUtil.getSecurityService().encodePassword(admin,
-                    admin.getCode()));
+
+            try {
+                boolean installed = ContextUtil.getSystemJoblet().isInstalled();
+                boolean pchanged = ContextUtil.getSecurityService().authenticate(UserIdentity.USER_ADMIN,
+                        UserIdentity.USER_ADMIN) == null;
+                firstUse = !(installed && pchanged);
+            } catch (Exception e) {
+                //do nothing
+            }
         }
         return firstUse;
     }

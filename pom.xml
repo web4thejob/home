@@ -31,7 +31,7 @@
     <groupId>org.web4thejob</groupId>
     <artifactId>web4thejob</artifactId>
     <name>web4thejob descriptor</name>
-    <version>3.3.2-SNAPSHOT</version>
+    <version>3.4.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>http://web4thejob.org</url>
     <inceptionYear>2012</inceptionYear>
@@ -72,7 +72,7 @@
         <module>org.web4thejob.orm.h4</module>
         <module>org.web4thejob.web.zk6</module>
         <module>org.web4thejob.security.ss3</module>
-        <module>org.web4thejob.webapp</module>
+        <!--<module>org.web4thejob.webapp</module>-->
     </modules>
 
     <properties>

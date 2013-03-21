@@ -28,16 +28,20 @@ import java.util.Properties;
  */
 public abstract class AbstractModule implements Module {
 
-    private Properties properties;
+    protected Properties properties;
 
     protected AbstractModule() {
         properties = new Properties();
         try {
-            properties.load(new ClassPathResource(getClass().getSimpleName() + ".properties",
+            properties.load(new ClassPathResource(getFileName(),
                     getClass()).getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    protected String getFileName() {
+        return getClass().getSimpleName() + ".properties";
     }
 
     @Override

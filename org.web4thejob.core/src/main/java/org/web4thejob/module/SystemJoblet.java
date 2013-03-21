@@ -16,28 +16,12 @@
  * along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.web4thejob.orm;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+package org.web4thejob.module;
 
 /**
- * <p>Service for writing {@link Entity} instances to the application datastore. Usually invoked through
- * {@link org.web4thejob.context.ContextUtil#getDWS() ContextUtil.getDWS()}.</p>
- *
  * @author Veniamin Isaias
- * @since 1.0.0
+ * @since 3.4.0
  */
+public interface SystemJoblet extends Joblet {
 
-@Transactional
-@Repository
-public interface DataWriterService {
-
-    public <E extends Entity> void delete(E entity);
-
-    public <E extends Entity> void save(E entity);
-
-    public <E extends Entity> void save(List<E> entities);
 }

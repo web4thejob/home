@@ -18,26 +18,20 @@
 
 package org.web4thejob.orm;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
 /**
- * <p>Service for writing {@link Entity} instances to the application datastore. Usually invoked through
- * {@link org.web4thejob.context.ContextUtil#getDWS() ContextUtil.getDWS()}.</p>
- *
  * @author Veniamin Isaias
- * @since 1.0.0
+ * @since 3.4.0
  */
+public interface DatasourceProperties {
+    public static final String DIALECT = "datasource.dialect";
+    public static final String DRIVER = "datasource.driverClassName";
+    public static final String URL = "datasource.url";
+    public static final String USER = "datasource.username";
+    public static final String PASSWORD = "datasource.password";
+    public static final String SCHEMA = "datasource.default_schema";
+    public static final String CATALOG = "datasource.default_catalog";
+    public static final String INITIAL_DDL = "datasource.initial_ddl";
+    public static final String INSTALLED = "datasource.installed";
 
-@Transactional
-@Repository
-public interface DataWriterService {
-
-    public <E extends Entity> void delete(E entity);
-
-    public <E extends Entity> void save(E entity);
-
-    public <E extends Entity> void save(List<E> entities);
+    public static final String PATH = "/org/web4thejob/conf/datasource.properties";
 }
