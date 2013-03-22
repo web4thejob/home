@@ -188,7 +188,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
 
     private class DatasourceStep extends Step {
         private Vbox vlayout;
-        private Textbox dialect;
+        private Combobox dialect;
         private Textbox driver;
         private Textbox url;
         private Textbox user;
@@ -199,15 +199,16 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
 
         @Override
         public String getWaitMessage() {
-            return "Creating the datasource and installing the system joblet...";
+            return L10nUtil.getMessage(getClass(), "wait", null);
         }
 
         @Override
         public void render() {
-            stepTitle.setValue("Datasource setup");
+            stepTitle.setValue(L10nUtil.getMessage(getClass(), "title", ""));
 
             if (vlayout != null) {
                 vlayout.setParent(stepContainer);
+                disableStep((ContextUtil.getSystemJoblet().isInstalled()));
                 return;
             }
 
@@ -216,7 +217,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             vlayout.setVflex("true");
             vlayout.setParent(stepContainer);
 
-            getBody(vlayout, "<p>Provide the database connection string</p>").setVflex("false");
+            getBody(vlayout, L10nUtil.getMessage(getClass(), "body", "")).setVflex("false");
 
             datasource = new Properties();
             try {
@@ -228,6 +229,8 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             Grid grid = new Grid();
             grid.setParent(vlayout);
             grid.setHflex("true");
+            grid.setOddRowSclass("xxx");
+            grid.setStyle("border-color: #4F81BD;");
             grid.setSpan(true);
             new Columns().setParent(grid);
             new Rows().setParent(grid);
@@ -243,7 +246,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             row = new Row();
             row.setParent(grid.getRows());
             new Label("Hibernate Dialect").setParent(row);
-            dialect = new Textbox(datasource.getProperty(DatasourceProperties.DIALECT));
+            dialect = getHibernateDialects(datasource.getProperty(DatasourceProperties.DIALECT));
             dialect.setParent(row);
             dialect.setHflex("true");
 
@@ -283,15 +286,15 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             initial_ddl.setMultiline(true);
             initial_ddl.setRows(3);
 
-            row = new Row();
-            row.setParent(grid.getRows());
-            test = new Button("Test Connectivity");
+            test = new Button(L10nUtil.getMessage(getClass(), "test", ""));
             test.setMold("trendy");
-            test.setParent(row);
+            test.setParent(vlayout);
             test.setAutodisable("self");
             test.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
                 @Override
                 public void onEvent(MouseEvent event) throws Exception {
+
+                    if (!confirmConnectionInfo()) return;
 
                     Properties connInfo = new Properties();
                     connInfo.setProperty(DatasourceProperties.DRIVER, driver.getText().trim());
@@ -300,20 +303,38 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
                     connInfo.setProperty(DatasourceProperties.PASSWORD, password.getText().trim());
 
                     if (isConnectionValid(connInfo)) {
-                        Clients.showNotification("Connection succeeded!", "info", test, "after_center", 3000, true);
+                        Clients.showNotification(L10nUtil.getMessage(DatasourceStep.class, "connection_success", ""),
+                                "info",
+                                test, "after_center", 3000, true);
                     } else {
-                        Clients.showNotification("Connection failed.", "error", test, "after_center", 3000, true);
+                        Clients.showNotification(L10nUtil.getMessage(DatasourceStep.class, "connection_failed", ""),
+                                "error",
+                                test, "after_center", 3000, true);
                     }
                 }
             });
+
+            disableStep((ContextUtil.getSystemJoblet().isInstalled()));
+
+        }
+
+        private void disableStep(boolean disable) {
+            dialect.setDisabled(disable);
+            driver.setDisabled(disable);
+            url.setDisabled(disable);
+            user.setDisabled(disable);
+            password.setDisabled(disable);
+            initial_ddl.setDisabled(disable);
+            test.setDisabled(disable);
         }
 
         @Override
         public boolean canContinue() {
             if (ContextUtil.getSystemJoblet().isInstalled()) return true;
+            if (!confirmConnectionInfo()) return false;
 
             Properties connInfo = new Properties();
-            connInfo.setProperty(DatasourceProperties.DIALECT, dialect.getText().trim());
+            connInfo.setProperty(DatasourceProperties.DIALECT, dialect.getSelectedItem().getValue().toString());
             connInfo.setProperty(DatasourceProperties.DRIVER, driver.getText().trim());
             connInfo.setProperty(DatasourceProperties.URL, url.getText().trim());
             connInfo.setProperty(DatasourceProperties.USER, user.getText().trim());
@@ -322,12 +343,15 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
 
             if (isConnectionValid(connInfo)) {
                 if (installJoblets(connInfo)) {
+                    disableStep(true);
                     return true;
                 } else {
-                    Clients.showNotification("Joblet installation failed.", "error", null, null, 3000, true);
+                    Clients.showNotification(L10nUtil.getMessage(getClass(), "setup_failed", ""), "error", null,
+                            null, 3000, true);
                 }
             } else {
-                Clients.showNotification("Connection failed.", "error", null, null, 3000, true);
+                Clients.showNotification(L10nUtil.getMessage(getClass(), "connection_failed", ""), "error", null,
+                        null, 3000, true);
             }
 
             return false;
@@ -372,6 +396,31 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             datasource.store(out, "Datasource properties");
         }
 
+        private boolean confirmConnectionInfo() {
+            boolean confirmed = true;
+            if (dialect.getSelectedIndex() < 0) {
+                Clients.wrongValue(dialect, L10nUtil.getMessage("org.hibernate.validator.constraints.NotBlank",
+                        "message", "The field is mandatory"));
+                confirmed = false;
+            }
+            if (driver.getText().trim().length() == 0) {
+                Clients.wrongValue(driver, L10nUtil.getMessage("org.hibernate.validator.constraints.NotBlank",
+                        "message", "The field is mandatory"));
+                confirmed = false;
+            }
+            if (url.getText().trim().length() == 0) {
+                Clients.wrongValue(url, L10nUtil.getMessage("org.hibernate.validator.constraints.NotBlank",
+                        "message", "The field is mandatory"));
+                confirmed = false;
+            }
+            if (user.getText().trim().length() == 0) {
+                Clients.wrongValue(user, L10nUtil.getMessage("org.hibernate.validator.constraints.NotBlank",
+                        "message", "The field is mandatory"));
+                confirmed = false;
+            }
+            return confirmed;
+        }
+
         private boolean isConnectionValid(Properties connInfo) {
 
             try {
@@ -392,6 +441,24 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
                 e.printStackTrace();
                 return false;
             }
+        }
+
+        private Combobox getHibernateDialects(String def) {
+            Combobox dialects = new Combobox();
+            dialects.setReadonly(true);
+
+            StringTokenizer tokenizer = new StringTokenizer(L10nUtil.getMessage(getClass(), "dialects", ""), "|;");
+            while (tokenizer.hasMoreTokens()) {
+                Comboitem item = new Comboitem(tokenizer.nextToken());
+                item.setValue(tokenizer.nextToken());
+                item.setParent(dialects);
+
+                if (item.getValue().equals(def)) {
+                    dialects.setSelectedItem(item);
+                }
+            }
+
+            return dialects;
         }
     }
 
