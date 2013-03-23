@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
+ * <p>The contract interface for all joblet modules.</p>
+ *
  * @author Veniamin Isaias
  * @since 3.4.0
  */
