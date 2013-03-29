@@ -19,15 +19,15 @@
 package org.web4thejob.orm;
 
 import junit.framework.Assert;
+import my.joblet.Detail;
+import my.joblet.Master1;
+import my.joblet.Master2;
+import my.joblet.Reference1;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 import org.web4thejob.context.ContextUtil;
-import org.web4thejob.orm.mapping.Detail;
-import org.web4thejob.orm.mapping.Master1;
-import org.web4thejob.orm.mapping.Master2;
-import org.web4thejob.orm.mapping.Reference1;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.OrderBy;

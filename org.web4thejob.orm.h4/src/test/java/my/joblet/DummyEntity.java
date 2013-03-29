@@ -16,7 +16,7 @@
  * along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.web4thejob.orm.mapping;
+package my.joblet;
 
 import org.web4thejob.orm.AbstractHibernateEntity;
 import org.web4thejob.orm.Entity;

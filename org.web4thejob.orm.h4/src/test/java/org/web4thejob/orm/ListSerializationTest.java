@@ -19,10 +19,10 @@
 package org.web4thejob.orm;
 
 import junit.framework.Assert;
+import my.joblet.Reference1;
 import org.junit.Test;
 import org.springframework.oxm.Marshaller;
 import org.web4thejob.context.ContextUtil;
-import org.web4thejob.orm.mapping.Reference1;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;

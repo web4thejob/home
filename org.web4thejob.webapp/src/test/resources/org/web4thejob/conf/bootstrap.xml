@@ -44,5 +44,8 @@
     <import resource="classpath:org/web4thejob/conf/orm-config.xml"/>
     <import resource="classpath:org/web4thejob/conf/web-config.xml"/>
 
+    <!--Test joblet-->
+    <import resource="classpath:org/web4thejob/conf/joblet-config.xml"/>
+
 </beans>
 

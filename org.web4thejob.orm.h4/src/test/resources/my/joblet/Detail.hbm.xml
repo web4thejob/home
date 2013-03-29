@@ -20,16 +20,16 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 4 ??? 2011 9:43:33 ?? by Hibernate Tools 3.4.0.CR1 -->
-<hibernate-mapping schema="w4tj">
-    <class name="org.web4thejob.orm.mapping.Detail" table="DETAIL">
+<hibernate-mapping schema="myjob">
+    <class name="my.joblet.Detail" table="DETAIL">
         <composite-id name="id"
-                      class="org.web4thejob.orm.mapping.DetailId">
+                      class="my.joblet.DetailId">
             <key-many-to-one name="master1"
-                             class="org.web4thejob.orm.mapping.Master1" column="MASTER1" foreign-key="DETAIL_MASTER1"/>
+                             class="my.joblet.Master1" column="MASTER1" foreign-key="DETAIL_MASTER1"/>
             <key-property name="keyString"
                           type="string" column="KEY_STRING"/>
             <key-many-to-one name="master2"
-                             class="org.web4thejob.orm.mapping.Master2" column="MASTER2"/>
+                             class="my.joblet.Master2" column="MASTER2"/>
             <key-property name="keyLong"
                           type="long" column="KEY_LONG"/>
         </composite-id>

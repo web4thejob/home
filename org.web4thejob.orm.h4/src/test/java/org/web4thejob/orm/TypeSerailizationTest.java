@@ -19,14 +19,14 @@
 package org.web4thejob.orm;
 
 import junit.framework.Assert;
+import my.joblet.Detail;
+import my.joblet.Master1;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 import org.web4thejob.context.ContextUtil;
-import org.web4thejob.orm.mapping.Detail;
-import org.web4thejob.orm.mapping.Master1;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.security.SecurityService;
 

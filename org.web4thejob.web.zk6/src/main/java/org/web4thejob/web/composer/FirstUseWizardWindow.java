@@ -21,12 +21,14 @@ package org.web4thejob.web.composer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.module.Joblet;
+import org.web4thejob.module.JobletInstaller;
 import org.web4thejob.orm.DatasourceProperties;
 import org.web4thejob.orm.ORMUtil;
 import org.web4thejob.orm.PanelDefinition;
@@ -56,9 +58,6 @@ import org.zkoss.zul.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -193,9 +192,11 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
         private Textbox url;
         private Textbox user;
         private Textbox password;
-        private Textbox initial_ddl;
+        private Textbox schemaSyntax;
+        private Checkbox createSchema;
         private Button test;
         private Properties datasource;
+        private JobletInstaller jobletInstaller;
 
         @Override
         public String getWaitMessage() {
@@ -204,6 +205,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
 
         @Override
         public void render() {
+            jobletInstaller = ContextUtil.getBean(JobletInstaller.class);
             stepTitle.setValue(L10nUtil.getMessage(getClass(), "title", ""));
 
             if (vlayout != null) {
@@ -226,83 +228,173 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
                 e.printStackTrace();
             }
 
-            Grid grid = new Grid();
-            grid.setParent(vlayout);
-            grid.setHflex("true");
-            grid.setOddRowSclass("xxx");
-            grid.setStyle("border-color: #4F81BD;");
-            grid.setSpan(true);
-            new Columns().setParent(grid);
-            new Rows().setParent(grid);
-            Column col;
-            Row row;
+            Cell cell;
+            Label lbl;
 
-            col = new Column();
-            col.setParent(grid.getColumns());
-            col.setWidth("150px");
-            col = new Column();
-            col.setParent(grid.getColumns());
+            cell = new Cell();
+            cell.setParent(vlayout);
+            cell.setStyle("background-color:#4F81BD;");
+            lbl = new Label(">> Datasource connection details:");
+            lbl.setParent(cell);
+            lbl.setStyle("color:#FFF;font-style:italic;font-size:14pt;");
 
-            row = new Row();
-            row.setParent(grid.getRows());
-            new Label("Hibernate Dialect").setParent(row);
+            Grid gridDatasource = new Grid();
+            gridDatasource.setParent(vlayout);
+            gridDatasource.setHflex("true");
+            gridDatasource.setOddRowSclass("xxx");
+            gridDatasource.setStyle("border-color: #4F81BD;");
+            gridDatasource.setSpan(true);
+            new Columns().setParent(gridDatasource);
+            new Rows().setParent(gridDatasource);
+            Column colDatasource;
+            Row rowDatasource;
+
+            colDatasource = new Column();
+            colDatasource.setParent(gridDatasource.getColumns());
+            colDatasource.setWidth("200px");
+            colDatasource = new Column();
+            colDatasource.setParent(gridDatasource.getColumns());
+
+            rowDatasource = new Row();
+            rowDatasource.setParent(gridDatasource.getRows());
+            new Label("Hibernate Dialect").setParent(rowDatasource);
             dialect = getHibernateDialects(datasource.getProperty(DatasourceProperties.DIALECT));
-            dialect.setParent(row);
+            dialect.setParent(rowDatasource);
             dialect.setHflex("true");
 
-            row = new Row();
-            row.setParent(grid.getRows());
-            new Label("Driver Class").setParent(row);
+            rowDatasource = new Row();
+            rowDatasource.setParent(gridDatasource.getRows());
+            new Label("Driver Class").setParent(rowDatasource);
             driver = new Textbox(datasource.getProperty(DatasourceProperties.DRIVER));
-            driver.setParent(row);
+            driver.setParent(rowDatasource);
             driver.setHflex("true");
 
-            row = new Row();
-            row.setParent(grid.getRows());
-            new Label("JDBC Url").setParent(row);
+            rowDatasource = new Row();
+            rowDatasource.setParent(gridDatasource.getRows());
+            new Label("JDBC Url").setParent(rowDatasource);
             url = new Textbox(datasource.getProperty(DatasourceProperties.URL));
-            url.setParent(row);
+            url.setParent(rowDatasource);
             url.setHflex("true");
 
-            row = new Row();
-            row.setParent(grid.getRows());
-            new Label("User name").setParent(row);
+            rowDatasource = new Row();
+            rowDatasource.setParent(gridDatasource.getRows());
+            new Label("User name").setParent(rowDatasource);
             user = new Textbox(datasource.getProperty(DatasourceProperties.USER));
-            user.setParent(row);
+            user.setParent(rowDatasource);
 
-            row = new Row();
-            row.setParent(grid.getRows());
-            new Label("Password").setParent(row);
+            rowDatasource = new Row();
+            rowDatasource.setParent(gridDatasource.getRows());
+            new Label("Password").setParent(rowDatasource);
             password = new Textbox(datasource.getProperty(DatasourceProperties.PASSWORD));
-            password.setParent(row);
+            password.setParent(rowDatasource);
             password.setType("password");
 
-            row = new Row();
-            row.setParent(grid.getRows());
-            new Label("Initial DDL").setParent(row);
-            initial_ddl = new Textbox(datasource.getProperty(DatasourceProperties.INITIAL_DDL));
-            initial_ddl.setParent(row);
-            initial_ddl.setHflex("true");
-            initial_ddl.setMultiline(true);
-            initial_ddl.setRows(3);
+            rowDatasource = new Row();
+            rowDatasource.setParent(gridDatasource.getRows());
+            new Label("Schema syntax").setParent(rowDatasource);
+
+            Hlayout hlayout = new Hlayout();
+            hlayout.setParent(rowDatasource);
+            hlayout.setHflex("true");
+            createSchema = new Checkbox();
+            createSchema.setChecked(true);
+            createSchema.setParent(hlayout);
+            createSchema.addEventListener(Events.ON_CHECK, new EventListener<CheckEvent>() {
+                @Override
+                public void onEvent(CheckEvent event) throws Exception {
+                    schemaSyntax.setDisabled(!event.isChecked());
+                }
+            });
+            schemaSyntax = new Textbox("create schema %s");
+            schemaSyntax.setParent(hlayout);
+            schemaSyntax.setHflex("true");
+
+
+            cell = new Cell();
+            cell.setParent(vlayout);
+            cell.setHeight("10px");
+            cell.setStyle("background-color:#4F81BD;");
+            lbl = new Label(">> Joblets to be installed:");
+            lbl.setParent(cell);
+            lbl.setStyle("color:#FFF;font-style:italic;font-size:14pt;");
+
+            Grid gridJoblets = new Grid();
+            gridJoblets.setParent(vlayout);
+            gridJoblets.setHflex("true");
+            gridJoblets.setOddRowSclass("xxx");
+            gridJoblets.setStyle("border-color: #4F81BD;");
+            gridJoblets.setSpan(true);
+            new Columns().setParent(gridJoblets);
+            new Rows().setParent(gridJoblets);
+            Column colJoblet;
+            Row rowJoblet;
+
+            colJoblet = new Column("Name");
+            colJoblet.setParent(gridJoblets.getColumns());
+            colJoblet.setWidth("200px");
+
+            colJoblet = new Column("Version");
+            colJoblet.setParent(gridJoblets.getColumns());
+            colJoblet.setWidth("100px");
+
+            colJoblet = new Column("License");
+            colJoblet.setParent(gridJoblets.getColumns());
+            colJoblet.setWidth("100px");
+
+            colJoblet = new Column("Publisher");
+            colJoblet.setParent(gridJoblets.getColumns());
+            colJoblet.setWidth("200px");
+
+            colJoblet = new Column("Schema");
+            colJoblet.setParent(gridJoblets.getColumns());
+
+            List<Joblet> joblets = new ArrayList<Joblet>();
+            joblets.add(ContextUtil.getSystemJoblet());
+            joblets.addAll(ContextUtil.getJoblets());
+            for (Joblet joblet : joblets) {
+                rowJoblet = new Row();
+                rowJoblet.setParent(gridJoblets.getRows());
+
+                A a;
+                a = new A(joblet.getName());
+                a.setTarget("_blank");
+                a.setParent(rowJoblet);
+                a.setHref(joblet.getProjectUrl());
+
+                new Label(joblet.getVersion()).setParent(rowJoblet);
+
+                a = new A(joblet.getLicenseName());
+                a.setTarget("_blank");
+                a.setParent(rowJoblet);
+                a.setHref(joblet.getLicenseUrl());
+
+                a = new A(joblet.getOrganizationName());
+                a.setTarget("_blank");
+                a.setParent(rowJoblet);
+                a.setHref(joblet.getOrganizationUrl());
+
+                new Label(StringUtils.arrayToCommaDelimitedString(joblet.getSchemas())).setParent(rowJoblet);
+            }
+
 
             test = new Button(L10nUtil.getMessage(getClass(), "test", ""));
             test.setMold("trendy");
             test.setParent(vlayout);
+            test.setStyle("margin-top:20px;");
             test.setAutodisable("self");
             test.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
                 @Override
                 public void onEvent(MouseEvent event) throws Exception {
 
-                    if (!confirmConnectionInfo()) return;
+                    if (!validateConnectionInfo()) return;
 
-                    Properties connInfo = new Properties();
-                    connInfo.setProperty(DatasourceProperties.DRIVER, driver.getText().trim());
-                    connInfo.setProperty(DatasourceProperties.URL, url.getText().trim());
-                    connInfo.setProperty(DatasourceProperties.USER, user.getText().trim());
-                    connInfo.setProperty(DatasourceProperties.PASSWORD, password.getText().trim());
+                    datasource.setProperty(DatasourceProperties.DRIVER, driver.getText().trim());
+                    datasource.setProperty(DatasourceProperties.URL, url.getText().trim());
+                    datasource.setProperty(DatasourceProperties.USER, user.getText().trim());
+                    datasource.setProperty(DatasourceProperties.PASSWORD, password.getText().trim());
 
-                    if (isConnectionValid(connInfo)) {
+                    jobletInstaller.setConnectionInfo(datasource);
+                    if (jobletInstaller.canConnect()) {
                         Clients.showNotification(L10nUtil.getMessage(DatasourceStep.class, "connection_success", ""),
                                 "info",
                                 test, "after_center", 3000, true);
@@ -324,25 +416,29 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             url.setDisabled(disable);
             user.setDisabled(disable);
             password.setDisabled(disable);
-            initial_ddl.setDisabled(disable);
+            schemaSyntax.setDisabled(disable);
             test.setDisabled(disable);
         }
 
         @Override
         public boolean canContinue() {
             if (ContextUtil.getSystemJoblet().isInstalled()) return true;
-            if (!confirmConnectionInfo()) return false;
+            if (!validateConnectionInfo()) return false;
 
-            Properties connInfo = new Properties();
-            connInfo.setProperty(DatasourceProperties.DIALECT, dialect.getSelectedItem().getValue().toString());
-            connInfo.setProperty(DatasourceProperties.DRIVER, driver.getText().trim());
-            connInfo.setProperty(DatasourceProperties.URL, url.getText().trim());
-            connInfo.setProperty(DatasourceProperties.USER, user.getText().trim());
-            connInfo.setProperty(DatasourceProperties.PASSWORD, password.getText().trim());
-            connInfo.setProperty(DatasourceProperties.INITIAL_DDL, initial_ddl.getText().trim());
+            datasource.setProperty(DatasourceProperties.DIALECT, dialect.getSelectedItem().getValue().toString());
+            datasource.setProperty(DatasourceProperties.DRIVER, driver.getText().trim());
+            datasource.setProperty(DatasourceProperties.URL, url.getText().trim());
+            datasource.setProperty(DatasourceProperties.USER, user.getText().trim());
+            datasource.setProperty(DatasourceProperties.PASSWORD, password.getText().trim());
+            if (createSchema.isChecked()) {
+                datasource.setProperty(DatasourceProperties.SCHEMA_SYNTAX, schemaSyntax.getText().trim());
+            } else {
+                datasource.remove(DatasourceProperties.SCHEMA_SYNTAX);
+            }
 
-            if (isConnectionValid(connInfo)) {
-                if (installJoblets(connInfo)) {
+            jobletInstaller.setConnectionInfo(datasource);
+            if (jobletInstaller.canConnect()) {
+                if (installJoblets()) {
                     disableStep(true);
                     return true;
                 } else {
@@ -357,14 +453,12 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             return false;
         }
 
-        private boolean installJoblets(Properties connInfo) {
+        private boolean installJoblets() {
 
             try {
-                Joblet systemJoblet = ContextUtil.getSystemJoblet();
-                List<? extends Exception> errors = systemJoblet.install(connInfo);
-
-                if (errors == null || errors.isEmpty()) {
-                    saveDatasourceProperties(connInfo);
+                List<Exception> errors = jobletInstaller.installAll();
+                if (errors.isEmpty()) {
+                    saveDatasourceProperties();
                     ContextUtil.addActiveProfile("installed");
                     ContextUtil.refresh();
                     return true;
@@ -381,22 +475,13 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             }
         }
 
-        private void saveDatasourceProperties(Properties connInfo) throws IOException {
-            datasource.setProperty(DatasourceProperties.DIALECT, connInfo.getProperty(DatasourceProperties.DIALECT));
-            datasource.setProperty(DatasourceProperties.DRIVER, connInfo.getProperty(DatasourceProperties.DRIVER));
-            datasource.setProperty(DatasourceProperties.URL, connInfo.getProperty(DatasourceProperties.URL));
-            datasource.setProperty(DatasourceProperties.USER, connInfo.getProperty(DatasourceProperties.USER));
-            datasource.setProperty(DatasourceProperties.PASSWORD, connInfo.getProperty(DatasourceProperties.PASSWORD));
-            datasource.setProperty(DatasourceProperties.INITIAL_DDL, connInfo.getProperty(DatasourceProperties
-                    .INITIAL_DDL));
+        private void saveDatasourceProperties() throws IOException {
             datasource.setProperty(DatasourceProperties.INSTALLED, ContextUtil.getSystemJoblet().getVersion());
-
-
             FileOutputStream out = new FileOutputStream(new ClassPathResource(DatasourceProperties.PATH).getFile());
             datasource.store(out, "Datasource properties");
         }
 
-        private boolean confirmConnectionInfo() {
+        private boolean validateConnectionInfo() {
             boolean confirmed = true;
             if (dialect.getSelectedIndex() < 0) {
                 Clients.wrongValue(dialect, L10nUtil.getMessage("org.hibernate.validator.constraints.NotBlank",
@@ -418,30 +503,14 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
                         "message", "The field is mandatory"));
                 confirmed = false;
             }
+            if (createSchema.isChecked() && schemaSyntax.getText().trim().length() == 0) {
+                Clients.wrongValue(schemaSyntax, L10nUtil.getMessage("org.hibernate.validator.constraints.NotBlank",
+                        "message", "The field is mandatory"));
+                confirmed = false;
+            }
             return confirmed;
         }
 
-        private boolean isConnectionValid(Properties connInfo) {
-
-            try {
-                Class.forName(connInfo.getProperty(DatasourceProperties.DRIVER));
-            } catch (java.lang.ClassNotFoundException e) {
-                e.printStackTrace();
-                return false;
-            }
-
-            try {
-                Connection conn;
-                conn = DriverManager.getConnection(connInfo.getProperty(DatasourceProperties.URL),
-                        connInfo.getProperty(DatasourceProperties.USER), connInfo.getProperty(DatasourceProperties
-                        .PASSWORD));
-                conn.close();
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
 
         private Combobox getHibernateDialects(String def) {
             Combobox dialects = new Combobox();

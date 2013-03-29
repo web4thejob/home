@@ -29,7 +29,7 @@ public interface Module extends Comparable<Module> {
 
     public String getVersion();
 
-    public String getPackageName();
+    public String getFileName();
 
     public String getOrganizationName();
 

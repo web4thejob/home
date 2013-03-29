@@ -18,27 +18,22 @@
 
 package org.web4thejob.module;
 
-import org.springframework.core.io.Resource;
-
 import java.util.List;
+import java.util.Properties;
 
 /**
- * <p>The contract interface for all joblet modules.</p>
- *
  * @author Veniamin Isaias
  * @since 3.4.0
  */
-public interface Joblet extends Module {
+public interface JobletInstaller {
 
-    public boolean isInstalled();
+    public void setConnectionInfo(Properties connInfo);
 
-    public <E extends Exception> List<E> setup();
+    public Properties getConnectionInfo();
 
-    public String[] getSchemas();
+    public boolean canConnect();
 
-    public List<Resource> getResources();
+    public <E extends Exception> List<E> installAll();
 
-    public String getBasePackage();
-
-    //public <E extends Exception> List<E> update(Properties connectionInfo);
+    public <E extends Exception> List<E> install(List<Joblet> joblets);
 }

@@ -18,12 +18,12 @@
 
 package org.web4thejob.orm;
 
+import my.joblet.Master1;
+import my.joblet.Reference1;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.web4thejob.context.ContextUtil;
-import org.web4thejob.orm.mapping.Master1;
-import org.web4thejob.orm.mapping.Reference1;
 import org.web4thejob.orm.scheme.RenderElement;
 import org.web4thejob.orm.scheme.RenderScheme;
 import org.web4thejob.orm.scheme.SchemeType;

@@ -88,7 +88,7 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
 
         } catch (Exception e) {
             e.printStackTrace();
-            LOG.error("Rename file " + SCHEMA_FILE + " so that you don't get previous error.");
+            LOG.error("Rename or remove file " + SCHEMA_FILE + " so that you don't get previous error.");
         }
     }
 
@@ -109,13 +109,16 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
 
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         for (String path : classpathMappingResources) {
-            try {
-                for (Resource resource : resolver.getResources(path)) {
-                    sfb.addInputStream(resource.getInputStream());
+
+            for (String item : StringUtils.commaDelimitedListToStringArray(path)) {
+                try {
+                    for (Resource resource : resolver.getResources(item)) {
+                        sfb.addInputStream(resource.getInputStream());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
             }
         }
     }

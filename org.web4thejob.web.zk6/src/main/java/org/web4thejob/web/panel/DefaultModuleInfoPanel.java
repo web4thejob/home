@@ -73,7 +73,7 @@ public class DefaultModuleInfoPanel extends AbstractZkContentPanel implements Mo
         column.setHflex("min");
         column.setAttribute("field", "version");
 
-        column = new Column("Package Name");
+        column = new Column("File Name");
         column.setStyle("text-align:center;");
         column.setParent(grid.getColumns());
         column.setAttribute("field", "packageName");
@@ -115,7 +115,7 @@ public class DefaultModuleInfoPanel extends AbstractZkContentPanel implements Mo
 
                 new Label(data.getVersion()).setParent(row);
 
-                new Label(data.getPackageName()).setParent(row);
+                new Label(data.getFileName()).setParent(row);
 
                 if (StringUtils.hasText(data.getLicenseUrl())) {
                     a = new A(data.getLicenseName());

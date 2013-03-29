@@ -33,14 +33,14 @@ public abstract class AbstractModule implements Module {
     protected AbstractModule() {
         properties = new Properties();
         try {
-            properties.load(new ClassPathResource(getFileName(),
+            properties.load(new ClassPathResource(getPropertiesName(),
                     getClass()).getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected String getFileName() {
+    protected String getPropertiesName() {
         return getClass().getSimpleName() + ".properties";
     }
 
@@ -50,8 +50,8 @@ public abstract class AbstractModule implements Module {
     }
 
     @Override
-    public String getPackageName() {
-        return properties.getProperty("application.packageName");
+    public String getFileName() {
+        return properties.getProperty("application.fileName");
     }
 
     @Override
@@ -91,7 +91,7 @@ public abstract class AbstractModule implements Module {
 
     @Override
     public String toString() {
-        return getPackageName();
+        return getFileName();
     }
 
     @Override

@@ -18,13 +18,13 @@
 
 package org.web4thejob.orm;
 
+import my.joblet.*;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.web4thejob.context.ContextUtil;
-import org.web4thejob.orm.mapping.*;
 
 import java.sql.Timestamp;
 import java.util.Date;

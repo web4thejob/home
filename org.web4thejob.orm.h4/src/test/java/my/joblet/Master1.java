@@ -16,14 +16,12 @@
  * along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.web4thejob.orm.mapping;
+package my.joblet;
 
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.web4thejob.orm.AbstractHibernateEntity;
-import org.web4thejob.orm.validation.ValidatingGroup;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,34 +31,26 @@ import java.util.Set;
  * @since 1.0.0
  */
 
-public class Master2 extends AbstractHibernateEntity implements ValidatingGroup {
-    public static final String FLD_KEY = "key";
+public class Master1 extends AbstractHibernateEntity {
+    public static final String FLD_ID = "id";
     public static final String FLD_NAME = "name";
     public static final String FLD_DETAILS = "details";
+    public static final String FLD_REFERENCE1 = "reference1";
 
+    private long id;
     @NotBlank
-    private String key;
-    @NotBlank
-    @Length(min = 1, max = 1, groups = {MustHaveDetailValidation.class})
     private String name;
-    @NotEmpty(groups = {MustHaveDetailValidation.class})
+    @NotNull
+    private Reference1 reference1;
+    private int version;
     private Set<Detail> details = new HashSet<Detail>(0);
 
     public Set<Detail> getDetails() {
         return details;
     }
 
-    @Override
-    public Class<?>[] getGroupNames() {
-        if (name == null) {
-            return null;
-        } else {
-            return new Class<?>[]{MustHaveDetailValidation.class};
-        }
-    }
-
-    public String getKey() {
-        return key;
+    public long getId() {
+        return id;
     }
 
     public String getName() {
@@ -71,21 +61,33 @@ public class Master2 extends AbstractHibernateEntity implements ValidatingGroup 
         this.details = details;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public void setReference1(Reference1 reference1) {
+        this.reference1 = reference1;
+    }
+
+    public Reference1 getReference1() {
+        return reference1;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
     @Override
     public Serializable getIdentifierValue() {
-        return getKey();
+        return id;
     }
 
     @Override
     public void setAsNew() {
-        key = null;
+        id = 0;
     }
 }

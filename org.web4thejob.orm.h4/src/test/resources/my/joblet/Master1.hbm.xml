@@ -20,8 +20,8 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 4 ??? 2011 9:43:33 ?? by Hibernate Tools 3.4.0.CR1 -->
-<hibernate-mapping schema="w4tj">
-    <class name="org.web4thejob.orm.mapping.Master1" table="MASTER1">
+<hibernate-mapping schema="myjob">
+    <class name="my.joblet.Master1" table="MASTER1">
         <id name="id" type="long">
             <column name="ID"/>
             <generator class="identity"/>
@@ -30,14 +30,14 @@
         <property name="name" type="java.lang.String">
             <column name="NAME" length="255" not-null="true"/>
         </property>
-        <many-to-one name="reference1" class="org.web4thejob.orm.mapping.Reference1" fetch="select">
+        <many-to-one name="reference1" class="my.joblet.Reference1" fetch="select">
             <column name="REFERENCE1" not-null="true"></column>
         </many-to-one>
         <set name="details" table="DETAIL" inverse="false" lazy="true">
             <key>
                 <column name="MASTER1"/>
             </key>
-            <one-to-many class="org.web4thejob.orm.mapping.Detail"/>
+            <one-to-many class="my.joblet.Detail"/>
         </set>
     </class>
 </hibernate-mapping>

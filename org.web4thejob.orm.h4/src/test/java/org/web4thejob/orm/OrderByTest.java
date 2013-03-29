@@ -18,11 +18,11 @@
 
 package org.web4thejob.orm;
 
+import my.joblet.Master1;
+import my.joblet.Reference1;
+import my.joblet.Reference2;
 import org.junit.Test;
 import org.web4thejob.context.ContextUtil;
-import org.web4thejob.orm.mapping.Master1;
-import org.web4thejob.orm.mapping.Reference1;
-import org.web4thejob.orm.mapping.Reference2;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 

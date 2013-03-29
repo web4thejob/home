@@ -16,7 +16,7 @@
  * along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.web4thejob.orm.mapping;
+package my.joblet;
 
 /**
  * @author Veniamin Isaias

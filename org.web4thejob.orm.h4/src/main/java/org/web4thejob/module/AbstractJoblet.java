@@ -18,22 +18,8 @@
 
 package org.web4thejob.module;
 
-import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
-import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
-import org.hibernate.tool.hbm2ddl.SchemaExport;
-import org.hibernate.tool.hbm2ddl.Target;
-import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
-import org.web4thejob.orm.DatasourceProperties;
-
-import java.sql.Connection;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * @author Veniamin Isaias
@@ -48,49 +34,8 @@ public abstract class AbstractJoblet extends AbstractModule implements Joblet {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <E extends Exception> List<E> install(Properties connectionInfo) {
-
-        List<E> exceptions = new ArrayList<E>();
-
-        try {
-
-            final Configuration configuration = new Configuration();
-            configuration.setProperty(AvailableSettings.DIALECT, connectionInfo.getProperty(DatasourceProperties
-                    .DIALECT));
-            configuration.setProperty(AvailableSettings.DRIVER, connectionInfo.getProperty(DatasourceProperties
-                    .DRIVER));
-            configuration.setProperty(AvailableSettings.URL, connectionInfo.getProperty(DatasourceProperties.URL));
-            configuration.setProperty(AvailableSettings.USER, connectionInfo.getProperty(DatasourceProperties.USER));
-            configuration.setProperty(AvailableSettings.PASS, connectionInfo.getProperty(DatasourceProperties
-                    .PASSWORD));
-
-            final ServiceRegistry serviceRegistry = new ServiceRegistryBuilder()
-                    .applySettings(configuration.getProperties())
-                    .buildServiceRegistry();
-
-            if (StringUtils.hasText(connectionInfo.getProperty(DatasourceProperties.INITIAL_DDL))) {
-                Connection connection = serviceRegistry.getService(ConnectionProvider.class).getConnection();
-                Statement statement = connection.createStatement();
-                statement.executeUpdate(connectionInfo.getProperty(DatasourceProperties.INITIAL_DDL));
-                statement.close();
-            }
-
-            for (Resource resource : getResources()) {
-                configuration.addInputStream(resource.getInputStream());
-            }
-
-            SchemaExport schemaExport = new SchemaExport(serviceRegistry, configuration);
-            schemaExport.execute(Target.EXPORT, SchemaExport.Type.CREATE);
-            exceptions.addAll(schemaExport.getExceptions());
-
-        } catch (Exception e) {
-            exceptions.add((E) e);
-        }
-
-        return exceptions;
+    public <E extends Exception> List<E> setup() {
+        return Collections.emptyList();
     }
-
-    protected abstract List<Resource> getResources();
-
 
 }

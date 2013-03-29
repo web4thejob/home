@@ -12,10 +12,10 @@
             color:#4F81BD;font-size:22.0pt;font-weight:bold;
         }
         .contentText {
-            font-size:14.0pt;line-height:115%;color:#4F81BD;
+            font-size:12.0pt;line-height:115%;color:#4F81BD;
         }
         .contentLink {
-            font-size:14.0pt;line-height:115%;color:#6E9B1C;
+            font-size:12.0pt;line-height:115%;color:#6E9B1C;
         }
     </style>
 

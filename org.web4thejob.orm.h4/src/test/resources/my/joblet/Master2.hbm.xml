@@ -20,30 +20,20 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 4 ??? 2011 9:43:33 ?? by Hibernate Tools 3.4.0.CR1 -->
-<hibernate-mapping schema="w4tj">
-    <class name="org.web4thejob.orm.mapping.Reference1" table="REFERENCE1">
-        <id name="id" type="long">
-            <column name="ID"/>
-            <generator class="native"/>
+<hibernate-mapping schema="myjob">
+    <class name="my.joblet.Master2" table="MASTER2">
+        <id name="key" type="java.lang.String">
+            <column name="KEY"/>
+            <generator class="assigned"/>
         </id>
         <property name="name" type="java.lang.String">
-            <column name="`NAME`" not-null="true"/>
+            <column name="NAME" length="255" not-null="true"/>
         </property>
-        <many-to-one name="reference2" class="org.web4thejob.orm.mapping.Reference2" fetch="select">
-            <column name="REFERENCE2" not-null="true"/>
-        </many-to-one>
-        <set name="masters1" table="MASTER1" inverse="true" lazy="true"
-             fetch="select">
+        <set name="details" table="DETAIL" inverse="false" lazy="true">
             <key>
-                <column name="REFERENCE1"/>
+                <column name="MASTER2"/>
             </key>
-            <one-to-many class="org.web4thejob.orm.mapping.Master1"/>
+            <one-to-many class="my.joblet.Detail"/>
         </set>
-        <property name="createTime" type="timestamp" not-null="true" access="field" update="false">
-            <column name="CREATE_TIME" not-null="true"/>
-        </property>
-        <property name="updateTime" type="timestamp" not-null="false" access="field" insert="false">
-            <column name="UPDATE_TIME" not-null="false"/>
-        </property>
     </class>
 </hibernate-mapping>

@@ -16,48 +16,21 @@
  * along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.web4thejob.module;
+package my.joblet;
 
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.web4thejob.orm.DatasourceProperties;
+import org.web4thejob.module.AbstractJoblet;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * @author Veniamin Isaias
  * @since 3.4.0
  */
-
-@Component
-public class SystemJobletImpl extends AbstractJoblet implements SystemJoblet {
-
-
-    @Override
-    protected String getPropertiesName() {
-        return H4Module.class.getSimpleName() + ".properties";
-    }
-
-    @Override
-    public String getName() {
-        return "System Joblet";
-    }
-
-    @Override
-    public String getProjectUrl() {
-        return "http://wiki.web4thejob.org/miscel/glossary/system_joblet";
-    }
-
-    @Override
-    public int getOrdinal() {
-        return 5;
-    }
+public class MyJoblet extends AbstractJoblet {
 
     @Override
     public List<Resource> getResources() {
@@ -65,11 +38,7 @@ public class SystemJobletImpl extends AbstractJoblet implements SystemJoblet {
 
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
-            for (Resource resource : resolver.getResources("classpath*:org/web4thejob/orm/**/*.hbm.xml")) {
-
-                if (resource.getFilename().equals("AuxiliaryDatabaseObjects.hbm.xml"))
-                    continue;
-
+            for (Resource resource : resolver.getResources("classpath*:my/joblet/**/*.hbm.xml")) {
                 resources.add(resource);
             }
         } catch (IOException e) {
@@ -82,24 +51,21 @@ public class SystemJobletImpl extends AbstractJoblet implements SystemJoblet {
 
     @Override
     public String getBasePackage() {
-        return "org.web4thejob.orm";
+        return "my.joblet";
     }
 
     @Override
     public boolean isInstalled() {
-
-        Properties datasource = new Properties();
-        try {
-            datasource.load(new ClassPathResource(DatasourceProperties.PATH).getInputStream());
-        } catch (IOException e) {
-            return false;
-        }
-
-        return StringUtils.hasText(datasource.getProperty(DatasourceProperties.INSTALLED));
+        return false;
     }
 
     @Override
     public String[] getSchemas() {
-        return new String[]{"w4tj"};
+        return new String[]{"myjob"};
+    }
+
+    @Override
+    public int getOrdinal() {
+        return 99;
     }
 }

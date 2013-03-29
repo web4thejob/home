@@ -16,70 +16,50 @@
  * along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.web4thejob.orm.mapping;
+package my.joblet;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.web4thejob.orm.AbstractHibernateEntity;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Date;
 
 /**
  * @author Veniamin Isaias
- * @since 1.0.0
+ * @since 3.4.0
  */
-
-public class Master1 extends AbstractHibernateEntity {
-    public static final String FLD_ID = "id";
-    public static final String FLD_NAME = "name";
-    public static final String FLD_DETAILS = "details";
-    public static final String FLD_REFERENCE1 = "reference1";
-
+public class MyJobletEntity extends AbstractHibernateEntity {
     private long id;
     @NotBlank
     private String name;
     @NotNull
-    private Reference1 reference1;
-    private int version;
-    private Set<Detail> details = new HashSet<Detail>(0);
+    private Date date;
 
-    public Set<Detail> getDetails() {
-        return details;
+    public Date getDate() {
+        return date;
     }
 
-    public long getId() {
-        return id;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setDetails(Set<Detail> details) {
-        this.details = details;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setReference1(Reference1 reference1) {
-        this.reference1 = reference1;
-    }
-
-    public Reference1 getReference1() {
-        return reference1;
-    }
-
-    public int getVersion() {
-        return version;
-    }
 
     @Override
     public Serializable getIdentifierValue() {

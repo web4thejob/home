@@ -16,16 +16,13 @@
  * along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.web4thejob.orm.mapping;
+package my.joblet;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.web4thejob.orm.AbstractHibernateEntity;
-import org.web4thejob.orm.annotation.InsertTimeHolder;
-import org.web4thejob.orm.annotation.UpdateTimeHolder;
+import org.web4thejob.orm.annotation.StatusHolder;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,31 +31,27 @@ import java.util.Set;
  * @since 1.0.0
  */
 
-public class Reference1 extends AbstractHibernateEntity {
+public class Reference2 extends AbstractHibernateEntity {
     public static final String FLD_ID = "id";
     public static final String FLD_NAME = "name";
-    public static final String FLD_MASTERS1 = "masters1";
-    public static final String FLD_REFERENCE2 = "reference2";
-    public static final String FLD_CREATE_TIME = "createTime";
-    public static final String FLD_UPDATE_TIME = "updateTime";
+    public static final String FLD_STATUS1 = "status1";
+    public static final String FLD_STATUS2 = "status2";
+    public static final String FLD_REFERENCES1 = "references1";
 
     private long id;
     @NotBlank
     private String name;
-    @NotNull
-    private Reference2 reference2;
-    private Set<Master1> masters1 = new HashSet<Master1>(0);
-    @InsertTimeHolder
-    private Timestamp createTime;
-    @UpdateTimeHolder
-    private Timestamp updateTime;
+    @StatusHolder(InactiveWhen = true)
+    private boolean status1 = false;
+    @StatusHolder(InactiveWhen = false)
+    private boolean status2 = true;
+    private Set<Reference1> references1 = new HashSet<Reference1>(0);
 
-    public Reference1() {
+    public Reference2() {
 
     }
 
-    public Reference1(Reference2 reference2, String name) {
-        this.reference2 = reference2;
+    public Reference2(String name) {
         this.name = name;
     }
 
@@ -78,28 +71,28 @@ public class Reference1 extends AbstractHibernateEntity {
         return name;
     }
 
-    public void setMasters1(Set<Master1> masters1) {
-        this.masters1 = masters1;
+    public void setReferences1(Set<Reference1> references1) {
+        this.references1 = references1;
     }
 
-    public Set<Master1> getMasters1() {
-        return masters1;
+    public Set<Reference1> getReferences1() {
+        return references1;
     }
 
-    public void setReference2(Reference2 reference2) {
-        this.reference2 = reference2;
+    public void setStatus1(boolean status1) {
+        this.status1 = status1;
     }
 
-    public Reference2 getReference2() {
-        return reference2;
+    public boolean isStatus1() {
+        return status1;
     }
 
-    public Timestamp getCreateTime() {
-        return createTime;
+    public void setStatus2(boolean status2) {
+        this.status2 = status2;
     }
 
-    public Timestamp getUpdateTime() {
-        return updateTime;
+    public boolean isStatus2() {
+        return status2;
     }
 
     @Override

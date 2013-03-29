@@ -245,7 +245,7 @@ public class ContextUtil implements ApplicationContextAware {
     public static List<Module> getModules() {
         final List<Module> modules = new ArrayList<Module>();
 
-        for (String bean : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(getSessionContext(), Module.class)) {
+        for (String bean : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(rootContext, Module.class)) {
             try {
                 modules.add(rootContext.getBean(bean, Module.class));
             } catch (BeansException e) {
@@ -262,9 +262,12 @@ public class ContextUtil implements ApplicationContextAware {
     public static List<Joblet> getJoblets() {
         final List<Joblet> joblets = new ArrayList<Joblet>();
 
-        for (String bean : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(getSessionContext(), Joblet.class)) {
+        for (String bean : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(rootContext, Joblet.class)) {
             try {
-                joblets.add(rootContext.getBean(bean, Joblet.class));
+                Joblet joblet = rootContext.getBean(bean, Joblet.class);
+                if (joblet instanceof SystemJoblet) continue;
+
+                joblets.add(joblet);
             } catch (BeansException e) {
                 //ignore
             }
