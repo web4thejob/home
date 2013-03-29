@@ -30,35 +30,24 @@ import org.web4thejob.message.MessageListener;
 import org.web4thejob.module.Joblet;
 import org.web4thejob.module.JobletInstaller;
 import org.web4thejob.orm.DatasourceProperties;
-import org.web4thejob.orm.ORMUtil;
-import org.web4thejob.orm.PanelDefinition;
-import org.web4thejob.orm.Path;
-import org.web4thejob.orm.parameter.*;
-import org.web4thejob.orm.query.Condition;
-import org.web4thejob.orm.query.Criterion;
-import org.web4thejob.orm.query.OrderBy;
-import org.web4thejob.orm.query.Query;
-import org.web4thejob.orm.scheme.RenderElement;
-import org.web4thejob.orm.scheme.RenderScheme;
-import org.web4thejob.orm.scheme.RenderSchemeUtil;
-import org.web4thejob.orm.scheme.SchemeType;
-import org.web4thejob.security.*;
-import org.web4thejob.setting.SettingEnum;
+import org.web4thejob.security.SecurityService;
+import org.web4thejob.security.UserIdentity;
 import org.web4thejob.util.L10nMessages;
 import org.web4thejob.util.L10nUtil;
 import org.web4thejob.web.dialog.PasswordDialog;
-import org.web4thejob.web.panel.*;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * @author Veniamin Isaias
@@ -236,7 +225,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             cell.setStyle("background-color:#4F81BD;");
             lbl = new Label(">> Datasource connection details:");
             lbl.setParent(cell);
-            lbl.setStyle("color:#FFF;font-style:italic;font-size:14pt;");
+            lbl.setStyle("color:#FFF;font-style:italic;font-size:12pt;");
 
             Grid gridDatasource = new Grid();
             gridDatasource.setParent(vlayout);
@@ -316,7 +305,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             cell.setStyle("background-color:#4F81BD;");
             lbl = new Label(">> Joblets to be installed:");
             lbl.setParent(cell);
-            lbl.setStyle("color:#FFF;font-style:italic;font-size:14pt;");
+            lbl.setStyle("color:#FFF;font-style:italic;font-size:12pt;");
 
             Grid gridJoblets = new Grid();
             gridJoblets.setParent(vlayout);
@@ -604,278 +593,10 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
                 throw new RuntimeException();
             }
 
-            Map<org.web4thejob.web.panel.Panel, String> beanIds = new HashMap<org.web4thejob.web.panel.Panel, String>();
-
-            ListViewPanel panels = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            panels.setTargetType(PanelDefinition.class);
-            panels.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(PanelDefinition
-                    .class).getFriendlyName());
-            beanIds.put(panels, ORMUtil.persistPanel(panels));
-
-            ListViewPanel roles = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            roles.setTargetType(RoleIdentity.class);
-            roles.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(RoleIdentity
-                    .class).getFriendlyName());
-            beanIds.put(roles, ORMUtil.persistPanel(roles));
-
-            ListViewPanel users = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            users.setTargetType(UserIdentity.class);
-            users.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(UserIdentity
-                    .class).getFriendlyName());
-            beanIds.put(users, ORMUtil.persistPanel(users));
-
-            ListViewPanel policies = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            policies.setTargetType(AuthorizationPolicy.class);
-            policies.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(AuthorizationPolicy
-                    .class).getFriendlyName());
-            beanIds.put(policies, ORMUtil.persistPanel(policies));
-
-            FramePanel dashboard = ContextUtil.getDefaultPanel(FramePanel.class);
-            dashboard.setSettingValue(SettingEnum.TARGET_URL, "http://web4thejob.sourceforge.net/dashboard/index.php");
-            dashboard.setSettingValue(SettingEnum.PANEL_NAME, "My Dashboard");
-            beanIds.put(dashboard, ORMUtil.persistPanel(dashboard));
-
-            //----------------------------------------------------------------------------------------------------------
-            //Parameters
-            //----------------------------------------------------------------------------------------------------------
-            ListViewPanel entityViewParameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            entityViewParameters.setTargetType(EntityTypeEntityViewParameter.class);
-            entityViewParameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
-                    (EntityTypeEntityViewParameter.class).getFriendlyName());
-            beanIds.put(entityViewParameters, ORMUtil.persistPanel(entityViewParameters));
-
-            ListViewPanel listViewParameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            listViewParameters.setTargetType(EntityTypeListViewParameter.class);
-            listViewParameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
-                    (EntityTypeListViewParameter.class).getFriendlyName());
-            beanIds.put(listViewParameters, ORMUtil.persistPanel(listViewParameters));
-
-            ListViewPanel queryParameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            queryParameters.setTargetType(EntityTypeQueryParameter.class);
-            queryParameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
-                    (EntityTypeQueryParameter.class).getFriendlyName());
-            beanIds.put(queryParameters, ORMUtil.persistPanel(queryParameters));
-
-            ListViewPanel charsetParameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            charsetParameters.setTargetType(PrinterCharsetParameter.class);
-            charsetParameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
-                    (PrinterCharsetParameter.class).getFriendlyName());
-            beanIds.put(charsetParameters, ORMUtil.persistPanel(charsetParameters));
-
-            ListViewPanel imageRepoParameters = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            imageRepoParameters.setTargetType(LocationImagesRepoParameter.class);
-            imageRepoParameters.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata
-                    (LocationImagesRepoParameter.class).getFriendlyName());
-            beanIds.put(imageRepoParameters, ORMUtil.persistPanel(imageRepoParameters));
-            //----------------------------------------------------------------------------------------------------------
-
-            ListViewPanel renderSchemes = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            renderSchemes.setTargetType(RenderScheme.class);
-            renderSchemes.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(RenderScheme
-                    .class).getFriendlyName());
-            beanIds.put(renderSchemes, ORMUtil.persistPanel(renderSchemes));
-
-            ListViewPanel queries = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            queries.setTargetType(Query.class);
-            queries.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(Query
-                    .class).getFriendlyName());
-            beanIds.put(queries, ORMUtil.persistPanel(queries));
-
-            ModuleInfoPanel moduleInfoPanel = ContextUtil.getDefaultPanel(ModuleInfoPanel.class);
-            moduleInfoPanel.setSettingValue(SettingEnum.PANEL_NAME, moduleInfoPanel.toString());
-            beanIds.put(moduleInfoPanel, ORMUtil.persistPanel(moduleInfoPanel));
-
-            ListViewPanel members = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            members.setTargetType(RoleMembers.class);
-            members.setMasterType(UserIdentity.class);
-            members.setBindProperty(RoleMembers.FLD_USER);
-            members.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(RoleMembers
-                    .class).getFriendlyName());
-            RenderScheme scheme = RenderSchemeUtil.createDefaultRenderScheme(RoleMembers.class,
-                    SchemeType.LIST_SCHEME);
-            scheme.setName(scheme.getName() + "\\user bound");
-            scheme.getElements().clear();
-            RenderElement renderElement = scheme.addElement(ContextUtil.getMRS().getPropertyPath(RoleMembers
-                    .class, new Path(RoleMembers.FLD_ROLE)));
-            renderElement.setFriendlyName(ContextUtil.getMRS().getEntityMetadata(RoleIdentity.class).getFriendlyName());
-            renderElement = scheme.addElement(ContextUtil.getMRS().getPropertyPath(RoleMembers.class,
-                    new String[]{RoleMembers.FLD_ROLE, RoleIdentity.FLD_AUTHORIZATION_POLICY}));
-            renderElement.setFriendlyName(ContextUtil.getMRS().getEntityMetadata(AuthorizationPolicy.class)
-                    .getFriendlyName());
-            ContextUtil.getDWS().save(scheme);
-            members.setSettingValue(SettingEnum.RENDER_SCHEME_FOR_VIEW, scheme.getName());
-
-
-            ListViewPanel elements = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            elements.setTargetType(RenderElement.class);
-            elements.setMasterType(RenderScheme.class);
-            elements.setBindProperty(RenderElement.FLD_RENDER_SCHEME);
-            elements.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(RenderElement
-                    .class).getFriendlyName());
-            scheme = RenderSchemeUtil.createDefaultRenderScheme(RenderElement.class,
-                    SchemeType.LIST_SCHEME, new String[]{RenderElement.FLD_RENDER_SCHEME});
-            scheme.setName(scheme.getName() + "\\scheme bound");
-            ContextUtil.getDWS().save(scheme);
-            elements.setSettingValue(SettingEnum.RENDER_SCHEME_FOR_VIEW, scheme.getName());
-
-            ListViewPanel criteria = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            criteria.setTargetType(Criterion.class);
-            criteria.setMasterType(Query.class);
-            criteria.setBindProperty(Criterion.FLD_QUERY);
-            criteria.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(Criterion
-                    .class).getFriendlyName());
-            scheme = RenderSchemeUtil.createDefaultRenderScheme(Criterion.class,
-                    SchemeType.LIST_SCHEME, new String[]{Criterion.FLD_QUERY});
-            scheme.setName(scheme.getName() + "\\query bound");
-            ContextUtil.getDWS().save(scheme);
-            criteria.setSettingValue(SettingEnum.RENDER_SCHEME_FOR_VIEW, scheme.getName());
-
-            ListViewPanel orderings = ContextUtil.getDefaultPanel(ListViewPanel.class);
-            orderings.setTargetType(OrderBy.class);
-            orderings.setMasterType(Query.class);
-            orderings.setBindProperty(OrderBy.FLD_QUERY);
-            orderings.setSettingValue(SettingEnum.PANEL_NAME, ContextUtil.getMRS().getEntityMetadata(OrderBy
-                    .class).getFriendlyName());
-            scheme = RenderSchemeUtil.createDefaultRenderScheme(OrderBy.class,
-                    SchemeType.LIST_SCHEME, new String[]{OrderBy.FLD_QUERY});
-            scheme.setName(scheme.getName() + "\\query bound");
-            ContextUtil.getDWS().save(scheme);
-            orderings.setSettingValue(SettingEnum.RENDER_SCHEME_FOR_VIEW, scheme.getName());
-
-            ContextUtil.getSessionContext().refresh();
-
-            BorderedLayoutPanel userRoles = ContextUtil.getDefaultPanel(BorderedLayoutPanel.class);
-            userRoles.setCenter(ContextUtil.getPanel(beanIds.get(users)));
-            userRoles.setSouth(members);
-            userRoles.setSettingValue(SettingEnum.NORTH_ENABLED, false);
-            userRoles.setSettingValue(SettingEnum.EAST_ENABLED, false);
-            userRoles.setSettingValue(SettingEnum.WEST_ENABLED, false);
-            userRoles.setSettingValue(SettingEnum.CENTER_ENABLED, true);
-            userRoles.setSettingValue(SettingEnum.SOUTH_ENABLED, true);
-            userRoles.setSettingValue(SettingEnum.SOUTH_COLLAPSIBLE, true);
-            userRoles.setSettingValue(SettingEnum.SOUTH_SPLITTABLE, true);
-            userRoles.setSettingValue(SettingEnum.SOUTH_MERGE_COMMANDS, false);
-            userRoles.setSettingValue(SettingEnum.SOUTH_HEIGHT, "50%");
-            userRoles.setSettingValue(SettingEnum.PANEL_NAME, users.toString() + " & " + members.toString());
-            userRoles.render();
-            beanIds.put(userRoles, ORMUtil.persistPanel(userRoles));
-
-            BorderedLayoutPanel schemeElements = ContextUtil.getDefaultPanel(BorderedLayoutPanel.class);
-            schemeElements.setCenter(ContextUtil.getPanel(beanIds.get(renderSchemes)));
-            schemeElements.setSouth(elements);
-            schemeElements.setSettingValue(SettingEnum.NORTH_ENABLED, false);
-            schemeElements.setSettingValue(SettingEnum.EAST_ENABLED, false);
-            schemeElements.setSettingValue(SettingEnum.WEST_ENABLED, false);
-            schemeElements.setSettingValue(SettingEnum.CENTER_ENABLED, true);
-            schemeElements.setSettingValue(SettingEnum.SOUTH_ENABLED, true);
-            schemeElements.setSettingValue(SettingEnum.SOUTH_COLLAPSIBLE, true);
-            schemeElements.setSettingValue(SettingEnum.SOUTH_SPLITTABLE, true);
-            schemeElements.setSettingValue(SettingEnum.SOUTH_MERGE_COMMANDS, false);
-            schemeElements.setSettingValue(SettingEnum.SOUTH_HEIGHT, "50%");
-            schemeElements.setSettingValue(SettingEnum.PANEL_NAME, renderSchemes.toString());
-            schemeElements.render();
-            beanIds.put(schemeElements, ORMUtil.persistPanel(schemeElements));
-
-            BorderedLayoutPanel queriesElements = ContextUtil.getDefaultPanel(BorderedLayoutPanel.class);
-            queriesElements.setCenter(ContextUtil.getPanel(beanIds.get(queries)));
-            TabbedLayoutPanel tabbedLayoutPanel = ContextUtil.getDefaultPanel(TabbedLayoutPanel.class);
-            tabbedLayoutPanel.setSettingValue(SettingEnum.DISABLE_DYNAMIC_TAB_TITLE, true);
-            tabbedLayoutPanel.getSubpanels().add(criteria);
-            tabbedLayoutPanel.getSubpanels().add(orderings);
-            tabbedLayoutPanel.setSelectedIndex(0);
-            queriesElements.setSouth(tabbedLayoutPanel);
-            queriesElements.setSettingValue(SettingEnum.NORTH_ENABLED, false);
-            queriesElements.setSettingValue(SettingEnum.EAST_ENABLED, false);
-            queriesElements.setSettingValue(SettingEnum.WEST_ENABLED, false);
-            queriesElements.setSettingValue(SettingEnum.CENTER_ENABLED, true);
-            queriesElements.setSettingValue(SettingEnum.SOUTH_ENABLED, true);
-            queriesElements.setSettingValue(SettingEnum.SOUTH_COLLAPSIBLE, true);
-            queriesElements.setSettingValue(SettingEnum.SOUTH_SPLITTABLE, true);
-            queriesElements.setSettingValue(SettingEnum.SOUTH_MERGE_COMMANDS, false);
-            queriesElements.setSettingValue(SettingEnum.SOUTH_HEIGHT, "50%");
-            queriesElements.setSettingValue(SettingEnum.PANEL_NAME, queries.toString());
-            queriesElements.render();
-            beanIds.put(queriesElements, ORMUtil.persistPanel(queriesElements));
-
-            // The default desktop
-            DesktopLayoutPanel desktop = ContextUtil.getDefaultPanel(DesktopLayoutPanel.class);
-            desktop.addTab(dashboard);
-            desktop.render();
-            Query adminRoleQuery = ContextUtil.getEntityFactory().buildQuery(RoleIdentity.class);
-            adminRoleQuery.addCriterion(new Path(RoleIdentity.FLD_CODE), Condition.EQ, RoleIdentity.ROLE_ADMINISTRATOR);
-            beanIds.put(desktop, ORMUtil.persistPanel(desktop, "Administrator's default Desktop", null,
-                    (Identity) ContextUtil.getDRS()
-                            .findUniqueByQuery(adminRoleQuery)));
-
-            ContextUtil.getSessionContext().refresh();
-
-            // ---------------------------------------------------------------------------------------------------
-            // Authorization Menu
-            // ---------------------------------------------------------------------------------------------------
-            AuthorizationPolicyPanel policyPanel = ContextUtil.getDefaultPanel(AuthorizationPolicyPanel.class);
-            policyPanel.render();
-            MenuAuthorizationPanel<Treeitem> menuAuthorizationPanel = (MenuAuthorizationPanel<Treeitem>) policyPanel
-                    .getMenuAuthorizationPanel();
-            Treeitem rootItem = menuAuthorizationPanel.getRootItem();
-
-            Treeitem panelsMenu = menuAuthorizationPanel.renderAddedMenu(rootItem,
-                    L10nMessages.L10N_NAME_DEFAULT_PANELS_MENU.toString());
-            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(dashboard)));
-            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(panels)));
-            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(schemeElements)));
-            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(queriesElements)));
-            menuAuthorizationPanel.renderAddedPanel(panelsMenu, ContextUtil.getPanel(beanIds.get(moduleInfoPanel)));
-
-            Treeitem securityMenu = menuAuthorizationPanel.renderAddedMenu(rootItem,
-                    L10nMessages.L10N_NAME_DEFAULT_SECURITY_MENU.toString());
-            menuAuthorizationPanel.renderAddedPanel(securityMenu, ContextUtil.getPanel(beanIds.get(userRoles)));
-            menuAuthorizationPanel.renderAddedPanel(securityMenu, ContextUtil.getPanel(beanIds.get(policies)));
-            menuAuthorizationPanel.renderAddedPanel(securityMenu, ContextUtil.getPanel(beanIds.get(roles)));
-
-            Treeitem paramsMenu = menuAuthorizationPanel.renderAddedMenu(rootItem,
-                    L10nMessages.L10N_NAME_DEFAULT_PARAMETERS_MENU.toString());
-            menuAuthorizationPanel.renderAddedPanel(paramsMenu, ContextUtil.getPanel(beanIds.get
-                    (entityViewParameters)));
-            menuAuthorizationPanel.renderAddedPanel(paramsMenu, ContextUtil.getPanel(beanIds.get(listViewParameters)));
-            menuAuthorizationPanel.renderAddedPanel(paramsMenu, ContextUtil.getPanel(beanIds.get(queryParameters)));
-            menuAuthorizationPanel.renderAddedPanel(paramsMenu, ContextUtil.getPanel(beanIds.get(charsetParameters)));
-            menuAuthorizationPanel.renderAddedPanel(paramsMenu, ContextUtil.getPanel(beanIds.get(imageRepoParameters)));
-
-
-            AuthorizationPolicy authorizationPolicy = ContextUtil.getEntityFactory().buildAuthorizationPolicy();
-            authorizationPolicy.setName(L10nMessages.L10N_NAME_DEFAULT_ADMINISTRATORS_MENU.toString());
-            authorizationPolicy.setDefinition(policyPanel.getDefinition());
-            ContextUtil.getDWS().save(authorizationPolicy);
-
-            RoleIdentity role = userIdentity.getRoles().iterator().next().getRole();
-            role.setAuthorizationPolicy(authorizationPolicy);
-            ContextUtil.getDWS().save(role);
-
-            //--------------------------------------------------------------------------------------------------------
-            // ANYONE role and default query for sorting identities
-            //--------------------------------------------------------------------------------------------------------
-            role = ContextUtil.getEntityFactory().buildRoleIdentity();
-            role.setCode("ANYONE");
-            role.setIndex(1000);
-            ContextUtil.getDWS().save(role);
-
-            RoleMembers roleMembers = ContextUtil.getEntityFactory().buildRoleMembers();
-            roleMembers.setRole(role);
-            roleMembers.setUser(userIdentity);
-            ContextUtil.getDWS().save(roleMembers);
-
-            Query query = ContextUtil.getEntityFactory().buildQuery(Identity.class);
-            query.setName("by code");
-            query.setCached(true);
-            query.addOrderBy(new Path(Identity.FLD_CODE));
-            ContextUtil.getDWS().save(query);
-
-            EntityTypeQueryParameter entityTypeQueryParameter = ContextUtil.getEntityFactory().buildParameter
-                    (EntityTypeQueryParameter.class);
-            entityTypeQueryParameter.setOwner(role);
-            entityTypeQueryParameter.setKey(Identity.class.getCanonicalName());
-            entityTypeQueryParameter.setValue(Long.valueOf(query.getId()).toString());
-            ContextUtil.getDWS().save(entityTypeQueryParameter);
+            ContextUtil.getSystemJoblet().setup();
+            for (Joblet joblet : ContextUtil.getJoblets()) {
+                joblet.setup();
+            }
 
             return true;
 
