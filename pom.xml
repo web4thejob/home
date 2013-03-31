@@ -30,7 +30,7 @@
     <groupId>org.web4thejob</groupId>
     <artifactId>web4thejob</artifactId>
     <name>web4thejob descriptor</name>
-    <version>3.4.0</version>
+    <version>3.4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>http://web4thejob.org</url>
     <inceptionYear>2012</inceptionYear>
@@ -54,9 +54,9 @@
     </developers>
 
     <scm>
-        <url>http://web4thejob.googlecode.com/svn/tags/web4thejob-3.4.0</url>
-        <connection>scm:svn:http://web4thejob.googlecode.com/svn/tags/web4thejob-3.4.0</connection>
-        <developerConnection>scm:svn:https://web4thejob.googlecode.com/svn/tags/web4thejob-3.4.0</developerConnection>
+        <url>http://web4thejob.googlecode.com/svn/trunk</url>
+        <connection>scm:svn:http://web4thejob.googlecode.com/svn/trunk</connection>
+        <developerConnection>scm:svn:https://web4thejob.googlecode.com/svn/trunk</developerConnection>
     </scm>
 
     <licenses>
