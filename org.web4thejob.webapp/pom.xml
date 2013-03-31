@@ -106,7 +106,7 @@
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.26</version>
                 <configuration>
-                    <useTestClasspath>true</useTestClasspath>
+                    <useTestClasspath>false</useTestClasspath>
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                             <port>8080</port>
