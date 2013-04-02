@@ -30,7 +30,7 @@
     <groupId>org.web4thejob</groupId>
     <artifactId>web4thejob</artifactId>
     <name>web4thejob descriptor</name>
-    <version>3.4.1</version>
+    <version>3.4.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>http://web4thejob.org</url>
     <inceptionYear>2012</inceptionYear>
@@ -57,7 +57,7 @@
         <url>git://github.com/web4thejob/home.git</url>
         <connection>scm:git:git://github.com/web4thejob/home.git</connection>
         <developerConnection>scm:git:https://github.com/web4thejob/home.git</developerConnection>
-      <tag>web4thejob-3.4.1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <licenses>
