@@ -54,9 +54,9 @@
     </developers>
 
     <scm>
-        <url>http://web4thejob.googlecode.com/svn/trunk</url>
-        <connection>scm:svn:http://web4thejob.googlecode.com/svn/trunk</connection>
-        <developerConnection>scm:svn:https://web4thejob.googlecode.com/svn/trunk</developerConnection>
+        <url>git://github.com/web4thejob/home.git</url>
+        <connection>scm:git:git://github.com/web4thejob/home.git</connection>
+        <developerConnection>scm:git:https://github.com/web4thejob/home.git</developerConnection>
     </scm>
 
     <licenses>
