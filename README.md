@@ -9,3 +9,7 @@ The framework is engineered in a multi-layered architecture on top on some of th
 ## License ##
 
 Web4thejob is released under the commercial friendly license [GNU Lesser GPL v3](http://www.gnu.org/licenses/lgpl.html).
+
+## Binaries ##
+
+You can download the binaries of web4thejob either from [Sourceforge FRS](http://sourceforge.net/projects/web4thejob/) or from [Maven](http://search.maven.org/#search%7Cga%7C1%7Cweb4thejob). Read [here](http://web4thejob.org/download) for more info.
