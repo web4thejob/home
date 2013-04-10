@@ -152,7 +152,7 @@ public class DefaultValueListDialog extends AbstractDialog implements ValueListD
         } else if (CommandEnum.EDIT.equals(command.getId())) {
             if (listbox.getSelectedItem() != null) {
                 dialog = ContextUtil.getDefaultDialog(ValueInputDialog.class, pathMetadata,
-                        listbox.getSelectedItem().getValue());
+                        listbox.getSelectedItem().getValue(), true);
                 dialog.show(this);
             }
         } else if (CommandEnum.REMOVE.equals(command.getId())) {

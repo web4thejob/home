@@ -141,7 +141,7 @@ public class DefaultMediaViewPanel extends AbstractMutablePanel implements Media
                         new Path(getSettingValue(SettingEnum.MEDIA_PROPERTY, "")));
 
                 Dialog dialog = ContextUtil.getDefaultDialog(ValueInputDialog.class, pathMetadata,
-                        pathMetadata.getValue(getTargetEntity()));
+                        pathMetadata.getValue(getTargetEntity()), true /* #4 */);
                 dialog.show(new DialogListener());
             }
         } else if (command.getId().equals(CommandEnum.ADDNEW)) {
