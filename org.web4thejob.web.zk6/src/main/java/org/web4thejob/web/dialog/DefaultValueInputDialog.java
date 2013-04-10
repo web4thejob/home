@@ -68,6 +68,13 @@ public class DefaultValueInputDialog extends AbstractDialog implements ValueInpu
         valueWrapper = new ValueWrapper(value);
     }
 
+    // Issue #4
+    protected DefaultValueInputDialog(PathMetadata pathMetadata, Object value, boolean editing) {
+        super();
+        this.editing = editing;
+        component = (HtmlBasedComponent) ZkUtil.getEditableComponentForPropertyType(pathMetadata);
+        valueWrapper = new ValueWrapper(value);
+    }
 
     @Override
     protected String prepareTitle() {
@@ -94,7 +101,8 @@ public class DefaultValueInputDialog extends AbstractDialog implements ValueInpu
     @Override
     protected boolean isOKReady() {
         dataBinder.saveAll();
-        return valueWrapper.hasValue();
+        // Issue #5
+        return editing || valueWrapper.hasValue();
     }
 
     @Override
