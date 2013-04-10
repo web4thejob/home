@@ -46,6 +46,7 @@ import org.zkoss.zkplus.databind.DataBinder;
 import org.zkoss.zul.Grid;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -248,4 +249,12 @@ public class DefaultMutableEntityViewPanel extends AbstractMutablePanel implemen
         return null;
     }
 
+    @Override
+    protected <T extends Serializable> void onSettingValueChanged(SettingEnum id, T oldValue, T newValue) {
+        //needed for issue #3
+        if (id == SettingEnum.RENDER_SCHEME_FOR_INSERT || id == SettingEnum.RENDER_SCHEME_FOR_UPDATE) {
+            renderScheme = null;
+        }
+        super.onSettingValueChanged(id, oldValue, newValue);
+    }
 }
