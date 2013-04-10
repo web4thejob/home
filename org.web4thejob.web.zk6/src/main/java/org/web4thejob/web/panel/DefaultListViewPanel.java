@@ -155,7 +155,7 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
                 if (getSettingValue(SettingEnum.DISPATCH_DOUBLE_CLICK, false)) {
                     dispatchMessage(ContextUtil.getMessage(MessageEnum.ENTITY_ACCEPTED, this, MessageArgEnum.ARG_ITEM,
                             getTargetEntity()));
-                } else if (hasCommand(CommandEnum.UPDATE)) {
+                } else /* #2 if (hasCommand(CommandEnum.UPDATE))*/ {
                     Clients.showBusy(null);
                     Events.echoEvent(ON_DOUBLE_CLICK_ECHO, event.getTarget(), null);
                 }
