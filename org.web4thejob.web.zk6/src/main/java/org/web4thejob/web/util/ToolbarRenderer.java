@@ -24,6 +24,7 @@ import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageAware;
 import org.web4thejob.setting.SettingEnum;
 import org.web4thejob.web.panel.BorderedLayoutPanel;
+import org.web4thejob.web.panel.HtmlViewPanel;
 import org.web4thejob.web.panel.PlaceholderPanel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Panel;
@@ -82,9 +83,12 @@ public class ToolbarRenderer implements CommandRenderer {
         }
 
         toolbar = new Toolbar();
-        toolbar.setStyle("border-width: 0;");
         toolbar.setAlign(align);
         container.insertBefore(toolbar, container.getFirstChild());
+
+        if (!HtmlViewPanel.class.isInstance(getPrimaryOwner())) {
+            toolbar.setStyle("border-width: 0;");
+        }
 
         SortedMap<CommandEnum, List<Command>> map = mergeCommands();
 
