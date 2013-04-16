@@ -20,6 +20,7 @@ package org.web4thejob.web.panel.base;
 
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.message.Message;
+import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.setting.SettingEnum;
 import org.web4thejob.util.CoreUtil;
@@ -96,7 +97,18 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
             final Tab tab = (Tab) event.getTarget();
             final Panel panel = (Panel) tab.getLinkedPanel().getAttribute(Attributes.ATTRIB_PANEL);
             flushCache(panel);
+
+            // Issue #6
+            dispatchMessage(ContextUtil.getMessage(MessageEnum.ACTIVATED, this, MessageArgEnum.ARG_ITEM, panel));
         }
+    }
+
+    @Override
+    protected void afterAdd(Panel panel) {
+        super.afterAdd(panel);
+
+        // Issue #6
+        dispatchMessage(ContextUtil.getMessage(MessageEnum.ACTIVATED, this, MessageArgEnum.ARG_ITEM, panel));
     }
 
     // --------------------- Interface MessageListener ---------------------
@@ -198,6 +210,9 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
                 }
                 if (candidate != null) {
                     candidate.setSelected(true);
+                    // Issue #6
+                    dispatchMessage(ContextUtil.getMessage(MessageEnum.ACTIVATED, this, MessageArgEnum.ARG_ITEM,
+                            candidate.getLinkedPanel().getAttribute(Attributes.ATTRIB_PANEL)));
                 }
             }
         }
