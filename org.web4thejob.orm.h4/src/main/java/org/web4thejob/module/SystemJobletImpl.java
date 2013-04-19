@@ -258,7 +258,7 @@ public class SystemJobletImpl extends AbstractJoblet implements SystemJoblet {
         beanIds.put(queriesElements, ORMUtil.persistPanel(queriesElements));
 
         // The default desktop
-        DesktopLayoutPanel desktop = ContextUtil.getDefaultPanel(DesktopLayoutPanel.class);
+        DesktopLayoutPanel desktop = ContextUtil.getBean(DesktopLayoutPanel.class);
         desktop.addTab(dashboard);
         desktop.render();
         Query adminRoleQuery = ContextUtil.getEntityFactory().buildQuery(RoleIdentity.class);

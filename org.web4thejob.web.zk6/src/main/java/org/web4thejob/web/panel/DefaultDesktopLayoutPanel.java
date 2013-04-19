@@ -18,7 +18,6 @@
 
 package org.web4thejob.web.panel;
 
-import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.web4thejob.command.Command;
 import org.web4thejob.command.CommandAware;
@@ -54,8 +53,6 @@ import java.util.*;
  * @since 1.0.0
  */
 
-@org.springframework.stereotype.Component
-@Scope("prototype")
 public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel implements DesktopLayoutPanel, L10nMessages {
 // ------------------------------ FIELDS ------------------------------
 
