@@ -35,7 +35,8 @@ public class SecurityUtil {
 
     public static boolean isFromIntranet(String remoteAddress) {
         return hasIpAddress("127.0.0.1", remoteAddress) || hasIpAddress("10.0.0.1/8",
-                remoteAddress) || hasIpAddress("192.168.1.1/24", remoteAddress);
+                remoteAddress) || hasIpAddress("192.168.1.1/24", remoteAddress) ||
+                remoteAddress.startsWith("0") /*Issue #8*/;
     }
 
     public static boolean isFirstUse() {
