@@ -59,8 +59,8 @@ public class DefaultRenderSchemeDialog extends AbstractDialog implements RenderS
 
     @Override
     protected String prepareTitle() {
-        return L10nUtil.getMessage(CommandEnum.DESIGN_PANEL.getClass(), CommandEnum.DESIGN_PANEL.name(),
-                CommandEnum.DESIGN_PANEL.name());
+        return L10nUtil.getMessage(CommandEnum.CONFIGURE_HEADERS.getClass(), CommandEnum.CONFIGURE_HEADERS.name(),
+                CommandEnum.CONFIGURE_HEADERS.name());
     }
 
     @Override
