@@ -118,13 +118,12 @@
             <artifactId>hibernate-core</artifactId>
             <version>${org.hibernate.version}</version>
         </dependency>
-        <!--       <dependency>
-                   <groupId>org.hibernate</groupId>
-                   <artifactId>hibernate-testing</artifactId>
-                   <version>${org.hibernate.version}</version>
-                   <scope>test</scope>
-               </dependency>
-       -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-testing</artifactId>
+            <version>${org.hibernate.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
