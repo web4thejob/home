@@ -18,7 +18,8 @@
   ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses />.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -57,8 +58,8 @@
         <url>git://github.com/web4thejob/home.git</url>
         <connection>scm:git:git://github.com/web4thejob/home.git</connection>
         <developerConnection>scm:git:https://github.com/web4thejob/home.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <licenses>
         <license>
@@ -157,6 +158,9 @@
                     <notree>true</notree>
                     <nodeprecated>true</nodeprecated>
                     <nohelp>true</nohelp>
+                    <bottom>&lt;small&gt;Copyright 2012-2013 &lt;a href="https://plus.google.com/115531224680256798646"
+                        rel="publisher"&gt;Veniamin Isaias&lt;/a&gt;. All rights reserved.&lt;/small&gt;
+                    </bottom>
                 </configuration>
             </plugin>
         </plugins>
