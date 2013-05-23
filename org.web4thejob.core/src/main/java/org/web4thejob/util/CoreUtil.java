@@ -44,6 +44,7 @@ import org.web4thejob.setting.SettingEnum;
 import org.web4thejob.web.panel.*;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -403,6 +404,16 @@ public abstract class CoreUtil {
 
         return map;
 
+
+    }
+
+    public static boolean isURL(Object obj) {
+        try {
+            new URL(obj.toString());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
 
     }
 }

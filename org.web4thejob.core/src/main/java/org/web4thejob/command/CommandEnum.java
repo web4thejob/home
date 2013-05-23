@@ -76,13 +76,20 @@ public class CommandEnum implements Comparable<CommandEnum> {
 
     public static final CommandEnum SESSION_INFO = new CommandEnum("SESSION_INFO");
     public static final CommandEnum CHANGE_PASSWORD = new CommandEnum("CHANGE_PASSWORD");
+
+    public static final CommandEnum REPORT_BUG = new CommandEnum("REPORT_BUG", CommandEnum.CATEGORY_DEFAULT, false,
+            false, null, "https://github.com/web4thejob/home/issues");
+
+    public static final CommandEnum COMMUNITY = new CommandEnum("COMMUNITY", CommandEnum.CATEGORY_DEFAULT, true,
+            true, new CommandEnum[]{REPORT_BUG});
+
     public static final CommandEnum ABOUT = new CommandEnum("ABOUT");
     public static final CommandEnum LOGOUT = new CommandEnum("LOGOUT", CommandEnum.CATEGORY_DEFAULT, true, true);
 
     public static final CommandEnum USER_DROPDOWN = new CommandEnum("USER_DROPDOWN", CommandEnum.CATEGORY_DEFAULT,
             false, false,
             new CommandEnum[]{SESSION_INFO, SAVE_DESKTOP,
-                    CHANGE_PASSWORD, ABOUT, LOGOUT});
+                    CHANGE_PASSWORD, COMMUNITY, ABOUT, LOGOUT});
 
     public static final CommandEnum QUERY = new CommandEnum("QUERY", CommandEnum.CATEGORY_CRUD);
     public static final CommandEnum REFRESH = new CommandEnum("REFRESH");

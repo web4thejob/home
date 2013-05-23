@@ -115,6 +115,8 @@ public class DefaultSubcommandsCommandDecorator extends AbstractCommandDecorator
                 } else {
                     if (Boolean.class.isInstance(subcommand.getValue())) {
                         commandDecorator = new DefaultCheckableMenuitemCommandDecorator(subcommand);
+                    } else if (CoreUtil.isURL(subcommand.getValue())) {
+                        commandDecorator = new DefaultHyperlinkMenuitemCommandDecorator(subcommand);
                     } else {
                         commandDecorator = new DefaultMenuitemCommandDecorator(subcommand);
                     }

@@ -57,7 +57,7 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
 // ------------------------------ FIELDS ------------------------------
 
     public static final L10nString L10N_QUESTION_LOGOUT = new L10nString(DefaultDesktopLayoutPanel.class, "question",
-            "Are you sure you want to logout?");
+            "Are you sure you want to sign out?");
 
 // --------------------- Interface CommandAware ---------------------
 
