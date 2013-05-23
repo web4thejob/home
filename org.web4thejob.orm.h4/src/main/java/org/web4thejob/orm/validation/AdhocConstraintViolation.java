@@ -25,6 +25,8 @@ import org.hibernate.validator.internal.metadata.descriptor.ConstraintDescriptor
 import org.hibernate.validator.internal.util.annotationfactory.AnnotationDescriptor;
 import org.hibernate.validator.internal.util.annotationfactory.AnnotationFactory;
 import org.web4thejob.orm.Entity;
+import org.web4thejob.util.CoreUtil;
+import org.web4thejob.util.L10nUtil;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Path;
@@ -38,13 +40,13 @@ import java.lang.annotation.ElementType;
 @SuppressWarnings("unchecked")
 public class AdhocConstraintViolation implements ConstraintViolation<Entity> {
     private static final ConstraintHelper constraintHelper = new ConstraintHelper();
-    private final String message;
+    private final String messageTemplate;
     private final Path path;
     private final Entity rootBean;
     private final Object invalidValue;
 
-    public AdhocConstraintViolation(String message, String path, Entity rootBean, Object invalidValue) {
-        this.message = message;
+    public AdhocConstraintViolation(String messageTemplate, String path, Entity rootBean, Object invalidValue) {
+        this.messageTemplate = messageTemplate;
         this.path = PathImpl.createPathFromString(path);
         this.rootBean = rootBean;
         this.invalidValue = invalidValue;
@@ -52,12 +54,12 @@ public class AdhocConstraintViolation implements ConstraintViolation<Entity> {
 
     @Override
     public String getMessage() {
-        return message;
+        return L10nUtil.getMessageSource().getMessage(messageTemplate, null, messageTemplate, CoreUtil.getUserLocale());
     }
 
     @Override
     public String getMessageTemplate() {
-        return "";
+        return messageTemplate;
     }
 
     @Override

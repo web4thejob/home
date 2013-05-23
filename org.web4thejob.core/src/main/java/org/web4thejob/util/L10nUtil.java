@@ -49,6 +49,15 @@ public class L10nUtil {
     private static MessageSource source;
 
     public static MessageSource getMessageSource() {
+        if (source == null) {
+            source = ContextUtil.getBean(StringUtils.uncapitalize(MessageSource.class.getSimpleName()),
+                    MessageSource.class);
+            try {
+                source.getMessage("just_to_initialize_message_source_properly", null, CoreUtil.getUserLocale());
+            } catch (NoSuchMessageException ignore) {
+            }
+        }
+
         return source;
     }
 
@@ -69,18 +78,9 @@ public class L10nUtil {
     }
 
     public static String getMessage(Class<?> clazz, String code, Object[] args, String defaultValue) {
-        if (source == null) {
-            source = ContextUtil.getBean(StringUtils.uncapitalize(MessageSource.class.getSimpleName()),
-                    MessageSource.class);
+        if (getMessageSource() != null) {
             try {
-                source.getMessage("just_to_initialize_message_source_properly", null, CoreUtil.getUserLocale());
-            } catch (NoSuchMessageException ignore) {
-            }
-        }
-
-        if (source != null) {
-            try {
-                return source.getMessage(clazz.getName() + "." + code, args, CoreUtil.getUserLocale());
+                return getMessageSource().getMessage(clazz.getName() + "." + code, args, CoreUtil.getUserLocale());
             } catch (NoSuchMessageException e) {
                 if (!CoreUtil.getUserLocale().equals(Locale.ENGLISH)) {
                     logMissingMessage(clazz.getName() + "." + code, defaultValue);

@@ -98,5 +98,19 @@
     <bean class="org.web4thejob.orm.serial.MyXStreamMarshaller"/>
     <bean class="org.web4thejob.orm.MappingInitializer"/>
 
+
+    <bean id="messageSource"
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="fallbackToSystemLocale" value="false"/>
+        <property name="cacheSeconds" value="-1"/>
+        <!--no cache-->
+        <property name="basenames">
+            <array>
+                <value>classpath:org/web4thejob/conf/ValidationMessages</value>
+            </array>
+        </property>
+    </bean>
+
 </beans>
 
