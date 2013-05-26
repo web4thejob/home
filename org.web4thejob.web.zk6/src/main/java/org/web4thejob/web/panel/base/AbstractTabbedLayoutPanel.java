@@ -57,6 +57,17 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
+    protected AbstractTabbedLayoutPanel() {
+        ZkUtil.setParentOfChild((Component) base, tabbox);
+        tabbox.setWidth("100%");
+        tabbox.setVflex("true");
+        tabbox.addEventListener(Events.ON_SELECT, this);
+        new Tabs().setParent(tabbox);
+        new Tabpanels().setParent(tabbox);
+        //tabbox.setMold("accordion-lite");
+        //tabbox.setOrient("vertical");
+    }
+
     @Override
     public void dispatchMessage(Message message) {
         if (MessageEnum.TITLE_CHANGED == message.getId()) {
@@ -70,17 +81,6 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
         } else {
             super.dispatchMessage(message);
         }
-    }
-
-    protected AbstractTabbedLayoutPanel() {
-        ZkUtil.setParentOfChild((Component) base, tabbox);
-        tabbox.setWidth("100%");
-        tabbox.setVflex("true");
-        tabbox.addEventListener(Events.ON_SELECT, this);
-        new Tabs().setParent(tabbox);
-        new Tabpanels().setParent(tabbox);
-        //tabbox.setMold("accordion-lite");
-        //tabbox.setOrient("vertical");
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -151,10 +151,9 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
             addNewTab();
         }
 
-        boolean closable = getSettingValue(SettingEnum.CLOSEABLE_TABS, false);
         for (Component item : tabbox.getTabs().getChildren()) {
             if (!item.equals(startupTab)) {
-                ((Tab) item).setClosable(closable);
+                ((Tab) item).setClosable(isClosable((Tab) item));
             }
         }
     }
@@ -291,10 +290,18 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
         }
         tab.addEventListener(Events.ON_CLOSE, this);
         tab.setSelected(true);
-        tab.setClosable(getSettingValue(SettingEnum.CLOSEABLE_TABS, false));
+        tab.setClosable(isClosable(tab));
 
         panel.attach(tabpanel);
         tabpanel.setAttribute(Attributes.ATTRIB_PANEL, panel);
+    }
+
+    private boolean isClosable(Tab tab) {
+        int fixedTabs = getSettingValue(SettingEnum.FIXED_TABS, 0);
+        if (fixedTabs > 0 && tab.getIndex() + 1 <= fixedTabs) {
+            return false;
+        }
+        return getSettingValue(SettingEnum.CLOSEABLE_TABS, false);
     }
 
     @Override
@@ -318,6 +325,10 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
 
     protected int getSelectedIndex() {
         return tabbox.getSelectedIndex();
+    }
+
+    protected void setSelectedIndex(int index) {
+        tabbox.setSelectedIndex(index);
     }
 
     @Override
@@ -349,14 +360,11 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
         registerSetting(SettingEnum.SELECTED_INDEX, -1);
         registerSetting(SettingEnum.SHOW_STARTUP_TAB, false);
         registerSetting(SettingEnum.CLOSEABLE_TABS, true);
+        registerSetting(SettingEnum.FIXED_TABS, 0);
         registerSetting(SettingEnum.HONOR_ADOPTION_REQUEST, false);
         registerSetting(SettingEnum.DISABLE_DYNAMIC_TAB_TITLE, false);
         registerSetting(SettingEnum.MOLD, null);
         registerSetting(SettingEnum.DISABLE_CROSS_TAB_BINDING, false);
-    }
-
-    protected void setSelectedIndex(int index) {
-        tabbox.setSelectedIndex(index);
     }
 
     @Override

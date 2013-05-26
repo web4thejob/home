@@ -72,6 +72,8 @@ public class SettingEnum implements Comparable<SettingEnum> {
             SettingsDialog.L10N_CATEGORY_1000_TABS);
     public static final SettingEnum CLOSEABLE_TABS = new SettingEnum("CLOSEABLE_TABS", Boolean.class,
             SettingsDialog.L10N_CATEGORY_1000_TABS);
+    public static final SettingEnum FIXED_TABS = new SettingEnum("FIXED_TABS", Integer.class,
+            SettingsDialog.L10N_CATEGORY_1000_TABS);
     public static final SettingEnum DISABLE_DYNAMIC_TAB_TITLE = new SettingEnum("DISABLE_DYNAMIC_TAB_TITLE",
             Boolean.class,
             SettingsDialog.L10N_CATEGORY_1000_TABS);
