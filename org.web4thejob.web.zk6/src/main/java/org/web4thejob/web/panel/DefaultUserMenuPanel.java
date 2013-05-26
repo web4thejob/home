@@ -37,6 +37,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
 /**
@@ -160,6 +161,18 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
         item.addEventListener(Events.ON_CLICK, this);
         item.addEventListener(ON_PANEL_LOAD, this);
         return item;
+    }
+
+    @Override
+    public void clearBusy() {
+        super.clearBusy();
+        Clients.clearBusy();
+    }
+
+    @Override
+    public void showBusy() {
+        super.showBusy();
+        Clients.showBusy(null);
     }
 
     @Override
