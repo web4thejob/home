@@ -90,11 +90,6 @@ public class SystemJobletImpl extends AbstractJoblet implements SystemJoblet {
                 .class).getFriendlyName());
         beanIds.put(policies, ORMUtil.persistPanel(policies));
 
-        FramePanel dashboard = ContextUtil.getDefaultPanel(FramePanel.class);
-        dashboard.setSettingValue(SettingEnum.TARGET_URL, "http://web4thejob.sourceforge.net/dashboard/index.php");
-        dashboard.setSettingValue(SettingEnum.PANEL_NAME, "My Dashboard");
-        beanIds.put(dashboard, ORMUtil.persistPanel(dashboard));
-
         //----------------------------------------------------------------------------------------------------------
         //Parameters
         //----------------------------------------------------------------------------------------------------------
@@ -259,6 +254,8 @@ public class SystemJobletImpl extends AbstractJoblet implements SystemJoblet {
 
         // The default desktop
         DesktopLayoutPanel desktop = ContextUtil.getBean(DesktopLayoutPanel.class);
+        Panel dashboard = buildDashboard();
+        beanIds.put(dashboard, ORMUtil.persistPanel(dashboard));
         desktop.addTab(dashboard);
         desktop.render();
         Query adminRoleQuery = ContextUtil.getEntityFactory().buildQuery(RoleIdentity.class);
@@ -398,5 +395,29 @@ public class SystemJobletImpl extends AbstractJoblet implements SystemJoblet {
     @Override
     public String[] getSchemas() {
         return new String[]{"w4tj"};
+    }
+
+    private BorderedLayoutPanel buildDashboard() {
+        BorderedLayoutPanel dashboard = ContextUtil.getDefaultPanel(BorderedLayoutPanel.class);
+
+        dashboard.setSettingValue(SettingEnum.PANEL_NAME, "My Dashboard");
+        dashboard.setSettingValue(SettingEnum.NORTH_ENABLED, false);
+        dashboard.setSettingValue(SettingEnum.NORTH_ENABLED, false);
+        dashboard.setSettingValue(SettingEnum.SOUTH_ENABLED, false);
+        dashboard.setSettingValue(SettingEnum.WEST_ENABLED, false);
+        dashboard.setSettingValue(SettingEnum.EAST_WIDTH, "270px");
+
+        FramePanel wiki = ContextUtil.getDefaultPanel(FramePanel.class);
+        wiki.setSettingValue(SettingEnum.TARGET_URL, "http://web4thejob.sourceforge.net/dashboard/index.php");
+        wiki.setSettingValue(SettingEnum.PANEL_NAME, "Wiki");
+        dashboard.setCenter(wiki);
+
+        FramePanel sidebar = ContextUtil.getDefaultPanel(FramePanel.class);
+        sidebar.setSettingValue(SettingEnum.TARGET_URL, "http://web4thejob.sourceforge.net/dashboard/sidebar.php");
+        sidebar.setSettingValue(SettingEnum.PANEL_NAME, "Sidebar");
+        dashboard.setEast(sidebar);
+
+        dashboard.render();
+        return dashboard;
     }
 }
