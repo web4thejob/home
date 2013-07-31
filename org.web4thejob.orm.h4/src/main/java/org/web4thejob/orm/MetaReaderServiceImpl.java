@@ -32,12 +32,6 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.annotation.*;
-import org.web4thejob.orm.query.Condition;
-import org.web4thejob.orm.query.Query;
-import org.web4thejob.security.RoleIdentity;
-import org.web4thejob.security.RoleMembers;
-import org.web4thejob.security.UserIdentity;
-import org.web4thejob.util.CoreUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -202,7 +196,6 @@ import java.util.*;
             ((EntityMetadataImpl) entityMetadata).initUniqueKeyConstraints();
         }
 
-        ensureAdministratorExists();
     }
 
     @Override
@@ -218,34 +211,6 @@ import java.util.*;
     }
 
     // -------------------------- OTHER METHODS --------------------------
-
-    private void ensureAdministratorExists() {
-        UserIdentity userAdmin = ContextUtil.getSecurityService().getAdministratorIdentity();
-
-        Query query = ContextUtil.getEntityFactory().buildQuery(RoleIdentity.class);
-        query.addCriterion(new Path(RoleIdentity.FLD_AUTHORITY), Condition.EQ, RoleIdentity.ROLE_ADMINISTRATOR);
-        RoleIdentity roleAdmin = ContextUtil.getDRS().findUniqueByQuery(query);
-        if (roleAdmin == null) {
-            roleAdmin = ContextUtil.getEntityFactory().buildRoleIdentity();
-            roleAdmin.setCode(RoleIdentity.ROLE_ADMINISTRATOR);
-            ContextUtil.getDWS().save(roleAdmin);
-        }
-
-        query = ContextUtil.getEntityFactory().buildQuery(RoleMembers.class);
-        query.addCriterion(new Path(RoleMembers.FLD_ROLE), Condition.EQ, roleAdmin);
-        query.addCriterion(new Path(RoleMembers.FLD_USER), Condition.EQ, userAdmin);
-        RoleMembers adminMembers = ContextUtil.getDRS().findUniqueByQuery(query);
-        if (adminMembers == null) {
-            adminMembers = ContextUtil.getEntityFactory().buildRoleMembers();
-            adminMembers.setRole(roleAdmin);
-            adminMembers.setUser(userAdmin);
-            ContextUtil.getDWS().save(adminMembers);
-        }
-
-        CoreUtil.addSystemLock(userAdmin);
-        CoreUtil.addSystemLock(roleAdmin);
-        CoreUtil.addSystemLock(adminMembers);
-    }
 
     @SuppressWarnings("unchecked")
     private Class<? extends Entity> getEntityType(String entityName) {

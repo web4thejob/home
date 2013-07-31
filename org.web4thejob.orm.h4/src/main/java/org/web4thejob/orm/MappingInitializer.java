@@ -21,9 +21,14 @@ package org.web4thejob.orm;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.query.Condition;
+import org.web4thejob.orm.query.Query;
 import org.web4thejob.orm.scheme.RenderScheme;
 import org.web4thejob.orm.scheme.RenderSchemeUtil;
 import org.web4thejob.orm.scheme.SchemeType;
+import org.web4thejob.security.RoleIdentity;
+import org.web4thejob.security.RoleMembers;
+import org.web4thejob.security.UserIdentity;
 import org.web4thejob.util.CoreUtil;
 
 /**
@@ -40,6 +45,8 @@ import org.web4thejob.util.CoreUtil;
         }
 
         ContextUtil.getMRS().refreshMetaCache();
+
+        ensureAdministratorExists();
 
         //in order to support unit testing of seperate modules (like ss3)
         if (ContextUtil.getMRS().getEntityMetadata(RenderScheme.class) != null) {
@@ -61,5 +68,32 @@ import org.web4thejob.util.CoreUtil;
         }
     }
 
+    private void ensureAdministratorExists() {
+        UserIdentity userAdmin = ContextUtil.getSecurityService().getAdministratorIdentity();
+
+        Query query = ContextUtil.getEntityFactory().buildQuery(RoleIdentity.class);
+        query.addCriterion(new Path(RoleIdentity.FLD_AUTHORITY), Condition.EQ, RoleIdentity.ROLE_ADMINISTRATOR);
+        RoleIdentity roleAdmin = ContextUtil.getDRS().findUniqueByQuery(query);
+        if (roleAdmin == null) {
+            roleAdmin = ContextUtil.getEntityFactory().buildRoleIdentity();
+            roleAdmin.setCode(RoleIdentity.ROLE_ADMINISTRATOR);
+            ContextUtil.getDWS().save(roleAdmin);
+        }
+
+        query = ContextUtil.getEntityFactory().buildQuery(RoleMembers.class);
+        query.addCriterion(new Path(RoleMembers.FLD_ROLE), Condition.EQ, roleAdmin);
+        query.addCriterion(new Path(RoleMembers.FLD_USER), Condition.EQ, userAdmin);
+        RoleMembers adminMembers = ContextUtil.getDRS().findUniqueByQuery(query);
+        if (adminMembers == null) {
+            adminMembers = ContextUtil.getEntityFactory().buildRoleMembers();
+            adminMembers.setRole(roleAdmin);
+            adminMembers.setUser(userAdmin);
+            ContextUtil.getDWS().save(adminMembers);
+        }
+
+        CoreUtil.addSystemLock(userAdmin);
+        CoreUtil.addSystemLock(roleAdmin);
+        CoreUtil.addSystemLock(adminMembers);
+    }
 
 }
