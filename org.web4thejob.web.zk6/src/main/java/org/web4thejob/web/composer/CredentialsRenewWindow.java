@@ -24,6 +24,8 @@ import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
 import org.web4thejob.security.SecurityContext;
+import org.web4thejob.security.SecurityService;
+import org.web4thejob.security.UserIdentity;
 import org.web4thejob.web.dialog.PasswordDialog;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Composer;
@@ -35,19 +37,31 @@ import org.zkoss.zul.Window;
  */
 
 public class CredentialsRenewWindow implements Composer<Window>, MessageListener {
+    private UserIdentity userIdentity;
 
     @Override
     public void doAfterCompose(Window comp) throws Exception {
-        if (!ContextUtil.getSessionContext().getSecurityContext().isRenewCredentialsIdentity()) {
-            ContextUtil.getSessionContext().getSecurityContext().clearContext();
-            Executions.sendRedirect(null);
+
+        if (ContextUtil.getSessionContext().getSecurityContext().getUserIdentity() == null) {
+            if (Executions.getCurrent().getSession().getAttribute(SecurityService.EXPIRED_USER_NAME) == null) {
+                Executions.sendRedirect("/");
+                return;
+            } else {
+                userIdentity = ContextUtil.getSecurityService().getUserIdentity(Executions.getCurrent().getSession()
+                        .getAttribute(SecurityService.EXPIRED_USER_NAME).toString());
+                Executions.getCurrent().getSession()
+                        .setAttribute(SecurityService.EXPIRED_USER_NAME, null);
+            }
+        } else {
+            userIdentity = ContextUtil.getSessionContext().getSecurityContext().getUserIdentity();
         }
+
 
         Window hostWindow = comp;
         hostWindow.setBorder(false);
 
         PasswordDialog passwordDialog = ContextUtil.getDefaultDialog(PasswordDialog.class,
-                ContextUtil.getSessionContext().getSecurityContext().getUserIdentity(), true);
+                userIdentity, true);
         passwordDialog.show(this);
     }
 
@@ -57,14 +71,13 @@ public class CredentialsRenewWindow implements Composer<Window>, MessageListener
         if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId()) {
             String newPassword = message.getArg(MessageArgEnum.ARG_ITEM, String.class);
             String oldPassword = message.getArg(MessageArgEnum.ARG_OLD_ITEM, String.class);
-            if (securityContext.renewPassword(oldPassword, newPassword)) {
-                Executions.sendRedirect("/index.zul");
-                return;
+            if (!ContextUtil.getSecurityService().renewPassword(userIdentity, oldPassword, newPassword)) {
+                //this is not good at all...
+                ContextUtil.getSessionContext().getSecurityContext().clearContext();
             }
         }
 
-        securityContext.clearContext();
-        Executions.sendRedirect(null);
+        Executions.sendRedirect("/");
     }
 
 }

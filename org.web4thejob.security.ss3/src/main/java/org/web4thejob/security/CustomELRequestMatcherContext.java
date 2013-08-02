@@ -18,8 +18,10 @@
 
 package org.web4thejob.security;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.IpAddressMatcher;
 import org.springframework.util.StringUtils;
+import org.web4thejob.context.ContextUtil;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,5 +57,21 @@ public class CustomELRequestMatcherContext {
 
     public boolean isFirstUse() {
         return SecurityUtil.isFirstUse();
+    }
+
+    public boolean isCredentialsExpired() {
+        if (SecurityContextHolder.getContext().getAuthentication() != null &&
+                SecurityContextHolder.getContext().getAuthentication().isAuthenticated() &&
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetailsEx) {
+            return true;
+        } else if (ContextUtil.getBean(CredentialsExpiredErrorHandler.class).getExpiredUserName() != null) {
+            CredentialsExpiredErrorHandler ex = ContextUtil.getBean(CredentialsExpiredErrorHandler.class);
+            request.getSession().setAttribute(SecurityService.EXPIRED_USER_NAME,
+                    ContextUtil.getBean(CredentialsExpiredErrorHandler.class).getExpiredUserName());
+            ex.setExpiredUserName(null);
+            return true;
+        }
+
+        return false;
     }
 }

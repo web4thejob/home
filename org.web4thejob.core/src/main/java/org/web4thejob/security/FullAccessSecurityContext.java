@@ -54,11 +54,6 @@ public class FullAccessSecurityContext implements SecurityContext {
     }
 
     @Override
-    public boolean isRenewCredentialsIdentity() {
-        return false;
-    }
-
-    @Override
     public boolean isAdministrator() {
         return true;
     }

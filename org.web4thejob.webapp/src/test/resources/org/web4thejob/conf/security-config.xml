@@ -47,10 +47,9 @@
     </beans:bean>
 
     <beans:bean id="credentialsExpiredErrorHandler"
-                class="org.web4thejob.security.CredentialsExpiredErrorHandler" scope="request">
+                class="org.web4thejob.security.CredentialsExpiredErrorHandler" scope="session">
         <aop:scoped-proxy/>
         <beans:property name="defaultFailureUrl" value="/login.html?failed=1"/>
-        <beans:property name="passwordChangeUrl" value="/sec/pchange.zul"/>
     </beans:bean>
 
     <beans:bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
@@ -69,6 +68,9 @@
                 <beans:entry
                         key="firstUse"
                         value-ref="firstUseEP"/>
+                <beans:entry
+                        key="credentialsExpired"
+                        value-ref="pchangeEP"/>
                 <beans:entry
                         key="fromIntranet"
                         value-ref="unsecuredEP"/>
@@ -96,10 +98,16 @@
         <beans:constructor-arg>
             <beans:value>/slogin.html</beans:value>
         </beans:constructor-arg>
-        <beans:property name="forceHttps" value="true"/>
+        <!--<beans:property name="forceHttps" value="true"/>-->
     </beans:bean>
-
     <!--Delegating authentication point for providing secured/unsecured connections depending on request ip -->
+
+    <beans:bean id="pchangeEP"
+                class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:constructor-arg>
+            <beans:value>/sec/pchange.zul</beans:value>
+        </beans:constructor-arg>
+    </beans:bean>
 
 
     <authentication-manager alias="authenticationManager">
@@ -114,8 +122,10 @@
     <http auto-config="true" use-expressions="true" entry-point-ref="authenticationEntryPoint"
           access-decision-manager-ref="webAccessDecisionManager">
         <intercept-url pattern="/sec/fuwizard.zul" access="permitAll and firstUse" requires-channel="http"/>
+        <intercept-url pattern="/sec/pchange.zul" access="permitAll and !firstUse" requires-channel="http"/>
         <intercept-url pattern="/login.html" access="fromIntranet and !firstUse" requires-channel="http"/>
-        <intercept-url pattern="/slogin.html" access="permitAll and !firstUse" requires-channel="https"/>
+        <intercept-url pattern="/slogin.html" access="permitAll and !firstUse" requires-channel="http"/>
+        <!--<intercept-url pattern="/slogin.html" access="permitAll and !firstUse" requires-channel="https"/>-->
 
         <intercept-url pattern="/zkau/**" access="permitAll"/>
         <intercept-url pattern="/js/**" access="permitAll"/>

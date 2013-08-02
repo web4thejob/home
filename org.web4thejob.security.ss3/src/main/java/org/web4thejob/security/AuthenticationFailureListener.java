@@ -34,13 +34,11 @@ public class AuthenticationFailureListener implements ApplicationListener<Abstra
 
     @Override
     public void onApplicationEvent(AbstractAuthenticationFailureEvent event) {
-        System.out.print(event.toString());
 
         if (event instanceof AuthenticationFailureCredentialsExpiredEvent) {
 
             ContextUtil.getBean(CredentialsExpiredErrorHandler.class).setExpiredUserName(
                     (String) event.getAuthentication().getPrincipal());
-
         }
 
 

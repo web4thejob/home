@@ -84,6 +84,44 @@ public class SpringSecurityService implements SecurityService {
     }
 
     @Override
+    public UserIdentity getUserIdentity(String userName) {
+        Query query = ContextUtil.getEntityFactory().buildQuery(UserIdentity.class);
+        query.addCriterion(new Path(UserIdentity.FLD_USERNAME), Condition.EQ, userName);
+        return ContextUtil.getDRS().findUniqueByQuery(query);
+    }
+
+    @Override
+    public boolean isPasswordValid(UserIdentity userIdentity, String rawPassword) {
+        PasswordEncoder passwordEncoder;
+
+        try {
+            passwordEncoder = ContextUtil.getBean(PasswordEncoder.class);
+        } catch (NoSuchBeanDefinitionException e) {
+            return true;
+        }
+
+        return passwordEncoder.matches(rawPassword, userIdentity.getPassword());
+    }
+
+    @Override
+    public boolean renewPassword(UserIdentity userIdentity, String oldPassword, String newPassword) {
+        if (isPasswordValid(userIdentity, oldPassword)) {
+            ContextUtil.getDRS().refresh(userIdentity);
+            userIdentity.setCredentialsNonExpired(true);
+            userIdentity.setPassword(ContextUtil.getSecurityService().encodePassword(userIdentity, newPassword));
+            ContextUtil.getDWS().save(userIdentity);
+            Authentication authentication = ContextUtil.getSecurityService().authenticate(userIdentity.getCode(),
+                    newPassword);
+            if (authentication != null && authentication.getPrincipal() instanceof UserDetailsEx && ((UserDetailsEx)
+                    authentication.getPrincipal()).getUserIdentity().equals(userIdentity)) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T authenticate(String username, String password, boolean useIfValid) {
         Authentication authentication = authenticate(username, password);

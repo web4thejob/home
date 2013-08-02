@@ -20,13 +20,9 @@ package org.web4thejob.security;
 
 import nu.xom.Element;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
@@ -126,26 +122,11 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
 
     @Override
     public boolean isPasswordValid(String rawPassword) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (userDetails == null) {
+        UserIdentity userIdentity = getUserIdentity();
+        if (userIdentity == null) {
             return false;
         }
-
-
-        PasswordEncoder passwordEncoder;
-
-        try {
-            passwordEncoder = ContextUtil.getBean(PasswordEncoder.class);
-        } catch (NoSuchBeanDefinitionException e) {
-            return true;
-        }
-
-        return passwordEncoder.matches(rawPassword, userDetails.getPassword());
-    }
-
-    @Override
-    public boolean isRenewCredentialsIdentity() {
-        return SecurityContextHolder.getContext().getAuthentication() instanceof CredentialsRenewAuthenticationToken;
+        return ContextUtil.getSecurityService().isPasswordValid(userIdentity, rawPassword);
     }
 
     @Override
@@ -159,18 +140,7 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
     @Override
     public boolean renewPassword(String oldPassword, String newPassword) {
         if (isPasswordValid(oldPassword)) {
-            UserIdentity userIdentity = getUserIdentity();
-            ContextUtil.getDRS().refresh(userIdentity);
-            userIdentity.setCredentialsNonExpired(true);
-            userIdentity.setPassword(ContextUtil.getSecurityService().encodePassword(userIdentity, newPassword));
-            ContextUtil.getDWS().save(userIdentity);
-            Authentication authentication = ContextUtil.getSecurityService().authenticate(userIdentity.getCode(),
-                    newPassword);
-            if (authentication != null && authentication.getPrincipal() instanceof UserDetailsEx && ((UserDetailsEx)
-                    authentication.getPrincipal()).getUserIdentity().equals(userIdentity)) {
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                return true;
-            }
+            return ContextUtil.getSecurityService().renewPassword(getUserIdentity(), oldPassword, newPassword);
         }
         return false;
     }

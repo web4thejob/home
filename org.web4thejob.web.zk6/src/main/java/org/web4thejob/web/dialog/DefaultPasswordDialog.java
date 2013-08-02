@@ -44,7 +44,7 @@ public class DefaultPasswordDialog extends AbstractDialog implements PasswordDia
     private static final int MINIMUM_PASSWORD_LENGTH = 4;
 
     public static final L10nString L10N_DIALOG_TITLE = new L10nString(DefaultPasswordDialog.class, "dialog_title",
-            "Password change");
+            "Password change for user {0}");
     public static final L10nString L10N_OLD_PASSWORD = new L10nString(DefaultPasswordDialog.class,
             "label_old_password", "Old password");
     public static final L10nString L10N_NEW_PASSWORD = new L10nString(DefaultPasswordDialog.class,
@@ -125,8 +125,7 @@ public class DefaultPasswordDialog extends AbstractDialog implements PasswordDia
     }
 
     private boolean validated() {
-        return !validateOld || ContextUtil.getSessionContext().getSecurityContext().isPasswordValid(oldPassword
-                .getValue());
+        return !validateOld || ContextUtil.getSecurityService().isPasswordValid(userIdentity, oldPassword.getValue());
     }
 
     private boolean confirmed() {
@@ -171,7 +170,7 @@ public class DefaultPasswordDialog extends AbstractDialog implements PasswordDia
 
     @Override
     protected String prepareTitle() {
-        return L10N_DIALOG_TITLE.toString();
+        return L10N_DIALOG_TITLE.toString(userIdentity.getCode());
     }
 
 }

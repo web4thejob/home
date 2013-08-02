@@ -36,8 +36,6 @@ public interface SecurityContext {
 
     public boolean isPasswordValid(String rawPassword);
 
-    public boolean isRenewCredentialsIdentity();
-
     public boolean isAdministrator();
 
     public boolean renewPassword(String oldPassword, String newPassword);

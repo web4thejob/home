@@ -28,10 +28,17 @@ package org.web4thejob.security;
 public interface SecurityService {
     // -------------------------- OTHER METHODS --------------------------
     public static final String BEAN_AUTHENTICATION_MANAGER = "authenticationManager";
+    public static final String EXPIRED_USER_NAME = "web4thejob-EXPIRED_USER_NAME";
 
     public String encodePassword(UserIdentity userIdentity, String value);
 
     public UserIdentity getAdministratorIdentity();
+
+    public UserIdentity getUserIdentity(String userName);
+
+    public boolean isPasswordValid(UserIdentity userIdentity, String rawPassword);
+
+    boolean renewPassword(UserIdentity userIdentity, String oldPassword, String newPassword);
 
     public <T> T authenticate(String username, String password);
 

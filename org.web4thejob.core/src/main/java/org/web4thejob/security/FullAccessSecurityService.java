@@ -52,6 +52,16 @@ public class FullAccessSecurityService implements SecurityService {
     }
 
     @Override
+    public UserIdentity getUserIdentity(String userName) {
+        return null;
+    }
+
+    @Override
+    public boolean isPasswordValid(UserIdentity userIdentity, String rawPassword) {
+        return true;
+    }
+
+    @Override
     public <T> T authenticate(String username, String password) {
         return null;
     }
@@ -59,6 +69,11 @@ public class FullAccessSecurityService implements SecurityService {
     @Override
     public <T> T authenticate(String username, String password, boolean useIfValid) {
         return null;
+    }
+
+    @Override
+    public boolean renewPassword(UserIdentity userIdentity, String oldPassword, String newPassword) {
+        return false;
     }
 
     @Override
