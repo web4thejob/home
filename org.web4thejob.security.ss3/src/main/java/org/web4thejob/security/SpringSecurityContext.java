@@ -22,12 +22,11 @@ import nu.xom.Element;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
@@ -134,7 +133,6 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
 
 
         PasswordEncoder passwordEncoder;
-        SaltSource saltSource = null;
 
         try {
             passwordEncoder = ContextUtil.getBean(PasswordEncoder.class);
@@ -142,18 +140,7 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
             return true;
         }
 
-        try {
-            saltSource = ContextUtil.getBean(SaltSource.class);
-        } catch (NoSuchBeanDefinitionException e) {
-            // do nothing
-        }
-
-        if (saltSource != null) {
-            return passwordEncoder.isPasswordValid(userDetails.getPassword(), rawPassword,
-                    saltSource.getSalt(userDetails));
-        } else {
-            return passwordEncoder.isPasswordValid(userDetails.getPassword(), rawPassword, null);
-        }
+        return passwordEncoder.matches(rawPassword, userDetails.getPassword());
     }
 
     @Override

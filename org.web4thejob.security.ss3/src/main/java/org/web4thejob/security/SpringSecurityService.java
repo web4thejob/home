@@ -21,11 +21,10 @@ package org.web4thejob.security;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Path;
@@ -49,7 +48,6 @@ public class SpringSecurityService implements SecurityService {
     @Override
     public String encodePassword(UserIdentity userIdentity, String value) {
         PasswordEncoder passwordEncoder;
-        SaltSource saltSource = null;
 
         try {
             passwordEncoder = ContextUtil.getBean(PasswordEncoder.class);
@@ -57,17 +55,7 @@ public class SpringSecurityService implements SecurityService {
             return value;
         }
 
-        try {
-            saltSource = ContextUtil.getBean(SaltSource.class);
-        } catch (NoSuchBeanDefinitionException e) {
-            // do nothing
-        }
-
-        if (saltSource != null) {
-            return passwordEncoder.encodePassword(value, saltSource.getSalt(new UserDetailsExImpl(userIdentity)));
-        } else {
-            return passwordEncoder.encodePassword(value, null);
-        }
+        return passwordEncoder.encode(value);
     }
 
     @Override

@@ -43,13 +43,7 @@
     </beans:bean>
 
     <beans:bean id="passwordEncoder"
-                class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
-        <beans:constructor-arg value="256"/>
-    </beans:bean>
-
-    <beans:bean id="userSaltSource"
-                class="org.springframework.security.authentication.dao.ReflectionSaltSource">
-        <beans:property name="userPropertyToUse" value="username"/>
+                class="org.springframework.security.crypto.password.StandardPasswordEncoder">
     </beans:bean>
 
     <beans:bean id="credentialsExpiredErrorHandler"
@@ -112,7 +106,6 @@
         <!--<authentication-provider ref="adAuthenticationProvider"/>-->
         <authentication-provider user-service-ref="userDetailsService">
             <password-encoder ref="passwordEncoder">
-                <salt-source ref="userSaltSource"/>
             </password-encoder>
         </authentication-provider>
     </authentication-manager>
