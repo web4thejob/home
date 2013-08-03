@@ -42,7 +42,7 @@
     </bean>
 
     <bean id="validator"
-          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+          class="org.web4thejob.orm.validation.CustomLocalValidatorFactoryBean">
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
 

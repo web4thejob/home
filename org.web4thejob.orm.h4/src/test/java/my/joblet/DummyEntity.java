@@ -19,12 +19,8 @@
 package my.joblet;
 
 import org.web4thejob.orm.AbstractHibernateEntity;
-import org.web4thejob.orm.Entity;
-import org.web4thejob.orm.validation.AdhocConstraintViolation;
 
-import javax.validation.ConstraintViolation;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * @author Veniamin Isaias
@@ -49,16 +45,5 @@ public class DummyEntity extends AbstractHibernateEntity {
     @Override
     public void setAsNew() {
         id = 0;
-    }
-
-    @Override
-    public Set<ConstraintViolation<Entity>> validate() {
-        Set<ConstraintViolation<Entity>> violations = super.validate();
-
-        if (id == 0) {
-            violations.add(new AdhocConstraintViolation("id cannot be zero", "id", this, 0));
-        }
-
-        return violations;
     }
 }

@@ -19,7 +19,6 @@
 package org.web4thejob.orm;
 
 import junit.framework.Assert;
-import my.joblet.DummyEntity;
 import my.joblet.Master1;
 import my.joblet.Master2;
 import org.junit.Test;
@@ -57,14 +56,6 @@ public class ValidationTest extends AbstractHibernateDependentTest {
         master2.setName("test_name");
         violations = master2.validate();
         Assert.assertEquals(violations.size(), 3);
-    }
-
-    @Test
-    public void testAdhocViolations() {
-        DummyEntity dummyEntity = new DummyEntity();
-        Set<ConstraintViolation<Entity>> violations = dummyEntity.validate();
-
-        Assert.assertEquals(1, violations.size());
     }
 
 }
