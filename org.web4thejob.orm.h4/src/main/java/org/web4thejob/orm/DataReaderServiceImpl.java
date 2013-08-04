@@ -19,6 +19,7 @@
 package org.web4thejob.orm;
 
 import org.hibernate.Criteria;
+import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,10 @@ import java.util.Map;
     public <E extends Entity> List<E> findByQuery(Query query) {
         Criteria criteria = toDetachedCriteria(query).getExecutableCriteria(sessionFactory.getCurrentSession())
                 .setCacheable(query.isCached());
+
+        //Issue #21
+        criteria.setFlushMode(FlushMode.MANUAL);
+
         if (StringUtils.hasText(query.getCacheRegion())) {
             criteria.setCacheRegion(query.getCacheRegion());
         }
@@ -76,6 +81,10 @@ import java.util.Map;
         if (StringUtils.hasText(query.getCacheRegion())) {
             criteria.setCacheRegion(query.getCacheRegion());
         }
+
+        //Issue #21
+        criteria.setFlushMode(FlushMode.MANUAL);
+
         final List<E> list = criteria.list();
         if (list.size() > 0) {
             return list.get(0);
@@ -91,6 +100,10 @@ import java.util.Map;
         if (StringUtils.hasText(query.getCacheRegion())) {
             criteria.setCacheRegion(query.getCacheRegion());
         }
+
+        //Issue #21
+        criteria.setFlushMode(FlushMode.MANUAL);
+
         final List<E> list = criteria.list();
         if (list.size() == 0) {
             return null;
@@ -110,7 +123,8 @@ import java.util.Map;
     @Override
     @SuppressWarnings("unchecked")
     public <E extends Entity> List<E> getAll(Class<E> entityType) {
-        return DetachedCriteria.forClass(entityType).getExecutableCriteria(sessionFactory.getCurrentSession()).list();
+        return DetachedCriteria.forClass(entityType).getExecutableCriteria(sessionFactory.getCurrentSession())
+                .setFlushMode(FlushMode.MANUAL).list(); //Issue #21
     }
 
     @Override
