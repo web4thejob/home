@@ -59,6 +59,7 @@
                 <column name="`SCHEME_TYPE`" not-null="true"/>
                 <type name="org.hibernate.type.EnumType">
                     <param name="enumClass">org.web4thejob.orm.scheme.SchemeType</param>
+                    <param name="useNamed">true</param>
                     <param name="type">12</param>
                 </type>
             </property>
