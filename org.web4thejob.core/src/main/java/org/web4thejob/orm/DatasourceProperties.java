@@ -31,7 +31,6 @@ public interface DatasourceProperties {
     public static final String SCHEMA = "datasource.default_schema";
     public static final String CATALOG = "datasource.default_catalog";
     public static final String INSTALLED = "datasource.installed";
-    public static final String JOBLET_RESOURCES = "joblet.resources";
 
     public static final String PATH = "/org/web4thejob/conf/datasource.properties";
     public static final String SCHEMA_SYNTAX = "datasource.schema_syntax";

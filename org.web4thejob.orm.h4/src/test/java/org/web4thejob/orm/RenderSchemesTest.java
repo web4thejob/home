@@ -27,6 +27,7 @@ import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.scheme.RenderElement;
 import org.web4thejob.orm.scheme.RenderScheme;
 import org.web4thejob.orm.scheme.SchemeType;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 import org.web4thejob.security.SecurityService;
 
 import java.util.Locale;

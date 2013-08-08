@@ -26,6 +26,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 
 import java.util.HashSet;
 import java.util.List;

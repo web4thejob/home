@@ -28,6 +28,4 @@ import org.hibernate.cfg.Configuration;
 public interface HibernateConfiguration {
 
     public Configuration getConfiguration();
-
-    public void setClasspathMappingResources(String[] paths);
 }

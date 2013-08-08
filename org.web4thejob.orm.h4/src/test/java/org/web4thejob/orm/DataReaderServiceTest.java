@@ -24,7 +24,6 @@ import my.joblet.Master1;
 import my.joblet.Master2;
 import my.joblet.Reference1;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 import org.web4thejob.context.ContextUtil;
@@ -32,6 +31,7 @@ import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.OrderBy;
 import org.web4thejob.orm.query.Query;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 import org.web4thejob.security.SecurityService;
 
 import java.util.UUID;
@@ -43,43 +43,34 @@ import java.util.UUID;
 
 public class DataReaderServiceTest extends AbstractHibernateDependentTest {
 
-    @Autowired
-    private DataReaderService dataReaderService;
-
-    @Autowired
-    private MetaReaderService metaReaderService;
-
-    @Autowired
-    private EntityFactory entityFactory;
-
     @Test
     public void findFirstByQuery() {
-        final Master1 master1 = dataReaderService.get(Master1.class, Long.valueOf(iterations));
+        final Master1 master1 = ContextUtil.getDRS().get(Master1.class, Long.valueOf(iterations));
         Assert.assertNotNull(master1);
 
-        final Query query = entityFactory.buildQuery(Master1.class);
-        query.addOrderBy(new Path(metaReaderService.getEntityMetadata(Master1.class).getIdentifierName()), true);
+        final Query query = ContextUtil.getEntityFactory().buildQuery(Master1.class);
+        query.addOrderBy(new Path(ContextUtil.getMRS().getEntityMetadata(Master1.class).getIdentifierName()), true);
 
-        Assert.assertEquals(master1, dataReaderService.findFirstByQuery(query));
+        Assert.assertEquals(master1, ContextUtil.getDRS().findFirstByQuery(query));
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void findUniqueByQuery() {
-        final Query query = entityFactory.buildQuery(Master1.class);
-        Assert.assertEquals(iterations, dataReaderService.getAll(Master1.class).size());
-        dataReaderService.findUniqueByQuery(query);
+        final Query query = ContextUtil.getEntityFactory().buildQuery(Master1.class);
+        Assert.assertEquals(iterations, ContextUtil.getDRS().getAll(Master1.class).size());
+        ContextUtil.getDRS().findUniqueByQuery(query);
     }
 
     @Test
     public void queryWithLocalCriteria() {
-        final Reference1 reference1 = dataReaderService.getOne(Reference1.class);
+        final Reference1 reference1 = ContextUtil.getDRS().getOne(Reference1.class);
         Assert.assertNotNull(reference1);
 
-        final Query query = entityFactory.buildQuery(Master1.class);
+        final Query query = ContextUtil.getEntityFactory().buildQuery(Master1.class);
         query.addCriterion(new Path(Master1.FLD_REFERENCE1), Condition.EQ, reference1);
         query.addCriterion(new Path(Master1.FLD_NAME), Condition.EQ, Master1.class.getName());
         Assert.assertEquals(2, query.getCriteria().size());
-        final Master1 master1 = dataReaderService.findFirstByQuery(query);
+        final Master1 master1 = ContextUtil.getDRS().findFirstByQuery(query);
         Assert.assertNotNull(master1);
     }
 
@@ -87,7 +78,7 @@ public class DataReaderServiceTest extends AbstractHibernateDependentTest {
     public void saveQuery() {
         Query query = null;
         for (int i = 1; i <= 50; i++) {
-            query = entityFactory.buildQuery(Master2.class);
+            query = ContextUtil.getEntityFactory().buildQuery(Master2.class);
             query.setName(UUID.randomUUID().toString());
             query.addCriterion(new Path(Master2.FLD_KEY), Condition.EQ, "123");
             query.addCriterion(new Path(Master2.FLD_DETAILS).append(Detail.FLD_FCLASS), Condition.EQ, Master2.class);
@@ -97,7 +88,7 @@ public class DataReaderServiceTest extends AbstractHibernateDependentTest {
             ContextUtil.getDWS().save(query);
         }
 
-        query = dataReaderService.get(Query.class, query.getId());
+        query = ContextUtil.getDRS().get(Query.class, query.getId());
         Assert.assertEquals(2, query.getCriteria().size());
 
         int i = 0;
@@ -138,9 +129,9 @@ public class DataReaderServiceTest extends AbstractHibernateDependentTest {
 
     @Test(expected = HibernateOptimisticLockingFailureException.class)
     public void testQueryOptimisticLock() {
-        final Reference1 reference1 = dataReaderService.getOne(Reference1.class);
+        final Reference1 reference1 = ContextUtil.getDRS().getOne(Reference1.class);
 
-        final Query query1 = entityFactory.buildQuery(Master1.class);
+        final Query query1 = ContextUtil.getEntityFactory().buildQuery(Master1.class);
         query1.setName(UUID.randomUUID().toString());
         query1.addCriterion(new Path(Master1.FLD_ID), Condition.EQ, 123);
         query1.addCriterion(new Path(Master1.FLD_DETAILS).append(Detail.FLD_FCLASS), Condition.EQ, Master2.class);
@@ -150,7 +141,7 @@ public class DataReaderServiceTest extends AbstractHibernateDependentTest {
         query1.setOwner(ContextUtil.getBean(SecurityService.class).getAdministratorIdentity());
         ContextUtil.getDWS().save(query1);
 
-        criterion = dataReaderService.refresh(criterion);
+        criterion = ContextUtil.getDRS().refresh(criterion);
         Assert.assertEquals(reference1, criterion.getValue());
 
         final Query query2 = ContextUtil.getDRS().get(Query.class, query1.getId());
@@ -165,10 +156,10 @@ public class DataReaderServiceTest extends AbstractHibernateDependentTest {
 
     @Test
     public void testVersion() {
-        final Master1 master1a = dataReaderService.getOne(Master1.class);
+        final Master1 master1a = ContextUtil.getDRS().getOne(Master1.class);
         Assert.assertNotNull(master1a);
 
-        final Master1 master1b = dataReaderService.getOne(Master1.class);
+        final Master1 master1b = ContextUtil.getDRS().getOne(Master1.class);
         Assert.assertNotNull(master1b);
 
         Assert.assertEquals(master1a, master1b);

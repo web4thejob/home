@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 import org.web4thejob.security.SecurityService;
 
 /**

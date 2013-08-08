@@ -31,13 +31,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.util.StringUtils;
+import org.web4thejob.context.ContextUtil;
+import org.web4thejob.module.Joblet;
 import org.web4thejob.util.CoreUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Veniamin Isaias
@@ -52,8 +55,6 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
     @Autowired
     @Qualifier(CoreUtil.BEAN_ROOT_CONTEXT)
     private ApplicationContext applicationContext;
-
-    private String[] classpathMappingResources;
 
 // -------------------------- OTHER METHODS --------------------------
 
@@ -105,27 +106,20 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
     }
 
     private void applyResources(LocalSessionFactoryBuilder sfb) {
-        if (classpathMappingResources == null) return;
+        List<Joblet> joblets = new ArrayList<Joblet>();
+        joblets.add(ContextUtil.getSystemJoblet());
+        joblets.addAll(ContextUtil.getJoblets());
 
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        for (String path : classpathMappingResources) {
-
-            for (String item : StringUtils.commaDelimitedListToStringArray(path)) {
+        for (Joblet joblet : joblets) {
+            for (Resource resource : joblet.getResources()) {
                 try {
-                    for (Resource resource : resolver.getResources(item)) {
-                        sfb.addInputStream(resource.getInputStream());
-                    }
+                    sfb.addInputStream(resource.getInputStream());
                 } catch (IOException e) {
                     e.printStackTrace();
                     throw new RuntimeException(e);
                 }
             }
         }
-    }
-
-    @Override
-    public void setClasspathMappingResources(String[] paths) {
-        classpathMappingResources = paths;
     }
 
 

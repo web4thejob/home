@@ -35,10 +35,6 @@
         <param-name>log4jConfigLocation</param-name>
         <param-value>classpath:org/web4thejob/conf/log4j.xml</param-value>
     </context-param>
-    <context-param>
-        <param-name>contextInitializerClasses</param-name>
-        <param-value>org.web4thejob.context.WebApplicationContextInitializer</param-value>
-    </context-param>
 
     <!--Spring Security listener-->
     <filter>

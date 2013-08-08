@@ -19,10 +19,8 @@
 package org.web4thejob.orm;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 import org.web4thejob.security.UserIdentity;
 
 /**
@@ -30,9 +28,7 @@ import org.web4thejob.security.UserIdentity;
  * @since 1.0.0
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:org/web4thejob/conf/orm-config.xml"})
-public class IdentityHierarchy {
+public class IdentityHierarchy extends AbstractHibernateDependentTest {
 
     @Test
     public void doTest() {

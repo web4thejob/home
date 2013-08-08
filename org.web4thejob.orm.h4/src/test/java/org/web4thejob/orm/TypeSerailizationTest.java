@@ -28,6 +28,7 @@ import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.query.Query;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 import org.web4thejob.security.SecurityService;
 
 import javax.xml.transform.Result;

@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 
 /**
  * @author Veniamin Isaias

@@ -23,6 +23,7 @@ import my.joblet.Reference1;
 import org.junit.Test;
 import org.springframework.oxm.Marshaller;
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;

@@ -18,23 +18,18 @@
 
 package org.web4thejob.test;
 
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockServletContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.context.request.RequestContextListener;
-import org.web4thejob.context.SessionContext;
-import org.web4thejob.util.CoreUtil;
+import org.web4thejob.context.ContextUtil;
+import org.web4thejob.module.JobletInstaller;
+import org.web4thejob.orm.DatasourceProperties;
 
-import javax.servlet.ServletRequestEvent;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Veniamin Isaias
@@ -46,33 +41,32 @@ import javax.servlet.ServletRequestEvent;
 public abstract class AbstractWebApplicationContextTest {
 
     private static boolean initialized = false;
-    @Autowired
-    @Qualifier(CoreUtil.BEAN_ROOT_CONTEXT)
-    private ApplicationContext ctx;
-    private static RequestContextListener contextListener;
-    private static ServletRequestEvent requestEvent;
 
     @Before
-    public void setUp() {
-        if (!initialized) {
-            initialized = true;
-            contextListener = new RequestContextListener();
-            requestEvent = new ServletRequestEvent(new MockServletContext(), new MockHttpServletRequest("GET",
-                    "/index.zul"));
+    public void initializeData() {
+        if (initialized) {
+            return;
         }
-        contextListener.requestInitialized(requestEvent);
-        //Assert.assertTrue(StringUtils.hasText(WebZkVersion.getVersion()));
-    }
 
-    @After
-    public void tearDown() {
-        contextListener.requestDestroyed(requestEvent);
-    }
+        Properties datasource = new Properties();
+        try {
+            datasource.load(new ClassPathResource(DatasourceProperties.PATH).getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
 
-    @Test
-    public void test1() {
-        final SessionContext session = ctx.getBean(SessionContext.class);
-        session.refresh();
-        Assert.assertNotNull(session);
+        JobletInstaller jobletInstaller;
+        jobletInstaller = ContextUtil.getBean(JobletInstaller.class);
+        jobletInstaller.setConnectionInfo(datasource);
+        List<Exception> errors = jobletInstaller.installAll();
+        if (errors.isEmpty()) {
+            ContextUtil.addActiveProfile("installed");
+            ContextUtil.refresh();
+        } else {
+            throw new RuntimeException("Test Context initialization failed.");
+        }
+
+        initialized = true;
     }
 }

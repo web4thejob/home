@@ -132,21 +132,6 @@ class JobletInstallerImpl implements JobletInstaller {
             schemaExport.execute(Target.EXPORT, SchemaExport.Type.CREATE);
             exceptions.addAll(schemaExport.getExceptions());
 
-
-            List<String> packages = new ArrayList<String>();
-            if (StringUtils.hasText(connInfo.getProperty(DatasourceProperties.JOBLET_RESOURCES))) {
-                packages.add(connInfo.getProperty(DatasourceProperties.JOBLET_RESOURCES));
-            }
-            for (Joblet joblet : joblets) {
-                if (!(joblet instanceof SystemJoblet)) {
-                    packages.add("classpath*:" + StringUtils.replace(joblet.getBasePackage(), ".",
-                            "/") + "/**/*.hbm.xml");
-                }
-            }
-            connInfo.setProperty(DatasourceProperties.JOBLET_RESOURCES, StringUtils.collectionToDelimitedString
-                    (packages, ","));
-
-
         } catch (Exception e) {
             exceptions.add((E) e);
         }

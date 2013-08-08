@@ -33,6 +33,7 @@ import org.web4thejob.orm.annotation.UpdateTimeHolder;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.query.OrderBy;
 import org.web4thejob.orm.query.Query;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 
 /**
  * @author Veniamin Isaias

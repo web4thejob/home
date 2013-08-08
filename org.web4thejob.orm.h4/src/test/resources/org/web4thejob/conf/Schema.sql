@@ -1,3 +1,0 @@
-CREATE SCHEMA w4tj;
-CREATE SCHEMA myjob;
-

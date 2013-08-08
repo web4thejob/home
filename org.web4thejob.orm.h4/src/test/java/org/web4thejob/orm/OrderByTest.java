@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 
 /**
  * @author Veniamin Isaias

@@ -23,6 +23,7 @@ import my.joblet.Master1;
 import my.joblet.Master2;
 import org.junit.Test;
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
