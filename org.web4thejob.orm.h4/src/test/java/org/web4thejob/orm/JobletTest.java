@@ -24,7 +24,7 @@ import org.web4thejob.util.converter.JobletScanner;
 
 /**
  * @author Veniamin Isaias
- * @since 3.4.3
+ * @since 3.5.0
  */
 
 public class JobletTest {

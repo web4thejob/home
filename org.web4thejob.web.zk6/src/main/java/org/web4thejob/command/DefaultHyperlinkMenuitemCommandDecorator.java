@@ -26,7 +26,7 @@ import org.zkoss.zul.Menuitem;
 
 /**
  * @author Veniamin Isaias
- * @since 3.4.3
+ * @since 3.5.0
  */
 
 public class DefaultHyperlinkMenuitemCommandDecorator extends DefaultMenuitemCommandDecorator implements

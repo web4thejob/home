@@ -22,7 +22,7 @@ package org.web4thejob.command;
  * <p>Marker interface for command decorators that work like hyperlink menu items.</p>
  *
  * @author Veniamin Isaias
- * @since 3.4.3
+ * @since 3.5.0
  */
 public interface HyperlinkMenuitemCommandDecorator extends MenuitemCommandDecorator {
 }

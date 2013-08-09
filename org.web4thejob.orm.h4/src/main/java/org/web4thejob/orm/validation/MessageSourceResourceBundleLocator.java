@@ -30,7 +30,7 @@ import java.util.ResourceBundle;
  * Custom class for supporting Hibernate Validator 5 (JSR 349) prior to the release of Spring 4+.
  *
  * @author Veniamin Isaias
- * @since 3.4.3
+ * @since 3.5.0
  */
 public class MessageSourceResourceBundleLocator implements ResourceBundleLocator {
 

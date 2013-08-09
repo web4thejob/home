@@ -33,7 +33,7 @@ import java.util.Set;
 
 /**
  * @author Veniamin Isaias
- * @since 3.4.3
+ * @since 3.5.0
  */
 public class JobletScanner extends ClassPathScanningCandidateComponentProvider {
     private static final Logger LOG = Logger.getLogger(JobletScanner.class);
