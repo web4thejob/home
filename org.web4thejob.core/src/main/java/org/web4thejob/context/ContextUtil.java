@@ -322,4 +322,8 @@ public class ContextUtil implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         rootContext = applicationContext;
     }
+
+    public static boolean isInitialized() {
+        return rootContext != null;
+    }
 }

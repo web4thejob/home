@@ -37,6 +37,7 @@ import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.module.Joblet;
 import org.web4thejob.util.CoreUtil;
+import org.web4thejob.util.converter.JobletScanner;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +52,6 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
 
     private static final Logger LOG = Logger.getLogger(CustomSessionFactoryBean.class);
     private static final String SCHEMA_FILE = "classpath:org/web4thejob/conf/Schema.sql";
-
     @Autowired
     @Qualifier(CoreUtil.BEAN_ROOT_CONTEXT)
     private ApplicationContext applicationContext;
@@ -106,21 +106,43 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
     }
 
     private void applyResources(LocalSessionFactoryBuilder sfb) {
-        List<Joblet> joblets = new ArrayList<Joblet>();
-        joblets.add(ContextUtil.getSystemJoblet());
-        joblets.addAll(ContextUtil.getJoblets());
 
-        for (Joblet joblet : joblets) {
-            for (Resource resource : joblet.getResources()) {
+        if (ContextUtil.isInitialized()) {
+            List<Joblet> joblets = new ArrayList<Joblet>();
+            joblets.add(ContextUtil.getSystemJoblet());
+            joblets.addAll(ContextUtil.getJoblets());
+
+            for (Joblet joblet : joblets) {
+                for (Resource resource : joblet.getResources()) {
+                    try {
+                        sfb.addInputStream(resource.getInputStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+                }
+                LOG.info("Joblet " + joblet.getName() + " has been loaded automatically.");
+            }
+        } else {
+            LOG.warn("Root context not initialized yet. Falling back to classpath scanning...");
+            JobletScanner scanner = new JobletScanner();
+            for (Object clazz : scanner.getComponentClasses("")) {
                 try {
-                    sfb.addInputStream(resource.getInputStream());
-                } catch (IOException e) {
+                    Joblet joblet = (Joblet) ((Class) clazz).newInstance();
+                    for (Resource resource : joblet.getResources()) {
+                        try {
+                            sfb.addInputStream(resource.getInputStream());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    LOG.info("Joblet " + joblet.getName() + " has been loaded automatically.");
+                } catch (Exception e) {
                     e.printStackTrace();
-                    throw new RuntimeException(e);
                 }
             }
         }
+
     }
-
-
 }
