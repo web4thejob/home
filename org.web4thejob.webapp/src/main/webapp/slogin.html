@@ -38,7 +38,7 @@
     </tr>
     <tr valign="top">
         <td align="center">
-            <form name="f" action="j_spring_security_check" method="POST">
+            <form name="auth" action="j_spring_security_check" method="post">
                 <table style="height: 70px">
                     <tbody>
                     <tr>
@@ -46,7 +46,7 @@
                             <span>User Name:</span>
                         </td>
                         <td align="left">
-                            <input type="text" name="j_username" value="" style="width:150px">
+                            <input type="text" name="j_username" value="admin" style="width:150px">
                         </td>
                     </tr>
                     <tr>
@@ -54,7 +54,7 @@
                             <span>Password:</span>
                         </td>
                         <td align="left">
-                            <input type="password" name="j_password" value="" style="width:150px"/>
+                            <input type="password" name="j_password" value="1111" style="width:150px"/>
                         </td>
                     </tr>
                     <tr>
@@ -75,6 +75,15 @@
                     </tbody>
                 </table>
             </form>
+        </td>
+    </tr>
+    <tr style="text-align:center;" valign="middle">
+        <td>
+            <p>Does this page look sterilized to you?</p>
+
+            <p>Learn how you can <a target="_blank"
+                                    href="http://wiki.web4thejob.org/minibooks/user_authentication#unsecured_sign-in">enhance
+                it!</a></p>
         </td>
     </tr>
     <tr style="height: 50px; text-align:right;" valign="middle">
