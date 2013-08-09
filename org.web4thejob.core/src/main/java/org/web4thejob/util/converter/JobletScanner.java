@@ -76,7 +76,7 @@ public class JobletScanner extends ClassPathScanningCandidateComponentProvider {
                             ClassUtils.getDefaultClassLoader());
 
                     if (SystemJoblet.class.isAssignableFrom(cls)) {
-                        LOG.error("Unable to scan System Joblet!");
+                        systemJobletFound = true;
                     }
 
                     classes.add(cls);
@@ -84,6 +84,11 @@ public class JobletScanner extends ClassPathScanningCandidateComponentProvider {
                     ex.printStackTrace();
                 }
             }
+        }
+
+        if (!systemJobletFound) {
+            LOG.error("Unable to scan System Joblet!");
+
         }
 
         return classes;
