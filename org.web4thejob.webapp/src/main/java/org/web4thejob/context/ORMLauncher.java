@@ -25,7 +25,7 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * @author Veniamin Isaias
- * @since 1.0.0
+ * @since 3.5.0
  */
 
 @Component

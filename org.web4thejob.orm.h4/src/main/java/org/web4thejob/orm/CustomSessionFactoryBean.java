@@ -126,7 +126,7 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
         } else {
             LOG.warn("Root context not initialized yet. Falling back to classpath scanning...");
             JobletScanner scanner = new JobletScanner();
-            for (Object clazz : scanner.getComponentClasses("")) {
+            for (Object clazz : scanner.getComponentClasses("org.web4thejob")) {
                 try {
                     Joblet joblet = (Joblet) ((Class) clazz).newInstance();
                     for (Resource resource : joblet.getResources()) {
