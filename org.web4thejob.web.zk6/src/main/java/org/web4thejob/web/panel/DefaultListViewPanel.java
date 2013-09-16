@@ -769,6 +769,8 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
                             listbox.setModel(listbox.getModel());
                         }
 
+                        setSettingValue(SettingEnum.RENDER_SCHEME_FOR_VIEW, renderScheme.getName());
+
                         Command command = getCommand(CommandEnum.CONFIGURE_HEADERS);
                         if (command != null) {
                             command.dispatchMessage(ContextUtil.getMessage(MessageEnum.MARK_DIRTY, command,

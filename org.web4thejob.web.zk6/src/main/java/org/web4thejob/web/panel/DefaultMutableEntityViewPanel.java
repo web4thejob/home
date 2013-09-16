@@ -198,6 +198,7 @@ public class DefaultMutableEntityViewPanel extends AbstractMutablePanel implemen
                 case AFFIRMATIVE_RESPONSE:
                     if (RenderSchemeDialog.class.isInstance(message.getSender())) {
                         renderScheme = message.getArg(MessageArgEnum.ARG_ITEM, RenderScheme.class);
+                        setSettingValue(SettingEnum.RENDER_SCHEME_FOR_VIEW, renderScheme.getName());
                         arrangeForRenderScheme();
                         if (hasTargetEntity()) {
                             bind(getTargetEntity());
