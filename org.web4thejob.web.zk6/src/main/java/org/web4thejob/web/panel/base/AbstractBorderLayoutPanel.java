@@ -485,7 +485,7 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
                         //hinto for ToolbarRenderer so that in multiple command mergers scenario
                         //the last merger (panel) can be identified so that it can be correctly mapped
                         //to the correct region and this region settings can be applied (eg NORTH_EXCLUDE_CRUD_COMMANDS)
-                        command.setArg(CommandMerger.ATTRIB_COMMAND_MERGER, this);
+                        command.setArg(CommandMerger.ATTRIB_COMMAND_MERGER, commandAware);
                     }
                     mergedCommands.add(command);
                 }
