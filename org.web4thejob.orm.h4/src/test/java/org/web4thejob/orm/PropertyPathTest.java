@@ -22,9 +22,10 @@ import my.joblet.Master1;
 import my.joblet.Reference1;
 import my.joblet.Reference2;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.orm.test.AbstractHibernateDependentTest;
@@ -36,14 +37,16 @@ import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 
 public class PropertyPathTest extends AbstractHibernateDependentTest {
 
-    @Autowired
     private MetaReaderService metaReaderService;
-
-    @Autowired
     private DataReaderService dataReaderService;
-
-    @Autowired
     private EntityFactory entityFactory;
+
+    @Before
+    public void prepare() {
+        dataReaderService = ContextUtil.getDRS();
+        metaReaderService = ContextUtil.getMRS();
+        entityFactory = ContextUtil.getEntityFactory();
+    }
 
     @Test
     public void getValue() {

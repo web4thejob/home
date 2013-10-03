@@ -24,8 +24,8 @@ import my.joblet.Master1;
 import my.joblet.Reference1;
 import my.joblet.Reference2;
 import org.hibernate.proxy.HibernateProxy;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.annotation.InsertTimeHolder;
 import org.web4thejob.orm.annotation.StatusHolder;
@@ -42,14 +42,16 @@ import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 
 public class MetaReaderServiceTest extends AbstractHibernateDependentTest {
 
-    @Autowired
-    MetaReaderService metaReaderService;
-
-    @Autowired
+    private MetaReaderService metaReaderService;
     private DataReaderService dataReaderService;
-
-    @Autowired
     private EntityFactory entityFactory;
+
+    @Before
+    public void prepare() {
+        dataReaderService = ContextUtil.getDRS();
+        metaReaderService = ContextUtil.getMRS();
+        entityFactory = ContextUtil.getEntityFactory();
+    }
 
     @Test
     public void getValue() {

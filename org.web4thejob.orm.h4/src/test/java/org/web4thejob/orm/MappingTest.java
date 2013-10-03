@@ -23,8 +23,8 @@ import my.joblet.Master1;
 import my.joblet.Master2;
 import my.joblet.Reference1;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.test.AbstractHibernateDependentTest;
 
@@ -39,14 +39,16 @@ import java.util.Set;
 
 public class MappingTest extends AbstractHibernateDependentTest {
 
-    @Autowired
     private DataWriterService dataWriterService;
-
-    @Autowired
     private DataReaderService dataReaderService;
-
-    @Autowired
     private MetaReaderService metaReaderService;
+
+    @Before
+    public void prepare() {
+        dataWriterService = ContextUtil.getDWS();
+        dataReaderService = ContextUtil.getDRS();
+        metaReaderService = ContextUtil.getMRS();
+    }
 
     @Test
     public void testHashCodes() {

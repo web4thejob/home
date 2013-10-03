@@ -21,8 +21,8 @@ package org.web4thejob.orm;
 import my.joblet.Master1;
 import my.joblet.Reference1;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.scheme.RenderElement;
 import org.web4thejob.orm.scheme.RenderScheme;
@@ -39,17 +39,18 @@ import java.util.Locale;
 
 public class RenderSchemesTest extends AbstractHibernateDependentTest {
 
-    @Autowired
     private MetaReaderService metaReaderService;
-
-    @Autowired
     private DataWriterService dataWriterService;
-
-    @Autowired
     private DataReaderService dataReaderService;
-
-    @Autowired
     private EntityFactory entityFactory;
+
+    @Before
+    public void prepare() {
+        dataReaderService = ContextUtil.getDRS();
+        metaReaderService = ContextUtil.getMRS();
+        dataWriterService = ContextUtil.getDWS();
+        entityFactory = ContextUtil.getEntityFactory();
+    }
 
     @Test
     public void indexTest() {

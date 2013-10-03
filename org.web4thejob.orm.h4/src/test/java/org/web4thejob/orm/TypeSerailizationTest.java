@@ -21,8 +21,8 @@ package org.web4thejob.orm;
 import junit.framework.Assert;
 import my.joblet.Detail;
 import my.joblet.Master1;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
@@ -44,8 +44,13 @@ import java.io.IOException;
  */
 
 public class TypeSerailizationTest extends AbstractHibernateDependentTest {
-    @Autowired
+
     private EntityFactory entityFactory;
+
+    @Before
+    public void prepare() {
+        entityFactory = ContextUtil.getEntityFactory();
+    }
 
     @Test
     public void marshallingQueryTest() throws XmlMappingException, IOException {
