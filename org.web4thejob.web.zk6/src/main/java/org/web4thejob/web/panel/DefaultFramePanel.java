@@ -38,8 +38,8 @@ import java.io.Serializable;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultFramePanel extends AbstractZkBindablePanel implements FramePanel {
-    private final Iframe iframe = new Iframe();
-    private Entity targetEntity;
+    protected final Iframe iframe = new Iframe();
+    protected Entity targetEntity;
 
     public DefaultFramePanel() {
         ZkUtil.setParentOfChild((Component) base, iframe);
@@ -56,7 +56,7 @@ public class DefaultFramePanel extends AbstractZkBindablePanel implements FrameP
         registerSetting(SettingEnum.ASSUME_DETAIL_BEHAVIOR, false);
     }
 
-    private boolean isBound() {
+    protected boolean isBound() {
         return hasTargetType() && StringUtils.hasText(getSettingValue(SettingEnum.URL_PROPERTY, ""));
     }
 
