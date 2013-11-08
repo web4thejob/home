@@ -85,6 +85,7 @@ public class DefaultHtmlDialog extends AbstractDialog implements HtmlDialog {
                     String.class, null));
             editor.setHflex("true");
             editor.setVflex("true");
+            editor.setCustomConfigurationsPath("/js/ckeditor_config.js");
 
             return editor;
         } catch (Exception e) {

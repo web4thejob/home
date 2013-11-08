@@ -19,8 +19,8 @@
 package org.web4thejob.orm;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.test.AbstractHibernateDependentTest;
@@ -33,11 +33,14 @@ import org.web4thejob.security.SecurityService;
 
 public class PanelDefinitionTest extends AbstractHibernateDependentTest {
 
-    @Autowired
     private EntityFactory entityFactory;
-
-    @Autowired
     private DataWriterService dataWriterService;
+
+    @Before
+    public void prepare() {
+        dataWriterService = ContextUtil.getDWS();
+        entityFactory = ContextUtil.getEntityFactory();
+    }
 
     @Test
     public void persistenceTest() {

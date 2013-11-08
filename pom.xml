@@ -30,7 +30,7 @@
     <groupId>org.web4thejob</groupId>
     <artifactId>web4thejob</artifactId>
     <name>web4thejob descriptor</name>
-    <version>3.5.1-SNAPSHOT</version>
+    <version>3.5.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>http://web4thejob.org</url>
     <inceptionYear>2012</inceptionYear>
@@ -213,7 +213,6 @@
         </dependencies>
     </dependencyManagement>
 
-<!--
     <repositories>
         <repository>
             <id>ZK-CE</id>
@@ -221,6 +220,5 @@
             <url>http://mavensync.zkoss.org/maven2</url>
         </repository>
     </repositories>
--->
 
 </project>

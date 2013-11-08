@@ -394,7 +394,9 @@ import java.util.Set;
                 (SessionFactoryImplementor.class));
 
         for (final String p : j.getKeyColumnNames()) {
-            if (propertyMetadata.hasColumn(p.replace("\"", ""))) {
+            String p2 = p.replaceAll("\"", "");
+            p2 = p2.replaceAll("`", "");
+            if (propertyMetadata.hasColumn(p2)) {
                 return true;
             }
         }
