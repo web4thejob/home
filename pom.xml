@@ -18,7 +18,8 @@
   ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses />.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -79,9 +80,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>3.2.3.RELEASE</org.springframework.version>
         <org.springsecurity.version>3.1.4.RELEASE</org.springsecurity.version>
-        <org.hibernate.version>4.2.6.Final</org.hibernate.version>
+        <org.hibernate.version>4.2.7.Final</org.hibernate.version>
         <org.hibernate-validator.version>5.0.1.Final</org.hibernate-validator.version>
-        <org.zkoss.version>6.5.3</org.zkoss.version>
+        <org.zkoss.version>6.5.4</org.zkoss.version>
         <org.junit.version>4.10</org.junit.version>
         <org.joda.version>2.1</org.joda.version>
         <org.hsqldb.version>2.2.9</org.hsqldb.version>
