@@ -315,6 +315,11 @@ import java.util.*;
                 appendMetadata(QueryHolder.class, new AnnotationMetadataImpl<QueryHolder>(getEntityType
                         (declaringType), field, field.getAnnotation(QueryHolder.class)));
             }
+            if (field.isAnnotationPresent(EntityHierarchyHolder.class)) {
+                appendMetadata(EntityHierarchyHolder.class, new AnnotationMetadataImpl<EntityHierarchyHolder>
+                        (getEntityType
+                        (declaringType), field, field.getAnnotation(EntityHierarchyHolder.class)));
+            }
         }
     }
 }

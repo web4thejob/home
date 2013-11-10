@@ -158,6 +158,8 @@ public abstract class ZkUtil {
                     .panelType());
         } else if (pathMetadata.getLastStep().isAnnotatedWith(QueryHolder.class)) {
             comp = new QueryDropDownBox(pathMetadata);
+        } else if (pathMetadata.getLastStep().isAnnotatedWith(EntityHierarchyHolder.class)) {
+            comp = new EntityHierarchyTreeBox(pathMetadata);
         } else if (pathMetadata.getLastStep().isClobType()) {
             Textbox textbox = new Textbox();
             textbox.setHflex("true");
