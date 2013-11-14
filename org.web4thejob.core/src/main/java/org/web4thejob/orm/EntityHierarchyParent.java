@@ -17,11 +17,13 @@
  */
 package org.web4thejob.orm;
 
+import java.util.Set;
+
 /**
  * @author Veniamin Isaias
  * @since 3.5.2
  */
-public interface EntityHierarchyItem<T extends EntityHierarchy> extends Entity {
+public interface EntityHierarchyParent<T extends EntityHierarchy> extends EntityHierarchyItem<T> {
 
-
+    public Set<T> getChildren();
 }

@@ -28,10 +28,7 @@ import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageAware;
 import org.web4thejob.message.MessageEnum;
-import org.web4thejob.orm.Entity;
-import org.web4thejob.orm.ORMUtil;
-import org.web4thejob.orm.PanelDefinition;
-import org.web4thejob.orm.Path;
+import org.web4thejob.orm.*;
 import org.web4thejob.orm.parameter.Category;
 import org.web4thejob.orm.parameter.Parameter;
 import org.web4thejob.orm.query.Condition;
@@ -415,5 +412,17 @@ public abstract class CoreUtil {
             return false;
         }
 
+    }
+
+    public static Set<String> getSubClasses(Class<? extends Entity> clazz) {
+        Set<String> subs = new HashSet<String>(1);
+
+        for (EntityMetadata em : ContextUtil.getMRS().getEntityMetadatas()) {
+            if (clazz.isAssignableFrom(em.getEntityType())) {
+                subs.add(em.getMappedClass().getCanonicalName());
+            }
+        }
+
+        return subs;
     }
 }

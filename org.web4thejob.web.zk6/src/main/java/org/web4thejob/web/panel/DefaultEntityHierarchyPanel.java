@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.util.StringUtils;
 import org.web4thejob.SystemProtectedEntryException;
 import org.web4thejob.command.Command;
 import org.web4thejob.command.CommandEnum;
@@ -32,8 +33,10 @@ import org.web4thejob.message.MessageListener;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.EntityHierarchy;
 import org.web4thejob.orm.EntityHierarchyItem;
+import org.web4thejob.orm.EntityHierarchyParent;
 import org.web4thejob.setting.Setting;
 import org.web4thejob.setting.SettingEnum;
+import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nMessages;
 import org.web4thejob.util.L10nString;
 import org.web4thejob.web.dialog.EntityPersisterDialog;
@@ -88,8 +91,9 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
     public Set<CommandEnum> getSupportedCommands() {
         Set<CommandEnum> supported = new HashSet<CommandEnum>(super.getSupportedCommands());
         supported.add(CommandEnum.REFRESH);
-        supported.add(CommandEnum.ADD);
-        supported.add(CommandEnum.REMOVE);
+        supported.add(CommandEnum.ADDNEW);
+        supported.add(CommandEnum.UPDATE);
+        supported.add(CommandEnum.DELETE);
         supported.add(CommandEnum.MOVE_UP);
         supported.add(CommandEnum.MOVE_DOWN);
         return Collections.unmodifiableSet(supported);
@@ -101,8 +105,9 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
         entityHierarchy = getEntityHierarchyInstance();
         if (!readOnly) {
             registerCommand(ContextUtil.getDefaultCommand(CommandEnum.REFRESH, this));
-            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.ADD, this));
-            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.REMOVE, this));
+            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.ADDNEW, this));
+            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.UPDATE, this));
+            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.DELETE, this));
             registerCommand(ContextUtil.getDefaultCommand(CommandEnum.MOVE_UP, this));
             registerCommand(ContextUtil.getDefaultCommand(CommandEnum.MOVE_DOWN, this));
         }
@@ -122,7 +127,9 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
             for (EntityHierarchyItem root : roots) {
                 Treeitem rootItem = getNewTreeitem(root);
                 rootItem.setParent(tree.getTreechildren());
-                renderChildren(rootItem, root);
+                if (root instanceof EntityHierarchyParent) {
+                    renderChildren(rootItem, (EntityHierarchyParent) root);
+                }
             }
             arrangeForState(PanelState.READY);
         } else {
@@ -130,7 +137,7 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
         }
     }
 
-    private void renderChildren(final Treeitem parent, final EntityHierarchyItem<EntityHierarchy> item) {
+    private void renderChildren(final Treeitem parent, final EntityHierarchyParent<EntityHierarchy> item) {
 
         ContextUtil.getTransactionWrapper().execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -144,17 +151,19 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                     }
                     parent.getTreechildren().getChildren().clear();
                     for (EntityHierarchy hierarchy : item.getChildren()) {
-                        Treeitem treeitem = getNewTreeitem(hierarchy.getChild());
+                        Treeitem treeitem = getNewTreeitem(ContextUtil.getMRS().deproxyEntity(hierarchy.getChild()));
                         treeitem.setParent(parent.getTreechildren());
                         treeitem.setAttribute(ATTRIB_HIERARCHY, hierarchy);
 
                         treeitem.addEventListener(Events.ON_DOUBLE_CLICK, DefaultEntityHierarchyPanel.this);
 
-                        if (!hierarchy.getChild().getChildren().isEmpty()) {
-                            new Treechildren().setParent(treeitem);
-                            treeitem.setOpen(false);
-                            treeitem.addEventListener(Events.ON_OPEN, DefaultEntityHierarchyPanel.this);
-                            treeitem.addEventListener(ON_OPEN_ECHO, DefaultEntityHierarchyPanel.this);
+                        if (hierarchy.getChild() instanceof EntityHierarchyParent) {
+                            if (!((EntityHierarchyParent) hierarchy.getChild()).getChildren().isEmpty()) {
+                                new Treechildren().setParent(treeitem);
+                                treeitem.setOpen(false);
+                                treeitem.addEventListener(Events.ON_OPEN, DefaultEntityHierarchyPanel.this);
+                                treeitem.addEventListener(ON_OPEN_ECHO, DefaultEntityHierarchyPanel.this);
+                            }
                         }
                     }
                 }
@@ -168,13 +177,24 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
         super.arrangeForState(newState);
         if (newState == PanelState.FOCUSED && !readOnly) {
             boolean selected = tree.getSelectedItem() != null;
-            getCommand(CommandEnum.MOVE_UP).setActivated(selected);
-            getCommand(CommandEnum.MOVE_DOWN).setActivated(selected);
-            getCommand(CommandEnum.REMOVE).setActivated(selected);
+            if (hasCommand(CommandEnum.MOVE_UP)) {
+                getCommand(CommandEnum.MOVE_UP).setActivated(selected);
+            }
+            if (hasCommand(CommandEnum.MOVE_DOWN)) {
+                getCommand(CommandEnum.MOVE_DOWN).setActivated(selected);
+            }
+            if (hasCommand(CommandEnum.UPDATE)) {
+                getCommand(CommandEnum.UPDATE).setActivated(selected);
+            }
+            if (hasCommand(CommandEnum.DELETE)) {
+                getCommand(CommandEnum.DELETE).setActivated(selected);
+            }
         }
         if (hasCommand(CommandEnum.REFRESH)) {
             getCommand(CommandEnum.REFRESH).setActivated(hasTargetType());
-            getCommand(CommandEnum.ADD).setActivated(hasTargetType());
+        }
+        if (hasCommand(CommandEnum.ADDNEW)) {
+            getCommand(CommandEnum.ADDNEW).setActivated(hasTargetType());
         }
     }
 
@@ -192,8 +212,11 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
         } else if (ON_OPEN_ECHO.equals(event.getName())) {
             clearBusy();
             event.getTarget().removeEventListener(ON_OPEN_ECHO, this);
-            renderChildren((Treeitem) event.getTarget(), ((EntityHierarchy) event.getTarget().getAttribute
-                    (ATTRIB_HIERARCHY)).getChild());
+            EntityHierarchyItem hierarchyItem = ((EntityHierarchy) event.getTarget().getAttribute
+                    (ATTRIB_HIERARCHY)).getChild();
+            if (hierarchyItem instanceof EntityHierarchyParent) {
+                renderChildren((Treeitem) event.getTarget(), (EntityHierarchyParent) hierarchyItem);
+            }
         } else if (Events.ON_DOUBLE_CLICK.equals(event.getName())) {
             Treeitem target = ((Treeitem) event.getTarget());
             if (target.getAttribute(ATTRIB_ITEM) instanceof EntityHierarchyItem) {
@@ -212,7 +235,7 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                 return;
             }
 
-            EntityHierarchyItem parent = (EntityHierarchyItem) target.getAttribute(ATTRIB_ITEM);
+            EntityHierarchyParent parent = (EntityHierarchyParent) target.getAttribute(ATTRIB_ITEM);
             EntityHierarchyItem child = (EntityHierarchyItem) dragged.getAttribute(ATTRIB_ITEM);
 
             if (parent != null && child != null) {
@@ -266,7 +289,7 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                 tree.clearSelection();
                 tree.setSelectedItem(item);
             }
-        } else if (CommandEnum.REMOVE.equals(command.getId())) {
+        } else if (CommandEnum.DELETE.equals(command.getId())) {
             if (tree.getSelectedItem() != null) {
                 final Treeitem item = tree.getSelectedItem();
                 final EntityHierarchyItem ehi = ((EntityHierarchyItem) item.getAttribute(ATTRIB_ITEM));
@@ -317,16 +340,16 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                             });
                 }
             }
-        } else if (CommandEnum.ADD.equals(command.getId())) {
+        } else if (CommandEnum.ADDNEW.equals(command.getId())) {
             EntityHierarchyItem templEntity;
             try {
-                templEntity = (EntityHierarchyItem) entityHierarchy.getItemsType().newInstance();
+                templEntity = (EntityHierarchyItem) entityHierarchy.getParentType().newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
                 return;
             }
             Set<Setting<?>> settings = new HashSet<Setting<?>>(1);
-            settings.add(ContextUtil.getSetting(SettingEnum.TARGET_TYPE, entityHierarchy.getItemsType()));
+            settings.add(ContextUtil.getSetting(SettingEnum.TARGET_TYPE, templEntity.getEntityType()));
             EntityPersisterDialog dialog = ContextUtil.getDefaultDialog(EntityPersisterDialog.class,
                     templEntity, settings, MutableMode.INSERT, true);
             dialog.setL10nMode(getL10nMode());
@@ -345,7 +368,7 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                                 new Treechildren().setParent(item);
                             }
                             hierarchy = getEntityHierarchyInstance();
-                            EntityHierarchyItem parent = (EntityHierarchyItem) item.getAttribute(ATTRIB_ITEM);
+                            EntityHierarchyParent parent = (EntityHierarchyParent) item.getAttribute(ATTRIB_ITEM);
                             hierarchy.setParent(parent);
                             hierarchy.setChild(child);
                             hierarchy.setSorting(item.getTreechildren().getItemCount() + 1);
@@ -365,8 +388,29 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                     }
                 }
             });
-
-
+        } else if (CommandEnum.UPDATE.equals(command.getId())) {
+            if (tree.getSelectedItem() != null) {
+                final Treeitem item = tree.getSelectedItem();
+                final EntityHierarchyItem ehi = ((EntityHierarchyItem) item.getAttribute(ATTRIB_ITEM));
+                if (ehi != null) {
+                    Set<Setting<?>> settings = new HashSet<Setting<?>>(1);
+                    settings.add(ContextUtil.getSetting(SettingEnum.TARGET_TYPE, entityHierarchy.getChildType()));
+                    EntityPersisterDialog dialog = ContextUtil.getDefaultDialog(EntityPersisterDialog.class,
+                            ehi, settings, MutableMode.UPDATE);
+                    dialog.setL10nMode(getL10nMode());
+                    dialog.show(new MessageListener() {
+                        @Override
+                        public void processMessage(Message message) {
+                            if (MessageEnum.ENTITY_UPDATED == message.getId()) {
+                                EntityHierarchyItem ehi2 = message.getArg(MessageArgEnum.ARG_ITEM,
+                                        EntityHierarchyItem.class);
+                                item.setAttribute(ATTRIB_ITEM, ehi2);
+                                item.setLabel(ehi2.toString());
+                            }
+                        }
+                    });
+                }
+            }
         }
         super.processValidCommand(command);
     }
@@ -393,14 +437,18 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
 
     private Treeitem getNewTreeitem(EntityHierarchyItem item) {
         Treeitem newItem = new Treeitem();
-        newItem.setLabel(item.toRichString());
+        newItem.setLabel(item.toString());
         newItem.setAttribute(ATTRIB_ITEM, item);
         newItem.addEventListener(Events.ON_DOUBLE_CLICK, this);
 
         if (!readOnly) {
-            newItem.setDroppable("true");
-            newItem.setDraggable("true");
-            newItem.addEventListener(Events.ON_DROP, DefaultEntityHierarchyPanel.this);
+            if (item instanceof EntityHierarchyParent) {
+                Set<String> subs = CoreUtil.getSubClasses(entityHierarchy.getParentType());
+                subs.addAll(CoreUtil.getSubClasses(entityHierarchy.getChildType()));
+                newItem.setDroppable(StringUtils.collectionToCommaDelimitedString(subs));
+                newItem.addEventListener(Events.ON_DROP, DefaultEntityHierarchyPanel.this);
+            }
+            newItem.setDraggable(item.getEntityType().getCanonicalName());
         }
 
         return newItem;

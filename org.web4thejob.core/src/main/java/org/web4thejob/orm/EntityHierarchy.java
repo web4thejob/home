@@ -23,15 +23,15 @@ import org.web4thejob.orm.query.Query;
  * @author Veniamin Isaias
  * @since 3.5.2
  */
-public interface EntityHierarchy<T extends EntityHierarchyItem> extends Entity {
+public interface EntityHierarchy<P extends EntityHierarchyParent, C extends EntityHierarchyItem> extends Entity {
 
-    public T getParent();
+    public P getParent();
 
-    public void setParent(T parent);
+    public void setParent(P parent);
 
-    public T getChild();
+    public C getChild();
 
-    public void setChild(T child);
+    public void setChild(C child);
 
     public long getSorting();
 
@@ -39,7 +39,9 @@ public interface EntityHierarchy<T extends EntityHierarchyItem> extends Entity {
 
     public Query getRootItems();
 
-    public Class<T> getItemsType();
+    public Class<C> getChildType();
+
+    public Class<P> getParentType();
 
 
 }

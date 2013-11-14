@@ -31,5 +31,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface EntityHierarchyHolder {
-    Class<? extends EntityHierarchy<?>> hierarchyType();
+    Class<? extends EntityHierarchy<?, ?>> hierarchyType();
 }
