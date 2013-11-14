@@ -343,6 +343,7 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
     @Override
     public void clear() {
         listbox.setModel(new ListModelList());
+        listbox.setDroppable("false");
         resetSortingDirection(listbox);
         setTargetEntity(null);
         setMasterEntity(null);
@@ -351,6 +352,7 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void refresh() {
         listbox.setEmptyMessage(null);
+        listbox.setDroppable(getDroppableTypes());
         Query query = getFinalQuery();
         if (query != null) {
             setTargetEntity(null);
@@ -450,7 +452,7 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
     @Override
     protected void arrangeForMasterType() {
         super.arrangeForMasterType();
-        // bindCriterion=
+        listbox.setDroppable("false");
     }
 
     @SuppressWarnings({"rawtypes"})
