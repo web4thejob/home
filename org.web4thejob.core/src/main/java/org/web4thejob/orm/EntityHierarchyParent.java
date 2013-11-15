@@ -23,7 +23,8 @@ import java.util.Set;
  * @author Veniamin Isaias
  * @since 3.5.2
  */
-public interface EntityHierarchyParent<T extends EntityHierarchy> extends EntityHierarchyItem<T> {
+public interface EntityHierarchyParent<P extends EntityHierarchyParent, C extends EntityHierarchyItem,
+        H extends EntityHierarchy<P, C>> extends EntityHierarchyItem {
 
-    public Set<T> getChildren();
+    public Set<H> getChildren();
 }

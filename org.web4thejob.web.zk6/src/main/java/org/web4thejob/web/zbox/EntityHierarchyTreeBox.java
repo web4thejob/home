@@ -40,7 +40,7 @@ import java.util.Set;
  * @author Veniamin Isaias
  * @since 3.5.2
  */
-public class EntityHierarchyTreeBox extends AbstractBox<EntityHierarchyItem<?>> implements MessageAware {
+public class EntityHierarchyTreeBox extends AbstractBox<EntityHierarchyItem> implements MessageAware {
     private static final long serialVersionUID = 1L;
     private final RenderElement renderElement;
     private Popup popup;
@@ -72,6 +72,8 @@ public class EntityHierarchyTreeBox extends AbstractBox<EntityHierarchyItem<?>> 
         if (!renderElement.getPropertyPath().getLastStep().isAnnotatedWith(EntityHierarchyHolder.class)) {
             return;
         }
+        EntityHierarchyHolder ehh = renderElement.getPropertyPath().getLastStep().getAnnotation
+                (EntityHierarchyHolder.class);
 
         if (popup == null) {
             popup = new Popup();
@@ -80,9 +82,9 @@ public class EntityHierarchyTreeBox extends AbstractBox<EntityHierarchyItem<?>> 
             popup.setWidth("250px");
             popup.setHeight("350px");
 
-            entityHierarchyPanel = ContextUtil.getDefaultPanel(EntityHierarchyPanel.class, Boolean.TRUE);
-            entityHierarchyPanel.setTargetType(renderElement.getPropertyPath().getLastStep().getAnnotation
-                    (EntityHierarchyHolder.class).hierarchyType());
+            entityHierarchyPanel = ContextUtil.getDefaultPanel(EntityHierarchyPanel.class, Boolean.TRUE,
+                    ehh.showChildren());
+            entityHierarchyPanel.setTargetType(ehh.hierarchyType());
             entityHierarchyPanel.attach(popup);
             entityHierarchyPanel.addMessageListener(this);
 
@@ -134,7 +136,7 @@ public class EntityHierarchyTreeBox extends AbstractBox<EntityHierarchyItem<?>> 
     }
 
     @Override
-    public EntityHierarchyItem<?> getRawValue() {
+    public EntityHierarchyItem getRawValue() {
         if (!isEmpty()) {
             return unmarshallToRawValue();
         } else {
@@ -143,7 +145,7 @@ public class EntityHierarchyTreeBox extends AbstractBox<EntityHierarchyItem<?>> 
     }
 
     @Override
-    public void setRawValue(EntityHierarchyItem<?> value) {
+    public void setRawValue(EntityHierarchyItem value) {
         if (!Objects.equals(value, getRawValue())) {
             if (value != null) {
                 marshallToString(value);

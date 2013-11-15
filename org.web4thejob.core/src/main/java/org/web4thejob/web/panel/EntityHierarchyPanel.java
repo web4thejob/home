@@ -28,7 +28,7 @@ import org.web4thejob.orm.EntityHierarchyItem;
 public interface EntityHierarchyPanel extends MessageAware, ContentPanel, CommandAware, DesignModeAware,
         TargetTypeAware {
 
-    public EntityHierarchyItem<?> getSelectedItem();
+    public EntityHierarchyItem getSelectedItem();
 
     public int getItemCount();
 

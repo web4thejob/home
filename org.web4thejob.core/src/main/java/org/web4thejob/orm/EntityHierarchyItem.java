@@ -21,7 +21,7 @@ package org.web4thejob.orm;
  * @author Veniamin Isaias
  * @since 3.5.2
  */
-public interface EntityHierarchyItem<T extends EntityHierarchy> extends Entity {
+public interface EntityHierarchyItem extends Entity {
 
 
 }
