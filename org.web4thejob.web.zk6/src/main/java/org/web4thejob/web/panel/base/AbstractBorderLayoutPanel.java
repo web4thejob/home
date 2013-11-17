@@ -58,6 +58,7 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
             Borderlayout.WEST, Borderlayout.EAST};
 
     private final Borderlayout blayout = new Borderlayout();
+    private final SelectEventHandler selectHandler = new SelectEventHandler();
 
     @Override
     public void dispatchMessage(Message message) {
@@ -171,6 +172,9 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
             blayout.getNorth().setCollapsible(getSettingValue(SettingEnum.NORTH_COLLAPSIBLE, true));
             blayout.getNorth().setSplittable(getSettingValue(SettingEnum.NORTH_SPLITTABLE, true));
             blayout.getNorth().setHeight(getSettingValue(SettingEnum.NORTH_HEIGHT, REGION_SIZE));
+            if (!blayout.getNorth().isOpen()) {
+                blayout.getNorth().addEventListener(Events.ON_CLICK, selectHandler);
+            }
         }
 
         if (blayout.getSouth() != null) {
@@ -178,6 +182,9 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
             blayout.getSouth().setCollapsible(getSettingValue(SettingEnum.SOUTH_COLLAPSIBLE, true));
             blayout.getSouth().setSplittable(getSettingValue(SettingEnum.SOUTH_SPLITTABLE, true));
             blayout.getSouth().setHeight(getSettingValue(SettingEnum.SOUTH_HEIGHT, REGION_SIZE));
+            if (!blayout.getSouth().isOpen()) {
+                blayout.getSouth().addEventListener(Events.ON_CLICK, selectHandler);
+            }
         }
 
         if (blayout.getWest() != null) {
@@ -185,6 +192,9 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
             blayout.getWest().setCollapsible(getSettingValue(SettingEnum.WEST_COLLAPSIBLE, true));
             blayout.getWest().setSplittable(getSettingValue(SettingEnum.WEST_SPLITTABLE, true));
             blayout.getWest().setWidth(getSettingValue(SettingEnum.WEST_WIDTH, REGION_SIZE));
+            if (!blayout.getWest().isOpen()) {
+                blayout.getWest().addEventListener(Events.ON_CLICK, selectHandler);
+            }
         }
 
         if (blayout.getEast() != null) {
@@ -192,6 +202,9 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
             blayout.getEast().setCollapsible(getSettingValue(SettingEnum.EAST_COLLAPSIBLE, true));
             blayout.getEast().setSplittable(getSettingValue(SettingEnum.EAST_SPLITTABLE, true));
             blayout.getEast().setWidth(getSettingValue(SettingEnum.EAST_WIDTH, REGION_SIZE));
+            if (!blayout.getEast().isOpen()) {
+                blayout.getEast().addEventListener(Events.ON_CLICK, selectHandler);
+            }
         }
 
         mergeCommands();
@@ -645,7 +658,6 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
     }
 
     private class OpenEventHandler implements EventListener<OpenEvent> {
-        private SelectEventHandler selectHandler = new SelectEventHandler();
 
         @Override
         public void onEvent(OpenEvent event) throws Exception {
