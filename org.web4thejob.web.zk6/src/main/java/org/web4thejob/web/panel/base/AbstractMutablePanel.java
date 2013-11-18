@@ -265,6 +265,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
 
     protected void persistLocal() throws Exception {
         ContextUtil.getDWS().save(getTargetEntity());
+        dataBinder.loadAll();
         targetEntityOrig = targetEntity.clone();
     }
 
