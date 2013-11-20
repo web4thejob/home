@@ -208,15 +208,15 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
     @Override
     public void processMessage(Message message) {
         if (message.getId() == MessageEnum.ENTITY_UPDATED) {
-            final EntityHierarchyItem ehi = message.getArg(MessageArgEnum.ARG_ITEM, EntityHierarchyItem.class);
-            if (canBind(ehi)) {
+            if (canBind(message.getArg(MessageArgEnum.ARG_ITEM, Entity.class))) {
+                final EntityHierarchyItem ehi = message.getArg(MessageArgEnum.ARG_ITEM, EntityHierarchyItem.class);
                 for (Treeitem item : getMatchingItems(ehi)) {
                     item.setLabel(ehi.toString());
                 }
             }
         } else if (message.getId() == MessageEnum.ENTITY_DELETED) {
-            final EntityHierarchyItem ehi = message.getArg(MessageArgEnum.ARG_ITEM, EntityHierarchyItem.class);
-            if (canBind(ehi)) {
+            if (canBind(message.getArg(MessageArgEnum.ARG_ITEM, Entity.class))) {
+                final EntityHierarchyItem ehi = message.getArg(MessageArgEnum.ARG_ITEM, EntityHierarchyItem.class);
                 for (Treeitem item : getMatchingItems(ehi)) {
                     if (item.getParent() != null && item.getParent().getChildren().size() == 1) {
                         item.getParent().detach();
