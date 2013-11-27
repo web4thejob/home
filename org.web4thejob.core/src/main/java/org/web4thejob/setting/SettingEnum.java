@@ -50,6 +50,7 @@ public class SettingEnum implements Comparable<SettingEnum> {
     public static final SettingEnum ASSUME_DETAIL_BEHAVIOR = new SettingEnum("ASSUME_DETAIL_BEHAVIOR", Boolean.class);
     public static final SettingEnum MOLD = new SettingEnum("MOLD", String.class);
     public static final SettingEnum SCLASS = new SettingEnum("SCLASS", String.class);
+    public static final SettingEnum ROOT_ITEM = new SettingEnum("ROOT_ITEM", String.class);
 
     public static final SettingEnum RENDER_SCHEME_FOR_VIEW = new SettingEnum("RENDER_SCHEME_FOR_VIEW", String.class);
     public static final SettingEnum RENDER_SCHEME_FOR_UPDATE = new SettingEnum("RENDER_SCHEME_FOR_UPDATE",
