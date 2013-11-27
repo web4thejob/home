@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<language-addon>
+	<!-- The name of this addon. It must be unique -->
+	<addon-name>ckeb</addon-name>
+	<!-- Specifies what other addon this depends
+	<depends></depends>
+	-->
+
+	<version>
+		<version-class>org.web4thejob.web.zbox.ckeb.Version</version-class>
+		<version-uid>4.3.0</version-uid>
+		<zk-version>5.0.6</zk-version><!-- or later -->
+	</version>
+
+	<!-- Which language this addon will be added to -->
+	<language-name>xul/html</language-name>
+
+	<!-- [Optional, Multiple] Defines the version of a JavaScript module,
+		such that, if the version is changed, the browser will reload them.
+		The name is either a package's name or a portion of it.
+	-->
+	<javascript-module name="ckeb" version="1.0"/>
+
+	<zscript>
+	import org.web4thejob.web.zbox.ckeb.*;
+	</zscript>
+
+	<component>
+		<component-name>ckeditorbox</component-name>
+		<component-class>org.web4thejob.web.zbox.ckeb.CKeditorBox</component-class>
+		<widget-class>ckeb.CKeditorBox</widget-class>
+		<annotation>
+			<annotation-name>ZKBIND</annotation-name>
+			<property-name>value</property-name>
+			<attribute>
+				<attribute-name>ACCESS</attribute-name>
+				<attribute-value>both</attribute-value>
+			</attribute>
+			<attribute>
+				<attribute-name>SAVE_EVENT</attribute-name>
+				<attribute-value>onChange</attribute-value>
+			</attribute>
+		</annotation>	
+	</component>
+</language-addon>

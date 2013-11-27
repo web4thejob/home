@@ -74,6 +74,7 @@
         <module>org.web4thejob.web.zk6</module>
         <module>org.web4thejob.security.ss3</module>
         <module>org.web4thejob.webapp</module>
+        <module>org.web4thejob.web.ckeb</module>
     </modules>
 
     <properties>
