@@ -192,23 +192,26 @@ public class PropertyBox extends Hbox {
             style = ZkUtil.replaceStyleElement(style, "background-color", (String) value);
             style = ZkUtil.replaceStyleElement(style, "white-space", "pre-wrap");
             setStyle(style);
-        } else if (mediaHolder) {
-            if (downloadLink != null) {
-                downloadLink.setVisible(true);
-                downloadLink.setAttribute("value", value);
+        } else if (mediaHolder || imageHolder) {
+
+            if (imageHolder && MediaUtil.isImage(MediaUtil.getMediaFormat((byte[]) value))) {
+                if (image != null) {
+                    image.detach();
+                }
+                content = "";
+                image = new Image();
+                image.setParent(this);
+                image.setTooltiptext(MediaUtil.getMediaDescription((byte[]) value));
+                image.setContent(MediaUtil.createThumbnail((byte[]) value));
+                image.setAttribute("value", value);
+                image.addEventListener(Events.ON_CLICK, new DownloadLinkListener());
+            } else {
+                if (downloadLink != null) {
+                    downloadLink.setVisible(true);
+                    downloadLink.setAttribute("value", value);
+                }
+                content = MediaUtil.getMediaDescription((byte[]) value);
             }
-            content = MediaUtil.getMediaDescription((byte[]) value);
-        } else if (imageHolder) {
-            if (image != null) {
-                image.detach();
-            }
-            content = "";
-            image = new Image();
-            image.setParent(this);
-            image.setTooltiptext(MediaUtil.getMediaDescription((byte[]) value));
-            image.setContent(MediaUtil.createThumbnail((byte[]) value));
-            image.setAttribute("value", value);
-            image.addEventListener(Events.ON_CLICK, new DownloadLinkListener());
         } else if (entityTypeHolder) {
             if (value instanceof String) {
                 content = ContextUtil.getMRS().getEntityMetadata((String) value).getFullFriendlyName();
