@@ -24,14 +24,13 @@ import org.web4thejob.context.ContextUtil;
 import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
-import org.web4thejob.orm.parameter.Category;
-import org.web4thejob.orm.parameter.Key;
-import org.web4thejob.util.CoreUtil;
+import org.web4thejob.util.L10nMessages;
 import org.web4thejob.util.L10nString;
-import org.web4thejob.web.util.ZkUtil;
-import org.zkforge.ckez.CKeditor;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zul.Textbox;
+import org.web4thejob.web.zbox.ckeb.CKeditorBox;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Messagebox;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,45 +46,31 @@ public class DefaultHtmlDialog extends AbstractDialog implements HtmlDialog {
     public static final L10nString L10N_DIALOG_TITLE = new L10nString(DefaultHtmlDialog.class, "dialog_title",
             "HTML Editor");
 
-    private Component editor;
+    private CKeditorBox editor;
 
     protected DefaultHtmlDialog() {
-        editor = getHtmlEditor(null);
+        this(null);
     }
 
     protected DefaultHtmlDialog(String content) {
-        editor = getHtmlEditor(content);
-    }
-
-    private org.zkoss.zk.ui.Component getHtmlEditor(String content) {
-        org.zkoss.zk.ui.Component editor = getCKeditor(content);
-        if (editor == null) {
-            editor = new Textbox();
-            editor.setParent(dialogContent.getPanelchildren());
-            ((Textbox) editor).setHflex("true");
-            ((Textbox) editor).setVflex("true");
-            ((Textbox) editor).setMultiline(true);
-            ((Textbox) editor).setValue(content);
-        }
-
+        editor = getCKeditor(content);
+        editor.addEventListener(Events.ON_CHANGE, this);
         dialogContent.getPanelchildren().setStyle("overflow: auto");
-        return editor;
     }
 
-
-    private CKeditor getCKeditor(String content) {
+    private CKeditorBox getCKeditor(String content) {
         try {
-            CKeditor editor = new CKeditor();
+            CKeditorBox editor = new CKeditorBox();
             editor.setParent(dialogContent.getPanelchildren());
-            editor.setWidth(ZkUtil.getDesktopWidthRatio(65));
-            editor.setHeight(ZkUtil.getDesktopHeightRatio(45));
             editor.setValue(content);
+/*
             editor.setFilebrowserImageBrowseUrl(CoreUtil.getParameterValue(Category.LOCATION_PARAM,
                     Key.IMAGES_REPOSITORY,
                     String.class, null));
             editor.setHflex("true");
             editor.setVflex("true");
             editor.setCustomConfigurationsPath("/js/ckeditor_config.js");
+*/
 
             return editor;
         } catch (Exception e) {
@@ -94,18 +79,18 @@ public class DefaultHtmlDialog extends AbstractDialog implements HtmlDialog {
     }
 
     private String getValue() {
-        if (editor instanceof Textbox) {
-            return ((Textbox) editor).getValue();
-        } else if (editor instanceof CKeditor) {
-            return ((CKeditor) editor).getValue();
-        }
-        return null;
+        return editor.getValue();
     }
 
 
     @Override
     protected boolean isOKReady() {
         return StringUtils.hasText(getValue());
+    }
+
+    @Override
+    protected void prepareForOK() {
+        editor.flush();
     }
 
     @Override
@@ -118,5 +103,41 @@ public class DefaultHtmlDialog extends AbstractDialog implements HtmlDialog {
     @Override
     protected String prepareTitle() {
         return L10N_DIALOG_TITLE.toString();
+    }
+
+    @Override
+    protected void doCancel() {
+        if (!btnOK.isDisabled()) {
+            Messagebox.show(DefaultEntityPersisterDialog.L10N_MESSAGE_IGNORE_CHANGES.toString(),
+                    L10nMessages.L10N_MSGBOX_TITLE_QUESTION.toString
+                            (), new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL}, null,
+                    Messagebox.QUESTION, Messagebox.Button.CANCEL,
+                    new EventListener<Messagebox.ClickEvent>() {
+                        @Override
+                        public void onEvent(Messagebox.ClickEvent event) throws Exception {
+                            if (Messagebox.Button.OK == event.getButton()) {
+                                DefaultHtmlDialog.super.doCancel();
+                            }
+                        }
+                    });
+        } else {
+            super.doCancel();
+        }
+    }
+
+    @Override
+    public void onEvent(Event event) throws Exception {
+        if (event.getName().equals(Events.ON_CHANGE) && event.getTarget().equals(editor)) {
+            btnOK.setDisabled(false);
+            editor.focus();
+        } else {
+            super.onEvent(event);
+        }
+    }
+
+    @Override
+    protected void onBeforeShow() {
+        btnOK.setDisabled(true);
+        super.onBeforeShow();
     }
 }

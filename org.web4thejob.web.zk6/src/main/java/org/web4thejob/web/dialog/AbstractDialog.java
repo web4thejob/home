@@ -77,6 +77,10 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         return true;
     }
 
+    protected void prepareForOK() {
+        //override
+    }
+
     protected void prepareContent() {
         if (commandRenderer != null) {
             commandRenderer.render();
@@ -123,26 +127,24 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
             doCancel();
         } else if (Events.ON_OK.equals(event.getName())) {
             event.stopPropagation();
-            if (isOKReady()) {
-                Clients.showBusy(window, L10nMessages.L10N_PROCESSING.toString());
-                Events.echoEvent(new Event(ON_OK_ECHO, window));
-            } else {
-                showNotOKMessage();
-            }
+            prepareForOK();
+            Clients.showBusy(window, L10nMessages.L10N_PROCESSING.toString());
+            Events.echoEvent(new Event(ON_OK_ECHO, window));
         } else if (Events.ON_CLICK.equals(event.getName())) {
             if (btnCancel != null && btnCancel.equals(event.getTarget())) {
                 doCancel();
             } else if (btnOK != null && btnOK.equals(event.getTarget())) {
-                if (isOKReady()) {
-                    Clients.showBusy(window, L10nMessages.L10N_PROCESSING.toString());
-                    Events.echoEvent(new Event(ON_OK_ECHO, window));
-                } else {
-                    showNotOKMessage();
-                }
+                prepareForOK();
+                Clients.showBusy(window, L10nMessages.L10N_PROCESSING.toString());
+                Events.echoEvent(new Event(ON_OK_ECHO, window));
             }
         } else if (ON_OK_ECHO.equals(event.getName())) {
             Clients.clearBusy(window);
-            doOK();
+            if (isOKReady()) {
+                doOK();
+            } else {
+                showNotOKMessage();
+            }
         }
     }
 
@@ -162,7 +164,6 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         btnCancel.setParent(dialogButtongs);
         btnCancel.setMold("trendy");
         btnCancel.setWidth("100px");
-        //btnCancel.setAutodisable("self");
         btnCancel.addEventListener(Events.ON_CLICK, this);
     }
 
@@ -170,7 +171,6 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         dialogContent = new Panel();
         dialogContent.setParent(window);
         new Panelchildren().setParent(dialogContent);
-        dialogContent.setWidth("100%");
         dialogContent.setVflex("true");
     }
 

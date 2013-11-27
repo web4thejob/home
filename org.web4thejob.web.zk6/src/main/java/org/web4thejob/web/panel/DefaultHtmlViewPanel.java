@@ -23,19 +23,17 @@ import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PathMetadata;
-import org.web4thejob.orm.parameter.Category;
-import org.web4thejob.orm.parameter.Key;
 import org.web4thejob.setting.SettingEnum;
-import org.web4thejob.util.CoreUtil;
 import org.web4thejob.web.panel.base.AbstractMutablePanel;
 import org.web4thejob.web.util.ZkUtil;
-import org.zkforge.ckez.CKeditor;
+import org.web4thejob.web.zbox.ckeb.CKeditorBox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zkplus.databind.DataBinder;
 import org.zkoss.zul.Html;
-import org.zkoss.zul.Textbox;
 
 /**
  * @author Veniamin Isaias
@@ -114,38 +112,34 @@ public class DefaultHtmlViewPanel extends AbstractMutablePanel implements HtmlVi
     }
 
     private Component getHtmlEditor(PathMetadata pathMetadata) {
-        Component editor = getCKeditor(pathMetadata);
-        if (editor == null) {
-            editor = new Textbox();
-            ZkUtil.setParentOfChild((Component) base, editor);
-            ((Textbox) editor).setWidth("100%");
-            ((Textbox) editor).setVflex("true");
-            ((Textbox) editor).setMultiline(true);
-            ZkUtil.addBinding(dataBinder, editor, DEFAULT_BEAN_ID, pathMetadata.getPath());
-        }
-
+        final CKeditorBox editor = getCKeditor(pathMetadata);
+        editor.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                editor.focus();
+            }
+        });
         return editor;
     }
 
 
-    private CKeditor getCKeditor(PathMetadata pathMetadata) {
+    private CKeditorBox getCKeditor(PathMetadata pathMetadata) {
         try {
-            CKeditor editor = new CKeditor();
-            editor.setWidth(ZkUtil.getDesktopWidthRatio(65));
-            editor.setHeight(ZkUtil.getDesktopHeightRatio(45));
+            CKeditorBox editor = new CKeditorBox();
+/*
             editor.setFilebrowserImageBrowseUrl(CoreUtil.getParameterValue(Category.LOCATION_PARAM,
                     Key.IMAGES_REPOSITORY,
                     String.class, null));
             editor.setWidth("100%");
             editor.setVflex("true");
+*/
             ZkUtil.setParentOfChild((Component) base, editor);
 
             final String[] loadWhen = {Events.ON_CHANGE};
             final String saveWhen = Events.ON_CHANGE;
             final String access = "both";
             dataBinder.addBinding(editor, "value", DEFAULT_BEAN_ID + "." + pathMetadata.getPath(), loadWhen,
-                    saveWhen, access,
-                    null);
+                    saveWhen, access, null);
 
             return editor;
         } catch (Exception e) {
@@ -156,5 +150,11 @@ public class DefaultHtmlViewPanel extends AbstractMutablePanel implements HtmlVi
     @Override
     protected Class<? extends MutablePanel> getMutableType() {
         return HtmlViewPanel.class;
+    }
+
+    @Override
+    public void beforePersist() {
+        super.beforePersist();
+        ((CKeditorBox) comp).flush();
     }
 }

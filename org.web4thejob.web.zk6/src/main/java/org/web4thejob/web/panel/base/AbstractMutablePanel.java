@@ -867,4 +867,8 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         return null;
     }
 
+    @Override
+    public void beforePersist() {
+        //override
+    }
 }

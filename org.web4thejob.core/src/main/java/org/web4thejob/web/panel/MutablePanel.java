@@ -41,6 +41,8 @@ public interface MutablePanel extends Panel, CommandAware, SettingAware, BindCap
 
     public boolean isDirty();
 
+    public void beforePersist();
+
     public void persist() throws Exception;
 
     void setDirty(boolean dirty);

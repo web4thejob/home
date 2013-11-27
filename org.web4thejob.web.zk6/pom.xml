@@ -18,7 +18,8 @@
   ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses />.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
         <groupId>org.web4thejob</groupId>
@@ -37,6 +38,11 @@
         <dependency>
             <groupId>org.web4thejob</groupId>
             <artifactId>org.web4thejob.core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.web4thejob</groupId>
+            <artifactId>org.web4thejob.web.ckeb</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -84,11 +90,6 @@
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkplus</artifactId>
             <version>${org.zkoss.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.zkforge</groupId>
-            <artifactId>ckez</artifactId>
-            <version>4.1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.theme</groupId>

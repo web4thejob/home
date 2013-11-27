@@ -30,10 +30,9 @@ import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.message.MessageListener;
-import org.web4thejob.orm.Entity;
-import org.web4thejob.orm.EntityHierarchy;
-import org.web4thejob.orm.EntityHierarchyItem;
-import org.web4thejob.orm.EntityHierarchyParent;
+import org.web4thejob.orm.*;
+import org.web4thejob.orm.query.Condition;
+import org.web4thejob.orm.query.Query;
 import org.web4thejob.setting.Setting;
 import org.web4thejob.setting.SettingEnum;
 import org.web4thejob.util.CoreUtil;
@@ -369,12 +368,18 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                 eh.setParent(parent);
                 eh.setChild(child);
                 eh.setSorting(target.getTreechildren().getItemCount() + 1);
-                ContextUtil.getDWS().save(eh);
 
-                dragged.setParent(null);
-                dragged.setParent(target.getTreechildren());
-                dragged.setAttribute(ATTRIB_HIERARCHY, eh);
-                dragged.setSelected(true);
+                Query query = ContextUtil.getEntityFactory().buildQuery(getTargetType());
+                query.addCriterion(new Path(HIERARCHY_INSTANCE.getParentPropertyName()), Condition.EQ, parent);
+                query.addCriterion(new Path(HIERARCHY_INSTANCE.getChildPropertyName()), Condition.EQ, child);
+                if (ContextUtil.getDRS().findFirstByQuery(query) == null) {
+                    ContextUtil.getDWS().save(eh);
+
+                    dragged.setParent(null);
+                    dragged.setParent(target.getTreechildren());
+                    dragged.setAttribute(ATTRIB_HIERARCHY, eh);
+                    dragged.setSelected(true);
+                }
 
                 if (dragged_source != null && dragged_source.getChildren() != null && dragged_source.getChildren()
                         .isEmpty()) {

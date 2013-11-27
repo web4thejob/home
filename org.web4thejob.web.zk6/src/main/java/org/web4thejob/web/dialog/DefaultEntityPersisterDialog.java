@@ -38,7 +38,9 @@ import org.web4thejob.util.L10nString;
 import org.web4thejob.web.panel.*;
 import org.web4thejob.web.panel.base.zk.AbstractZkBindablePanel;
 import org.web4thejob.web.util.ZkUtil;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Messagebox;
 
 import javax.validation.ConstraintViolationException;
@@ -212,16 +214,40 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
     }
 
     @Override
-    public void process(Command command) throws CommandProcessingException {
-        if (CommandEnum.SAVE.equals(command.getId())) {
+    public void onEvent(Event event) throws Exception {
+        if (event.getName().equals("on" + CommandEnum.SAVE.name() + "_Echo")) {
             persist();
-        } else if (CommandEnum.SAVE_AS.equals(command.getId())) {
+        } else if (event.getName().equals("on" + CommandEnum.SAVE_AS.name() + "_Echo")) {
             mutablePanel.getTargetEntity().setAsNew();
             persist();
-        } else if (CommandEnum.SAVE_ADDNEW.equals(command.getId())) {
+        } else if (event.getName().equals("on" + CommandEnum.SAVE_ADDNEW.name() + "_Echo")) {
             if (persist()) {
                 mutablePanel.setTargetEntity(entity.clone());
             }
+        } else {
+            super.onEvent(event);
+        }
+    }
+
+    @Override
+    protected void prepareWindow() {
+        super.prepareWindow();
+        window.addEventListener("on" + CommandEnum.SAVE.name() + "_Echo", this);
+        window.addEventListener("on" + CommandEnum.SAVE_AS.name() + "_Echo", this);
+        window.addEventListener("on" + CommandEnum.SAVE_ADDNEW.name() + "_Echo", this);
+    }
+
+    @Override
+    public void process(Command command) throws CommandProcessingException {
+        if (CommandEnum.SAVE.equals(command.getId())) {
+            mutablePanel.beforePersist();
+            Events.echoEvent(new Event("on" + command.getId().name() + "_Echo", super.window));
+        } else if (CommandEnum.SAVE_AS.equals(command.getId())) {
+            mutablePanel.beforePersist();
+            Events.echoEvent(new Event("on" + command.getId().name() + "_Echo", super.window));
+        } else if (CommandEnum.SAVE_ADDNEW.equals(command.getId())) {
+            mutablePanel.beforePersist();
+            Events.echoEvent(new Event("on" + command.getId().name() + "_Echo", super.window));
         } else if (CommandEnum.VALIDATE.equals(command.getId())) {
             mutablePanel.validate();
         } else if (CommandEnum.CLEAR.equals(command.getId())) {
@@ -313,5 +339,10 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
         } else {
             super.doCancel();
         }
+    }
+
+    @Override
+    protected void prepareForOK() {
+        mutablePanel.beforePersist();
     }
 }
