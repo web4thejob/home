@@ -43,5 +43,7 @@ public interface EntityHierarchy<P extends EntityHierarchyParent, C extends Enti
 
     public Class<P> getParentType();
 
+    public String getParentPropertyName();
 
+    public String getChildPropertyName();
 }
