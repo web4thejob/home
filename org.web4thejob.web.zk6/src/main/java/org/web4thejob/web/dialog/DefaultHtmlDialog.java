@@ -53,29 +53,9 @@ public class DefaultHtmlDialog extends AbstractDialog implements HtmlDialog {
     }
 
     protected DefaultHtmlDialog(String content) {
-        editor = getCKeditor(content);
+        editor = CKeditorBox.newInstance(dialogContent.getPanelchildren(), content);
         editor.addEventListener(Events.ON_CHANGE, this);
         dialogContent.getPanelchildren().setStyle("overflow: auto");
-    }
-
-    private CKeditorBox getCKeditor(String content) {
-        try {
-            CKeditorBox editor = new CKeditorBox();
-            editor.setParent(dialogContent.getPanelchildren());
-            editor.setValue(content);
-/*
-            editor.setFilebrowserImageBrowseUrl(CoreUtil.getParameterValue(Category.LOCATION_PARAM,
-                    Key.IMAGES_REPOSITORY,
-                    String.class, null));
-            editor.setHflex("true");
-            editor.setVflex("true");
-            editor.setCustomConfigurationsPath("/js/ckeditor_config.js");
-*/
-
-            return editor;
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     private String getValue() {

@@ -17,6 +17,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.web4thejob</groupId>
+            <artifactId>org.web4thejob.core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zul</artifactId>
             <version>${org.zkoss.version}</version>

@@ -17,8 +17,11 @@
  */
 package org.web4thejob.web.zbox.ckeb;
 
+import org.web4thejob.context.ContextUtil;
 import org.zkoss.lang.Objects;
+import org.zkoss.lang.Strings;
 import org.zkoss.zk.ui.AbstractComponent;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.event.Events;
 
@@ -27,6 +30,7 @@ import org.zkoss.zk.ui.event.Events;
  * @since 3.5.2
  */
 public class CKeditorBox extends AbstractComponent {
+    private static final String DEFAULT_CUSTOM_CONFIG = "/js/ckeditor_config.js";
     private static final String ON_FLUSH = "onFlush";
     private String value = "";
     private String configurationPath;
@@ -75,9 +79,12 @@ public class CKeditorBox extends AbstractComponent {
         super.renderProperties(renderer);
 
         render(renderer, "value", value);
-        render(renderer, "configPath", configurationPath);
         render(renderer, "flush", flushed);
         render(renderer, "focus", focused);
+
+        if (!Strings.isBlank(configurationPath))
+            render(renderer, "configPath", getEncodedURL(configurationPath));
+
     }
 
     public String getConfigurationPath() {
@@ -89,7 +96,6 @@ public class CKeditorBox extends AbstractComponent {
             this.configurationPath = configurationPath;
             smartUpdate("configPath", getEncodedURL(this.configurationPath));
         }
-        this.configurationPath = configurationPath;
     }
 
     private String getEncodedURL(String path) {
@@ -97,4 +103,13 @@ public class CKeditorBox extends AbstractComponent {
         return dt != null ? dt.getExecution().encodeURL(path) : "";
     }
 
+    public static CKeditorBox newInstance(Component parent, String value) {
+        CKeditorBox editor = new CKeditorBox();
+        editor.setParent(parent);
+        editor.setValue(value);
+        if (ContextUtil.resourceExists(DEFAULT_CUSTOM_CONFIG)) {
+            editor.setConfigurationPath(DEFAULT_CUSTOM_CONFIG);
+        }
+        return editor;
+    }
 }

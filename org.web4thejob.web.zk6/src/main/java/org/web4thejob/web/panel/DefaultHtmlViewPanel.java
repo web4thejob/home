@@ -124,27 +124,14 @@ public class DefaultHtmlViewPanel extends AbstractMutablePanel implements HtmlVi
 
 
     private CKeditorBox getCKeditor(PathMetadata pathMetadata) {
-        try {
-            CKeditorBox editor = new CKeditorBox();
-/*
-            editor.setFilebrowserImageBrowseUrl(CoreUtil.getParameterValue(Category.LOCATION_PARAM,
-                    Key.IMAGES_REPOSITORY,
-                    String.class, null));
-            editor.setWidth("100%");
-            editor.setVflex("true");
-*/
-            ZkUtil.setParentOfChild((Component) base, editor);
+        CKeditorBox editor = CKeditorBox.newInstance(((org.zkoss.zul.Panel) base).getPanelchildren(), "");
+        final String[] loadWhen = {Events.ON_CHANGE};
+        final String saveWhen = Events.ON_CHANGE;
+        final String access = "both";
+        dataBinder.addBinding(editor, "value", DEFAULT_BEAN_ID + "." + pathMetadata.getPath(), loadWhen,
+                saveWhen, access, null);
 
-            final String[] loadWhen = {Events.ON_CHANGE};
-            final String saveWhen = Events.ON_CHANGE;
-            final String access = "both";
-            dataBinder.addBinding(editor, "value", DEFAULT_BEAN_ID + "." + pathMetadata.getPath(), loadWhen,
-                    saveWhen, access, null);
-
-            return editor;
-        } catch (Exception e) {
-            return null;
-        }
+        return editor;
     }
 
     @Override

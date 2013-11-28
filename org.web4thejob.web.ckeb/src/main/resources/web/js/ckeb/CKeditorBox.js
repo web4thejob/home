@@ -103,12 +103,14 @@ ckeb.CKeditorBox = zk.$extends(zul.Widget, {
     },
 
     _init: function () {
-        var uuid = this.uuid;
+        var uuid = this.uuid,
+            configPath = this.configPath;
+
         this._editor = CKEDITOR.replace(uuid + '-cnt', {
             startupFocus: true,
             height: 600,
             tabIndex: 1,
-            customConfig: this.configPath
+            customConfig: configPath
         });
 
         this._editor.wgt = this;
