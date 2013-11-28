@@ -6,7 +6,7 @@ function handleLogin() {
         showTimeoutMessage();
     }
 
-    document.f.j_username.focus();
+    document.auth.j_username.focus();
 }
 
 function showErrorMessage() {
