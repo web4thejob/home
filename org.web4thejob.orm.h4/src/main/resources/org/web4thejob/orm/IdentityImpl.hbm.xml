@@ -46,7 +46,7 @@
 
         <version name="version" access="field" type="integer" column="`VERSION`"/>
 
-        <property name="email" type="string" unique-key="UQ_EMAIL">
+        <property name="email" type="string">
             <meta attribute="friendlyName">Email</meta>
             <meta attribute="index">2</meta>
             <column name="`EMAIL`" length="100" not-null="false"/>

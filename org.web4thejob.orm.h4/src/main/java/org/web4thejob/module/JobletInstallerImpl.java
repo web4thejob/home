@@ -120,6 +120,10 @@ class JobletInstallerImpl implements JobletInstaller {
                         statement.close();
                     }
                 }
+
+                if (!connection.getAutoCommit()) {
+                    connection.commit();
+                }
             }
 
             for (Joblet joblet : joblets) {
