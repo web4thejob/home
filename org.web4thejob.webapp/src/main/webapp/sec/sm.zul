@@ -8,6 +8,8 @@
             <button id="btnGo1" label="Change org.web4thejob.panel to org.web4thejob.web.panel"/>
             <button id="btnGo2" label="Create joblet panels"/>
             <textbox id="models" width="200px"/>
+
+            <button id="btnGo3" label="Change [...] to (...) in panel tags"/>
         </vbox>
 	</window>
 </zk>

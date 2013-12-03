@@ -33,6 +33,7 @@ import org.web4thejob.web.panel.ListViewPanel;
 import org.web4thejob.web.panel.MutableEntityViewPanel;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.MouseEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -138,4 +139,15 @@ public class SafeModeWindow extends GenericForwardComposer<Window> {
         return out;
     }
 
+    public void onClick$btnGo3(MouseEvent event) throws Exception {
+        for (PanelDefinition panelDefinition : ContextUtil.getDRS().getAll(PanelDefinition.class)) {
+            if (StringUtils.hasText(panelDefinition.getTags())) {
+                panelDefinition.setTags(panelDefinition.getTags().replaceAll("\\[", "("));
+                panelDefinition.setTags(panelDefinition.getTags().replaceAll("]", ")"));
+                ContextUtil.getDWS().save(panelDefinition);
+            }
+        }
+
+        Clients.showNotification("Done!");
+    }
 }
