@@ -204,7 +204,7 @@ public abstract class CoreUtil {
     public static String buildTagValue(String tag, Object value) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("[");
+        sb.append("(");
         sb.append(tag);
         sb.append("=");
         if (Boolean.class.isInstance(value)) {
@@ -216,7 +216,7 @@ public abstract class CoreUtil {
         } else {
             sb.append(value);
         }
-        sb.append("]");
+        sb.append(")");
 
         return sb.toString();
     }
