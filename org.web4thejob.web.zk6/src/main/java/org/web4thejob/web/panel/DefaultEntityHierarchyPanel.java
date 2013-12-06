@@ -84,7 +84,6 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
         tree.setVflex("true");
         tree.setWidth("100%");
         tree.addEventListener(Events.ON_SELECT, this);
-        tree.setZclass("z-dottree");
         new Treechildren().setParent(tree);
     }
 

@@ -144,6 +144,7 @@ public class ToolbarRenderer implements CommandRenderer {
         Separator separator = new Separator("vertical");
         separator.setParent(toolbar);
         separator.setSclass("z-toolbarbutton");
+        separator.setStyle("overflow: visible;");
         separator.setBar(true);
     }
 
