@@ -607,14 +607,18 @@ public abstract class ZkUtil {
         return entity;
     }
 
-    @SuppressWarnings("rawtypes")
     public static List<LookupCommandDecorator> getLookupDecorators(Command command) {
+        return getCommandDecorators(command, LookupCommandDecorator.class);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static <T extends CommandDecorator> List<T> getCommandDecorators(Command command, Class<T> decoratorType) {
         if (command == null) return Collections.emptyList();
 
-        List<LookupCommandDecorator> decorators = new ArrayList<LookupCommandDecorator>();
+        List<T> decorators = new ArrayList<T>();
         for (MessageAware listener : command.getListeners()) {
-            if (LookupCommandDecorator.class.isInstance(listener)) {
-                decorators.add((LookupCommandDecorator) listener);
+            if (decoratorType.isInstance(listener)) {
+                decorators.add((T) listener);
             }
         }
 

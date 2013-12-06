@@ -26,4 +26,25 @@ package org.web4thejob.command;
  */
 
 public interface ToolbarbuttonCommandDecorator extends CommandDecorator {
+
+    /**
+     * @since 3.5.2
+     */
+    public void setHref(String href);
+
+    /**
+     * @since 3.5.2
+     */
+    public String getHref();
+
+    /**
+     * @since 3.5.2
+     */
+    public void setTarget(String target);
+
+    /**
+     * @since 3.5.2
+     */
+    public String getTarget();
+
 }

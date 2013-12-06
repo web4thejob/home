@@ -48,4 +48,23 @@ public class DefaultToolbarbuttonCommandDecorator extends AbstractClickableComma
         return new Toolbarbutton();
     }
 
+    @Override
+    public void setHref(String href) {
+        ((Toolbarbutton) clickable).setHref(href);
+    }
+
+    @Override
+    public String getHref() {
+        return ((Toolbarbutton) clickable).getHref();
+    }
+
+    @Override
+    public void setTarget(String target) {
+        ((Toolbarbutton) clickable).setTarget(target);
+    }
+
+    @Override
+    public String getTarget() {
+        return ((Toolbarbutton) clickable).getTarget();
+    }
 }
