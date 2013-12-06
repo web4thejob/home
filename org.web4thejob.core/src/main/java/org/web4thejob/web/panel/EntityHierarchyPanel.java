@@ -32,4 +32,6 @@ public interface EntityHierarchyPanel extends MessageAware, ContentPanel, Comman
 
     public int getItemCount();
 
+    public boolean isReadOnly();
+
 }

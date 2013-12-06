@@ -622,5 +622,10 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
     public int getItemCount() {
         return tree.getItemCount();
     }
+
+    @Override
+    public boolean isReadOnly() {
+        return readOnly;
+    }
 }
 
