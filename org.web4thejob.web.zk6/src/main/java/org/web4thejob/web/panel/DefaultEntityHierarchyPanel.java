@@ -209,7 +209,7 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
             if (canBind(message.getArg(MessageArgEnum.ARG_ITEM, Entity.class))) {
                 final EntityHierarchyItem ehi = message.getArg(MessageArgEnum.ARG_ITEM, EntityHierarchyItem.class);
                 for (Treeitem item : getMatchingItems(ehi)) {
-                    item.setLabel(ehi.toString());
+                    updateTreeitemLabel(item, ehi.toString());
                 }
             }
         } else if (message.getId() == MessageEnum.ENTITY_DELETED) {
@@ -551,7 +551,7 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                                 EntityHierarchyItem ehi2 = message.getArg(MessageArgEnum.ARG_ITEM,
                                         EntityHierarchyItem.class);
                                 item.setAttribute(ATTRIB_ITEM, ehi2);
-                                item.setLabel(ehi2.toString());
+                                updateTreeitemLabel(item, ehi2.toString());
                             }
                         }
                     });
@@ -581,14 +581,26 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
         }
     }
 
+    private void updateTreeitemLabel(Treeitem item, String label) {
+        //Treeitem -> Treerow    -> Treecell      -> Html
+        ((Html) item.getTreerow().getFirstChild().getFirstChild()).setContent(label);
+    }
+
     private Treeitem getNewTreeitem(EntityHierarchyItem item) {
         Treeitem newItem = new Treeitem();
-        newItem.setLabel(item.toString());
+
+        new Treerow().setParent(newItem);
+        Treecell cell = new Treecell();
+        cell.setParent(newItem.getTreerow());
+        cell.setStyle("white-space:nowrap;");
+        cell.setImage("img/" + (item instanceof EntityHierarchyParent ? "FOLDER" : "FILE") + ".png");
+        Html html = new Html(item.toString());
+        html.setStyle("margin-left: 5px;");
+        html.setParent(cell);
+
         newItem.setAttribute(ATTRIB_ITEM, item);
         newItem.addEventListener(Events.ON_DOUBLE_CLICK, this);
         newItem.addEventListener(ON_DOUBLE_CLICK_ECHO, this);
-        newItem.setStyle("white-space:nowrap;");
-        newItem.setImage("img/" + (item instanceof EntityHierarchyParent ? "FOLDER" : "FILE") + ".png");
 
         if (!readOnly) {
             if (item instanceof EntityHierarchyParent) {

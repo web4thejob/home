@@ -256,6 +256,18 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
     }
 
     private void setTabTitle(Tab tab, String title) {
+        //TODO Uncomment as soon as ZK bug is fixed (UI client engine hangs when caption is added as Tab child)
+/*
+        Caption caption = tab.getCaption();
+        if (caption == null) {
+            caption = new Caption();
+            caption.setParent(tab);
+            new Html().setParent(caption);
+        }
+
+        Html html = (Html) caption.getFirstChild();
+        html.setContent(title);
+*/
         if (title.length() <= 30) {
             tab.setLabel(title);
             tab.setTooltiptext("");

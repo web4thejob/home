@@ -107,8 +107,7 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         new Treecol(L10N_COLUMN_ITEMS.toString()).setParent(treecols);
 
         new Treechildren().setParent(tree);
-        rootItem = new Treeitem(L10N_TREE_ITEM_ROOT.toString());
-        new Treecell().setParent(rootItem.getTreerow());
+        rootItem = getNewTreeitem(L10N_TREE_ITEM_ROOT.toString(), null);
 
         rootItem.setParent(tree.getTreechildren());
         rootItem.setDroppable(ELEMENT_PANEL);
@@ -219,7 +218,8 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId() && ValueInputDialog.class.isInstance(message
                 .getSender())) {
             if (message.getArgs().containsKey(MessageArgEnum.ARG_NEW_ITEM)) {
-                tree.getSelectedItem().setLabel(message.getArgs().get(MessageArgEnum.ARG_NEW_ITEM).toString());
+                updateTreeitemLabel(tree.getSelectedItem(), message.getArgs().get(MessageArgEnum.ARG_NEW_ITEM)
+                        .toString());
             } else {
                 renderAddedMenu(tree.getSelectedItem(), message.getArgs().get(MessageArgEnum.ARG_ITEM).toString());
             }
@@ -247,11 +247,16 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
             listbox.setItemRenderer(new ListitemRenderer<org.web4thejob.web.panel.Panel>() {
                 @Override
                 public void render(Listitem item, org.web4thejob.web.panel.Panel data, int index) throws Exception {
-                    item.setImage(data.getImage());
-                    item.setLabel(data.toString());
+                    Listcell cell = new Listcell();
+                    cell.setStyle("white-space:nowrap;");
+                    cell.setImage(data.getImage());
+                    cell.setParent(item);
+                    Html html = new Html(data.toString());
+                    html.setParent(cell);
+                    html.setStyle("margin-left: 5px;");
+
                     item.setValue(data);
                     item.setDraggable(ELEMENT_PANEL);
-                    item.setStyle("white-space:nowrap;");
                 }
             });
         }
@@ -311,9 +316,7 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
 
     @Override
     public Treeitem renderAddedMenu(Treeitem parent, String name) {
-        Treeitem item = new Treeitem(name);
-        item.setImage("img/FOLDER.png");
-        new Treecell().setParent(item.getTreerow());
+        Treeitem item = getNewTreeitem(name, "img/FOLDER.png");
         if (parent.getTreechildren() == null) {
             new Treechildren().setParent(parent);
         }
@@ -336,9 +339,7 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
 
     @Override
     public Treeitem renderAddedPanel(Treeitem parent, org.web4thejob.web.panel.Panel panel) {
-        Treeitem item = new Treeitem(panel.toString());
-        item.setImage(panel.getImage());
-        new Treecell().setParent(item.getTreerow());
+        Treeitem item = getNewTreeitem(panel.toString(), panel.getImage());
         if (parent.getTreechildren() == null) {
             new Treechildren().setParent(parent);
         }
@@ -354,7 +355,7 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         Element childElement;
         if (item.hasAttribute(ELEMENT_MENU)) {
             childElement = new Element(ELEMENT_MENU);
-            childElement.appendChild(item.getLabel());
+            childElement.appendChild(getTreeitemLabel(item));
         } else if (item.hasAttribute(ELEMENT_PANEL)) {
             childElement = new Element(ELEMENT_PANEL);
             childElement.appendChild(item.getAttribute(ELEMENT_PANEL).toString());
@@ -384,7 +385,7 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
             }
         } else if (CommandEnum.EDIT.equals(command.getId())) {
             if (canAddMenu()) {
-                String name = tree.getSelectedItem().getLabel();
+                String name = getTreeitemLabel(tree.getSelectedItem());
                 final ValueInputDialog dialog = ContextUtil.getDialog(DefaultValueInputDialog.class, name);
                 dialog.setL10nMode(getL10nMode());
                 dialog.show(this);
@@ -434,6 +435,30 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
     @Override
     public Treeitem getRootItem() {
         return rootItem;
+    }
+
+    protected Treeitem getNewTreeitem(String label, String img) {
+        Treeitem item = new Treeitem();
+        new Treerow().setParent(item);
+
+        Treecell cell = new Treecell();
+        cell.setStyle("white-space: nowrap;");
+        cell.setParent(item.getTreerow());
+        cell.setImage(img);
+
+        Html html = new Html(label);
+        html.setParent(cell);
+        html.setStyle("margin-left: 5px;");
+
+        return item;
+    }
+
+    protected String getTreeitemLabel(Treeitem item) {
+        return ((Html) item.getTreerow().getFirstChild().getFirstChild()).getContent();
+    }
+
+    protected void updateTreeitemLabel(Treeitem item, String label) {
+        ((Html) item.getTreerow().getFirstChild().getFirstChild()).setContent(label);
     }
 
 }

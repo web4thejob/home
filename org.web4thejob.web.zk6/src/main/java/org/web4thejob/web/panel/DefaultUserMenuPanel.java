@@ -74,11 +74,10 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
         rendered = true;
 
         treeMenu.getTreechildren().getChildren().clear();
-        Treeitem rootItem = new Treeitem();
+        Treeitem rootItem = getNewTreeitem(ContextUtil.getSessionContext().getSecurityContext().getUserIdentity()
+                .getFirstName() + " "
+                + ContextUtil.getSessionContext().getSecurityContext().getUserIdentity().getLastName(), "img/ROOT.png");
         rootItem.setParent(treeMenu.getTreechildren());
-        rootItem.setImage("img/ROOT.png");
-        rootItem.setLabel(ContextUtil.getSessionContext().getSecurityContext().getUserIdentity().getFirstName() + " "
-                + ContextUtil.getSessionContext().getSecurityContext().getUserIdentity().getLastName());
 
         Element root = XMLUtil.getRootElement(ContextUtil.getSessionContext().getSecurityContext()
                 .getAuthorizationMenu());
@@ -121,18 +120,12 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
     }
 
     private Treeitem renderMenuItem(Treeitem parent, String name) {
-        Treeitem item = new Treeitem();
+        Treeitem item = getNewTreeitem(name, "img/FOLDER.png");
         if (parent.getTreechildren() == null) {
             new Treechildren().setParent(parent);
         }
         item.setParent(parent.getTreechildren());
 
-        if (item.getTreerow() == null) {
-            new Treerow().setParent(item);
-        }
-        Treecell cell = new Treecell(name, "img/FOLDER.png");
-        cell.setParent(item.getTreerow());
-        cell.setStyle("white-space:nowrap;");
         item.setTooltiptext(name);
         item.setAttribute(DefaultMenuAuthorizationPanel.ELEMENT_MENU, name);
 
@@ -140,19 +133,12 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
     }
 
     private Treeitem renderPanelItem(Treeitem parent, PanelDefinition panelDefinition) {
-        Treeitem item = new Treeitem();
+        Treeitem item = getNewTreeitem(panelDefinition.getName(), StringUtils.hasText(panelDefinition.getImage()) ?
+                panelDefinition.getImage() : "img/PANEL.png");
         if (parent.getTreechildren() == null) {
             new Treechildren().setParent(parent);
         }
         item.setParent(parent.getTreechildren());
-
-        if (item.getTreerow() == null) {
-            new Treerow().setParent(item);
-        }
-        Treecell cell = new Treecell(panelDefinition.getName(), StringUtils.hasText(panelDefinition.getImage()) ?
-                panelDefinition.getImage() : "img/PANEL.png");
-        cell.setParent(item.getTreerow());
-        cell.setStyle("white-space:nowrap;");
         item.setTooltiptext(panelDefinition.getName());
 
         parent.setOpen(false);
@@ -260,4 +246,21 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
         }
         return false;
     }
+
+    protected Treeitem getNewTreeitem(String label, String img) {
+        Treeitem item = new Treeitem();
+        new Treerow().setParent(item);
+
+        Treecell cell = new Treecell();
+        cell.setStyle("white-space: nowrap;");
+        cell.setParent(item.getTreerow());
+        cell.setImage(img);
+
+        Html html = new Html(label);
+        html.setParent(cell);
+        html.setStyle("margin-left: 5px;");
+
+        return item;
+    }
+
 }
