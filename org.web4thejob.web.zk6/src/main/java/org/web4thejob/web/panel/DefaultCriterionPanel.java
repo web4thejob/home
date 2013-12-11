@@ -30,6 +30,7 @@ import org.web4thejob.orm.PathMetadata;
 import org.web4thejob.orm.PropertyMetadata;
 import org.web4thejob.orm.annotation.ControllerHolder;
 import org.web4thejob.orm.annotation.EntityTypeHolder;
+import org.web4thejob.orm.annotation.HtmlHolder;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;
 import org.web4thejob.orm.scheme.RenderElement;
@@ -444,6 +445,8 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
             if (propertyMetadata.isAnnotatedWith(ControllerHolder.class) || propertyMetadata.isAnnotatedWith
                     (EntityTypeHolder.class)) {
                 return Condition.EQ;
+            } else if (propertyMetadata.isAnnotatedWith(HtmlHolder.class)) {
+                return Condition.CN;
             } else if (String.class.isAssignableFrom(propertyMetadata.getJavaType())) {
                 return Condition.SW;
             } else if (Collection.class.isAssignableFrom(propertyMetadata.getJavaType())) {
@@ -487,8 +490,13 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
                 valuebox = (HtmlBasedComponent) ZkUtil.getEditableComponentForPropertyType(criterion.getPropertyPath());
             } else if (condition != null && valuebox == null) {
                 if (!Condition.IN.equals(criterion.getCondition()) && !Condition.NIN.equals(criterion.getCondition())) {
-                    valuebox = (HtmlBasedComponent) ZkUtil.getEditableComponentForPropertyType(criterion
-                            .getPropertyPath());
+                    if (!criterion.getPropertyPath().getLastStep().isAnnotatedWith(HtmlHolder.class)) {
+                        valuebox = (HtmlBasedComponent) ZkUtil.getEditableComponentForPropertyType(criterion
+                                .getPropertyPath());
+                    } else {
+                        valuebox = (HtmlBasedComponent) ZkUtil.getEditableComponentForJavaType(criterion
+                                .getPropertyPath().getLastStep().getJavaType());
+                    }
                 } else {
                     valuebox = new ValueListBox(criterion.getPropertyPath());
                 }
