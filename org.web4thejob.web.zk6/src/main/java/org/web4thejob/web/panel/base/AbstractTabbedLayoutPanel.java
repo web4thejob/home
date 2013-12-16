@@ -280,6 +280,7 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
             Popup popup = (Popup) tab.getAttribute("tooltip");
             if (popup != null) {
                 popup.detach();
+                tab.removeAttribute("tooltip");
             }
         }
     }
