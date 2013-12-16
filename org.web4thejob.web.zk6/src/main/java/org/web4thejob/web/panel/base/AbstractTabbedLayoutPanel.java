@@ -18,6 +18,7 @@
 
 package org.web4thejob.web.panel.base;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
@@ -30,6 +31,7 @@ import org.web4thejob.web.panel.Panel;
 import org.web4thejob.web.panel.base.zk.AbstractZkLayoutPanel;
 import org.web4thejob.web.util.ZkUtil;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -256,24 +258,29 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
     }
 
     private void setTabTitle(Tab tab, String title) {
-        //TODO Uncomment as soon as ZK bug is fixed (UI client engine hangs when caption is added as Tab child)
-/*
-        Caption caption = tab.getCaption();
-        if (caption == null) {
-            caption = new Caption();
-            caption.setParent(tab);
-            new Html().setParent(caption);
-        }
+        tab.setLabel(title);
+        tab.setStyle("max-width: 300px;");
 
-        Html html = (Html) caption.getFirstChild();
-        html.setContent(title);
-*/
-        if (title.length() <= 30) {
-            tab.setLabel(title);
-            tab.setTooltiptext("");
+        if (title.length() > 30 || !StringEscapeUtils.unescapeHtml(title).equals(title)) {
+            Popup popup = (Popup) tab.getAttribute("tooltip");
+            if (popup == null) {
+                popup = new Popup();
+                popup.setPage(Executions.getCurrent().getDesktop().getFirstPage());
+                tab.setAttribute("tooltip", popup);
+                tab.setTooltip(popup);
+                Html html = new Html();
+                html.setParent(popup);
+                html.setVflex("true");
+                html.setHflex("true");
+            }
+
+            ((Html) popup.getFirstChild()).setContent(title);
         } else {
-            tab.setLabel(title.substring(0, 30 - 1) + "...");
-            tab.setTooltiptext(title);
+            tab.setTooltip((Popup) null);
+            Popup popup = (Popup) tab.getAttribute("tooltip");
+            if (popup != null) {
+                popup.detach();
+            }
         }
     }
 
