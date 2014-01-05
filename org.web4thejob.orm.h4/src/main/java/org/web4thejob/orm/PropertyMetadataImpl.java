@@ -22,6 +22,7 @@ import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.mapping.*;
 import org.hibernate.persister.entity.Joinable;
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.tuple.GenerationTiming;
 import org.hibernate.type.*;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -57,7 +58,6 @@ import java.util.Set;
     private static final String META_DEFAULT_ALIGN = "default-align";
     private static final String META_DEFAULT_WIDTH = "default-width";
     private static final String META_DEFAULT_HEIGHT = "default-height";
-
     private final EntityMetadataImpl entityMetadata;
     private final String associatedEntityName;
     private final Property property;
@@ -449,7 +449,7 @@ import java.util.Set;
     @Override
     public boolean isInsertable() {
         return !entityMetadata.isReadOnly() && property.isInsertable() && !disableUserInsert && !formula &&
-                !isIdentityIdentifier() && PropertyGeneration.NEVER == property.getGeneration();
+                !isIdentityIdentifier() && (GenerationTiming.NEVER == getGenerationTiming());
     }
 
     @Override
@@ -557,7 +557,6 @@ import java.util.Set;
         return property.isOptional() && !isMandatory();
     }
 
-
     protected boolean isMandatory() {
         final Validator validator = ContextUtil.getBean(Validator.class);
         final BeanDescriptor beanDescriptor = validator.getConstraintsForClass(getEntityMetadata().getMappedClass());
@@ -582,7 +581,6 @@ import java.util.Set;
         return false;
     }
 
-
     @Override
     public boolean isTimestampType() {
         return property.getType() instanceof TimestampType;
@@ -605,8 +603,15 @@ import java.util.Set;
     @Override
     public boolean isUpdateable() {
         return !entityMetadata.isReadOnly() && property.isUpdateable() && !disableUserUpdate && !formula &&
-                !isIdentityIdentifier() && (PropertyGeneration.NEVER == property.getGeneration() ||
-                PropertyGeneration.INSERT == property.getGeneration());
+                !isIdentityIdentifier() && (GenerationTiming.NEVER == getGenerationTiming() ||
+                GenerationTiming.INSERT == getGenerationTiming());
+    }
+
+    private GenerationTiming getGenerationTiming() {
+        if (property.getValueGenerationStrategy() != null) {
+            return property.getValueGenerationStrategy().getGenerationTiming();
+        }
+        return GenerationTiming.NEVER;
     }
 
     @Override

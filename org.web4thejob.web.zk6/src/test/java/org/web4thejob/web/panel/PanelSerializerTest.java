@@ -22,7 +22,6 @@ import junit.framework.Assert;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.context.SessionContext;
 import org.web4thejob.orm.DataWriterService;
@@ -42,14 +41,11 @@ import java.io.IOException;
 
 public class PanelSerializerTest extends AbstractWebApplicationContextTest {
 
-    @Autowired
-    private EntityFactory entityFactory;
-
-    @Autowired
-    private DataWriterService dataWriterService;
-
     @Test
     public void serilizationTest() throws ValidityException, ParsingException, IOException {
+        DataWriterService dataWriterService = ContextUtil.getDWS();
+        EntityFactory entityFactory = ContextUtil.getEntityFactory();
+
 
         LayoutPanel parent1 = ContextUtil.getBean("dummyLayoutPanel", LayoutPanel.class);
         parent1.getSubpanels().add(ContextUtil.getBean("dummyContentPanel", ContentPanel.class));

@@ -19,7 +19,7 @@
 package org.web4thejob.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.IpAddressMatcher;
+import org.springframework.security.web.util.matcher.IpAddressMatcher;
 import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 

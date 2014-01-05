@@ -1,10 +1,10 @@
 package org.web4thejob.orm;
 
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
-import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.Target;
 import org.junit.Test;
@@ -40,9 +40,9 @@ public class CreateSchemaTest {
         configuration.setProperty(AvailableSettings.USER, datasource.getProperty(DatasourceProperties.USER));
         configuration.setProperty(AvailableSettings.PASS, datasource.getProperty(DatasourceProperties.PASSWORD));
 
-        final ServiceRegistry serviceRegistry = new ServiceRegistryBuilder()
+        final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
-                .buildServiceRegistry();
+                .build();
 
 
         Connection connection = serviceRegistry.getService(ConnectionProvider.class).getConnection();

@@ -20,7 +20,7 @@ package org.web4thejob.security;
 
 import org.springframework.beans.PropertyEditorRegistrar;
 import org.springframework.beans.PropertyEditorRegistry;
-import org.springframework.security.web.util.RequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
  * @author Veniamin Isaias
