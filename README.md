@@ -12,4 +12,6 @@ Web4thejob is released under the commercial friendly license [GNU Lesser GPL v3]
 
 ## Binaries ##
 
+[![Build Status](https://drone.io/github.com/web4thejob/home/status.png)](https://drone.io/github.com/web4thejob/home/latest)
+
 You can download the binaries of web4thejob either from [Sourceforge FRS](http://sourceforge.net/projects/web4thejob/) or from [Maven](http://search.maven.org/#search%7Cga%7C1%7Cweb4thejob). Read [here](http://web4thejob.org/download) for more info.
