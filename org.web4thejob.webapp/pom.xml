@@ -46,7 +46,7 @@
         </dependency>
         <dependency>
             <groupId>org.web4thejob</groupId>
-            <artifactId>org.web4thejob.web.zk6</artifactId>
+            <artifactId>org.web4thejob.web.zk7</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
