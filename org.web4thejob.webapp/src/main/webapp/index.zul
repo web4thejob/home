@@ -46,7 +46,7 @@
 
             <borderlayout width="100%" height="100%">
 
-                <north border="normal" height="45px" splittable="false" collapsible="false" style="border-style: solid;
+                <north border="normal" height="50px" splittable="false" collapsible="false" style="border-style: solid;
                         border-bottom-width: 4px; border-color: rgb(245,245,245); background-image:url('img/header_background.png');">
                         <hlayout hflex="true" vflex="true">
                             <hbox hflex="true" vflex="true" pack="start" align="center">
