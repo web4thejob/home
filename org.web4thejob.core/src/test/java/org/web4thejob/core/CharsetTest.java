@@ -54,7 +54,8 @@ public class CharsetTest {
     }
 
     private File createTempFile() throws IOException {
-        File file = new File("C:\\temp.csv");
+        File file = File.createTempFile("temp", "tmp");
+        file.deleteOnExit();
         return file;
     }
 
