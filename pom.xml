@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  ~ Copyright (c) 2012-2013 Veniamin Isaias.
+  ~ Copyright (c) 2012-2014 Veniamin Isaias.
   ~
   ~ This file is part of web4thejob.
   ~
@@ -15,7 +15,7 @@
   ~ GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public License
-  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses />.
+  ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -31,7 +31,7 @@
     <groupId>org.web4thejob</groupId>
     <artifactId>web4thejob</artifactId>
     <name>web4thejob descriptor</name>
-    <version>3.5.2-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>http://web4thejob.org</url>
     <inceptionYear>2012</inceptionYear>
@@ -71,7 +71,7 @@
     <modules>
         <module>org.web4thejob.core</module>
         <module>org.web4thejob.orm.h4</module>
-        <module>org.web4thejob.web.zk6</module>
+        <module>org.web4thejob.web.zk7</module>
         <module>org.web4thejob.security.ss3</module>
         <module>org.web4thejob.webapp</module>
         <module>org.web4thejob.web.ckeb</module>
@@ -79,11 +79,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.springframework.version>3.2.3.RELEASE</org.springframework.version>
-        <org.springsecurity.version>3.1.4.RELEASE</org.springsecurity.version>
-        <org.hibernate.version>4.2.7.SP1</org.hibernate.version>
-        <org.hibernate-validator.version>5.0.1.Final</org.hibernate-validator.version>
-        <org.zkoss.version>6.5.4</org.zkoss.version>
+        <org.springframework.version>4.0.0.RELEASE</org.springframework.version>
+        <org.springsecurity.version>3.2.0.RELEASE</org.springsecurity.version>
+        <org.hibernate.version>4.3.0.Final</org.hibernate.version>
+        <org.hibernate-validator.version>5.0.2.Final</org.hibernate-validator.version>
+        <org.zkoss.version>7.0.0</org.zkoss.version>
         <org.junit.version>4.10</org.junit.version>
         <org.joda.version>2.1</org.joda.version>
         <org.hsqldb.version>2.2.9</org.hsqldb.version>

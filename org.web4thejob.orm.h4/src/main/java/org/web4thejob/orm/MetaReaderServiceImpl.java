@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Veniamin Isaias.
+ * Copyright (c) 2012-2014 Veniamin Isaias.
  *
  * This file is part of web4thejob.
  *
@@ -318,7 +318,7 @@ import java.util.*;
             if (field.isAnnotationPresent(EntityHierarchyHolder.class)) {
                 appendMetadata(EntityHierarchyHolder.class, new AnnotationMetadataImpl<EntityHierarchyHolder>
                         (getEntityType
-                        (declaringType), field, field.getAnnotation(EntityHierarchyHolder.class)));
+                                (declaringType), field, field.getAnnotation(EntityHierarchyHolder.class)));
             }
         }
     }

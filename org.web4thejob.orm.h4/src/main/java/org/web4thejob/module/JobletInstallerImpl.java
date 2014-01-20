@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Veniamin Isaias.
+ * Copyright (c) 2012-2014 Veniamin Isaias.
  *
  * This file is part of web4thejob.
  *
@@ -18,11 +18,11 @@
 
 package org.web4thejob.module;
 
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
-import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.Target;
 import org.springframework.core.io.Resource;
@@ -49,13 +49,13 @@ class JobletInstallerImpl implements JobletInstaller {
     private Properties connInfo;
 
     @Override
-    public void setConnectionInfo(Properties connInfo) {
-        this.connInfo = connInfo;
+    public Properties getConnectionInfo() {
+        return connInfo;
     }
 
     @Override
-    public Properties getConnectionInfo() {
-        return connInfo;
+    public void setConnectionInfo(Properties connInfo) {
+        this.connInfo = connInfo;
     }
 
     @Override
@@ -105,9 +105,9 @@ class JobletInstallerImpl implements JobletInstaller {
             configuration.setProperty(AvailableSettings.PASS, connInfo.getProperty(DatasourceProperties
                     .PASSWORD));
 
-            final ServiceRegistry serviceRegistry = new ServiceRegistryBuilder()
+            final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                     .applySettings(configuration.getProperties())
-                    .buildServiceRegistry();
+                    .build();
 
             if (StringUtils.hasText(connInfo.getProperty(DatasourceProperties.SCHEMA_SYNTAX))) {
                 String schemaSyntax = connInfo.getProperty(DatasourceProperties.SCHEMA_SYNTAX);

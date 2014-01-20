@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Veniamin Isaias.
+ * Copyright (c) 2012-2014 Veniamin Isaias.
  *
  * This file is part of web4thejob.
  *
@@ -21,9 +21,9 @@ package org.web4thejob.orm;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 import org.hibernate.tool.hbm2ddl.ConnectionHelper;
 import org.hibernate.tool.hbm2ddl.MyDatabaseExporter;
 import org.hibernate.tool.hbm2ddl.MyManagedProviderConnectionHelper;
@@ -65,9 +65,9 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
         }
 
         try {
-            final ServiceRegistry serviceRegistry = new ServiceRegistryBuilder()
+            final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                     .applySettings(sfb.getProperties())
-                    .buildServiceRegistry();
+                    .build();
 
 
             ConnectionHelper connectionHelper = new MyManagedProviderConnectionHelper(

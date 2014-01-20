@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.web4thejob</groupId>
         <artifactId>web4thejob</artifactId>
-        <version>3.5.2-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -46,7 +46,7 @@
         </dependency>
         <dependency>
             <groupId>org.web4thejob</groupId>
-            <artifactId>org.web4thejob.web.zk6</artifactId>
+            <artifactId>org.web4thejob.web.zk7</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

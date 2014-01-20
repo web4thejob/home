@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Veniamin Isaias.
+ * Copyright (c) 2012-2014 Veniamin Isaias.
  *
  * This file is part of web4thejob.
  *
@@ -54,7 +54,8 @@ public class CharsetTest {
     }
 
     private File createTempFile() throws IOException {
-        File file = new File("C:\\temp.csv");
+        File file = File.createTempFile("temp", "tmp");
+        file.deleteOnExit();
         return file;
     }
 

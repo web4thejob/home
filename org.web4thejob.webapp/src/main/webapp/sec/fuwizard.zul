@@ -22,8 +22,8 @@
 	<window border="normal" width="100%" height="100%" apply="org.web4thejob.web.composer.FirstUseWizardWindow" >
 
 		<borderlayout hflex="true" vflex="true">
-		    <west border="none" width="420px" collapsible="false" splittable="false" style="padding:30px;">
-		        <a href="http://www.web4thejob.org" src="/img/w4tj_logo_vertical_full.png"/>
+            <west border="none" width="460px" collapsible="false" splittable="false" style="padding:30px;">
+            <a href="http://www.web4thejob.org" src="/img/w4tj_logo_vertical_full.png"/>
 		    </west>
 
             <center border="none">
