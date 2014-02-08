@@ -1,0 +1,6 @@
+<zk>
+    <vbox>
+        <label value="@bind(vm.targetEntity.name)"/>
+        <label value="@bind(vm.targetEntity.owner)" style="color: blue"/>
+    </vbox>
+</zk>
