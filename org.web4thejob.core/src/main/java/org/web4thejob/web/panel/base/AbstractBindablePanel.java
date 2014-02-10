@@ -23,6 +23,7 @@ import org.web4thejob.command.ArbitraryDropdownItems;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.message.Message;
 import org.web4thejob.message.MessageArgEnum;
+import org.web4thejob.message.MessageChainFlattener;
 import org.web4thejob.message.MessageEnum;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.Path;
@@ -167,6 +168,13 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
         if (this.equals(message.getSender()) || (isBindingSuspended() && CoreUtil.isSelectionMessage(message))) {
             return;
         }
+
+        MessageChainFlattener messageFlattener = ContextUtil.getBean(MessageChainFlattener.class);
+        if (messageFlattener.isProcessed(this, message)) {
+            return;
+        }
+        messageFlattener.markProcessed(this, message);
+
 
         switch (message.getId()) {
             case ENTITY_SELECTED:

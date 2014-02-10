@@ -39,6 +39,7 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
 
@@ -70,8 +71,10 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
     public final void bind(Entity bindEntity) {
         if (bindEntity != null && ((hasMasterType() && getMasterType().isInstance(bindEntity)) || (hasTargetType() &&
                 getTargetType().isInstance(bindEntity)))) {
-            showBusy();
-            Events.echoEvent(EVENT_BIND_ECHO, (Component) base, bindEntity);
+            if (!isBoundOn(bindEntity)) {
+                showBusy();
+                Events.echoEvent(EVENT_BIND_ECHO, (Component) base, bindEntity);
+            }
         }
     }
 
@@ -120,7 +123,7 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
     public void showBusy() {
         super.showBusy();
         if (base instanceof HtmlBasedComponent) {
-            ((HtmlBasedComponent) base).setStyle("cursor:wait;");
+            Clients.showBusy((Component) base, null);
         }
     }
 
@@ -146,6 +149,7 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
         super.clearBusy();
         if (base instanceof HtmlBasedComponent) {
             ((HtmlBasedComponent) base).setStyle("cursor:auto;");
+            Clients.clearBusy((Component) base);
         }
     }
 

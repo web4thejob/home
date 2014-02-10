@@ -157,8 +157,11 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
                             }
                             break;
                         case ENTITY_DESELECTED:
-                            messageCache.put((MessageListener) panel, message);
-                            ((MessageListener) panel).processMessage(message);
+                            if (isActive(panel)) {
+                                ((MessageListener) panel).processMessage(message);
+                            } else {
+                                messageCache.put((MessageListener) panel, message);
+                            }
                             break;
                         case ENTITY_DELETED:
                             messageCache.put((MessageListener) panel, message);
