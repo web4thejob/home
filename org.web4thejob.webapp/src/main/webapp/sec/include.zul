@@ -1,6 +1,23 @@
 <zk>
-    <vbox>
-        <label value="@bind(vm.targetEntity.name)"/>
-        <label value="@bind(vm.targetEntity.owner)" style="color: blue"/>
-    </vbox>
+    <html sclass="z-label"> <![CDATA[<h1>@load(vm.targetEntity.name)</h1>]]>  </html>
+    <separator bar="true"/>
+    <hbox style="padding: 5px;" spacing="20px">
+        <vbox width="300px">
+            <label value="Name"/>
+            <textbox value="@load(vm.targetEntity.name)" style="border:1px solid black; width:100%;" readonly="true"/>
+            <separator/>
+            <label value="Tags"/>
+            <textbox value="@load(vm.targetEntity.tags)" style="border:1px solid black; width:100%;" readonly="true"
+                     multiline="true" rows="10"/>
+
+            <!--<label value="@bind(vm.targetEntity.owner)" style="color: blue"/>-->
+        </vbox>
+        <vbox>
+            <label value="@bind(vm.targetEntity.definition)"/>
+            <!--<label value="@bind(vm.targetEntity.owner)" style="color: blue"/>-->
+        </vbox>
+    </hbox>
+
+    <button label="Insert" onClick="@command('processCommand',name='ADD_NEW')"/>
+    <button label="Update" onClick="@command('processCommand',name='UPDATE')"/>
 </zk>
