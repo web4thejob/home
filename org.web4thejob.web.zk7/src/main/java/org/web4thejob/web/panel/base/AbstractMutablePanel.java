@@ -75,7 +75,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
             "msg_refresh_failed", "The entity does not exist any more. Maybe it has been deleted by another user.");
     protected static final String ATTRIB_PATH_META = PathMetadata.class.getName();
     protected static final String DEFAULT_BEAN_ID = "entity";
-    private static final String[] MONITOR_EVENTS = {Events.ON_CHANGE, Events.ON_CHANGING, Events.ON_CHECK};
+    protected static final String[] MONITOR_EVENTS = {Events.ON_CHANGE, Events.ON_CHANGING, Events.ON_CHECK};
     protected DataBinder dataBinder;
     private final DialogListener dialogListener = new DialogListener();
 
@@ -84,7 +84,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
     private Entity targetEntityOrig;
     private QueryDialog queryDialog;
     private Boolean dirty = null;
-    private ChangeMonitor changeMonitor = new ChangeMonitor();
+    protected ChangeMonitor changeMonitor = new ChangeMonitor();
     private List<DirtyListener> dirtyListeners = new ArrayList<DirtyListener>(1);
     private PropertyMetadata statusHolderProp;
     protected Query activeQuery;
@@ -204,17 +204,33 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         Clients.scrollIntoView(comp);
     }
 
+
+    protected List<Component> getBoundComponents() {
+
+        if (dataBinder != null) {
+            List<Component> components = new ArrayList<>();
+            for (Binding binding : dataBinder.getAllBindings()) {
+                if (binding.getComponent() != null) {
+                    components.add(binding.getComponent());
+                }
+            }
+            return components;
+        }
+
+        return Collections.emptyList();
+    }
+
     @Override
     public Set<ConstraintViolation<Entity>> validate() {
         if (hasTargetEntity()) {
 
-            for (Binding binding : dataBinder.getAllBindings()) {
-                if (binding.getComponent() != null) {
-                    Clients.clearWrongValue(binding.getComponent());
-                }
+            for (Component component : getBoundComponents()) {
+                Clients.clearWrongValue(component);
             }
 
-            dataBinder.saveAll();
+            if (dataBinder != null) {
+                dataBinder.saveAll();
+            }
             Set<ConstraintViolation<Entity>> violations = getTargetEntity().validate();
             for (final ConstraintViolation<Entity> violation : violations) {
                 final PathMetadata pathMetadata = ContextUtil.getMRS().getPropertyPath(getTargetType(),
@@ -226,7 +242,11 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
                     Clients.wrongValue(comp, violation.getMessage());
                 }
             }
-            dataBinder.loadAll();
+
+            if (dataBinder != null) {
+                dataBinder.loadAll();
+            }
+
             return violations;
         }
 
@@ -265,7 +285,9 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
 
     protected void persistLocal() throws Exception {
         ContextUtil.getDWS().save(getTargetEntity());
-        dataBinder.loadAll();
+        if (dataBinder != null) {
+            dataBinder.loadAll();
+        }
         targetEntityOrig = targetEntity.clone();
     }
 

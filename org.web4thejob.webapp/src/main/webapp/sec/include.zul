@@ -1,23 +1,31 @@
 <zk>
-    <html sclass="z-label"> <![CDATA[<h1>@load(vm.targetEntity.name)</h1>]]>  </html>
+    <textbox value="@load(vm.targetEntity.name)" style="font-size: 18pt;padding-top: 10px;" readonly="true" width="100%"/>
     <separator bar="true"/>
-    <hbox style="padding: 5px;" spacing="20px">
+    <hbox style="padding: 5px;" spacing="20px" hflex="true">
         <vbox width="300px">
-            <label value="Name"/>
-            <textbox value="@load(vm.targetEntity.name)" style="border:1px solid black; width:100%;" readonly="true"/>
+            <label value="@init(vm.getRenderElement('beanId').friendlyName)"/>
+            <textbox value="@bind(vm.targetEntity.beanId)" style="border:1px solid black; width:100%;" readonly="@init(vm.mutableMode.name() eq 'READONLY')" tooltiptext="@load(vm.targetEntity.beanId)"/>
             <separator/>
-            <label value="Tags"/>
-            <textbox value="@load(vm.targetEntity.tags)" style="border:1px solid black; width:100%;" readonly="true"
+
+            <label value="@init(vm.getRenderElement('tags').friendlyName)"/>
+            <textbox value="@bind(vm.targetEntity.tags)" style="border:1px solid black; width:100%;" readonly="@init(vm.mutableMode.name() eq 'READONLY')"
                      multiline="true" rows="10"/>
+
+            <label value="@init(vm.getRenderElement('description').friendlyName)"/>
+            <textbox value="@bind(vm.targetEntity.description)" style="border:1px solid black; width:100%;" readonly="@init(vm.mutableMode.name() eq 'READONLY')"
+                     multiline="true" rows="10"/>
+
+            <button label="Insert" onClick="@command('processCommand',name='ADDNEW')" visible="@load(vm.hasCommand('ADDNEW'))"/>
+            <button label="Update" onClick="@command('processCommand',name='UPDATE')" visible="@load(vm.hasCommand('UPDATE') and vm.mutableMode.name() eq 'READONLY')" disabled="@load(not vm.hasTargetEntity())"/>
 
             <!--<label value="@bind(vm.targetEntity.owner)" style="color: blue"/>-->
         </vbox>
-        <vbox>
-            <label value="@bind(vm.targetEntity.definition)"/>
+        <vbox vflex="true">
+            <textbox value="@bind(vm.targetEntity.definition)" style="border:1px solid black; width:100%;" readonly="@init(vm.mutableMode.name() eq 'READONLY')"
+                     multiline="true" rows="10" vflex="true"/>
+
             <!--<label value="@bind(vm.targetEntity.owner)" style="color: blue"/>-->
         </vbox>
     </hbox>
 
-    <button label="Insert" onClick="@command('processCommand',name='ADD_NEW')"/>
-    <button label="Update" onClick="@command('processCommand',name='UPDATE')"/>
 </zk>
