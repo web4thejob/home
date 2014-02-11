@@ -140,10 +140,8 @@ public class DefaultIncludeEntityViewPanel extends AbstractMutablePanel implemen
             return null;
         }
 
-        for (String path : bindings.keySet()) {
-            if (path.equals(matchPath.getPath())) {
-                return bindings.get(path);
-            }
+        if (bindings.containsKey(matchPath)) {
+            return bindings.get(matchPath);
         }
 
         return null;
@@ -189,24 +187,19 @@ public class DefaultIncludeEntityViewPanel extends AbstractMutablePanel implemen
         return IncludeEntityViewPanel.class;
     }
 
-    protected void monitorComponents(boolean monitor) {
-        monitorComponents(root, monitor);
+    public boolean isReadonly() {
+        return getMutableMode() == MutableMode.READONLY;
     }
 
-    protected void monitorComponents(Component parent, boolean monitor) {
-        for (Component child : parent.getChildren()) {
-
-            if (bc.getBinder().equals(BinderUtil.getBinder(child))) {
-                for (String event : MONITOR_EVENTS) {
-                    if (monitor) {
-                        child.addEventListener(event, changeMonitor);
-                    } else {
-                        child.removeEventListener(event, changeMonitor);
-                    }
+    protected void monitorComponents(boolean monitor) {
+        for (Component component : bindings.values()) {
+            for (String event : MONITOR_EVENTS) {
+                if (monitor) {
+                    component.addEventListener(event, changeMonitor);
+                } else {
+                    component.removeEventListener(event, changeMonitor);
                 }
             }
-
-            monitorComponents(child, monitor);
         }
     }
 }
