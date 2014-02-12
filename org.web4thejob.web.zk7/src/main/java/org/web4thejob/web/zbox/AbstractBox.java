@@ -25,9 +25,11 @@ import org.web4thejob.util.L10nString;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Toolbarbutton;
@@ -37,7 +39,7 @@ import org.zkoss.zul.Toolbarbutton;
  * @since 1.0.0
  */
 
-public abstract class AbstractBox<T> extends Hbox implements RawValueBox<T>, EventListener<Event> {
+public abstract class AbstractBox<T> extends HtmlMacroComponent implements RawValueBox<T>, EventListener<Event> {
     // ------------------------------ FIELDS ------------------------------
 
     public static final L10nString L10N_BUTTON_CLICK_FOR_VALUE = new L10nString(AbstractBox.class,
@@ -53,6 +55,8 @@ public abstract class AbstractBox<T> extends Hbox implements RawValueBox<T>, Eve
     protected Toolbarbutton _editLink;
     private int tooltipLimit = PropertyBox.TOOLTIP_LIMIT;
     private boolean hideClearLink;
+    @Wire
+    protected Hbox hbox;
 
     public void setHideClearLink(boolean hideClearLink) {
         this.hideClearLink = hideClearLink;
@@ -73,10 +77,13 @@ public abstract class AbstractBox<T> extends Hbox implements RawValueBox<T>, Eve
     // --------------------------- CONSTRUCTORS ---------------------------
 
     protected AbstractBox() {
-        super();
-        super.setPack("start");
-        super.setSpacing("5px");
-        super.setHflex("true");
+        compose();
+    }
+
+    @Override
+    protected void compose() {
+        setMacroURI("/WEB-INF/zbox.zul");
+        super.compose();
         this.addEventListener("onEdit", this);
     }
 
@@ -243,9 +250,8 @@ public abstract class AbstractBox<T> extends Hbox implements RawValueBox<T>, Eve
         return (T) ((PropertyBox) _valueBox).getContent();
     }
 
-    @Override
     public void setTooltip(String tooltip) {
-        super.setTooltip(tooltip);
+        hbox.setTooltip(tooltip);
         if (_valueBox instanceof HtmlBasedComponent) {
             ((HtmlBasedComponent) _valueBox).setTooltiptext(tooltip);
         }

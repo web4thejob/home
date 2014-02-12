@@ -41,10 +41,12 @@ import org.web4thejob.web.util.MediaUtil;
 import org.web4thejob.web.util.ZkUtil;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MouseEvent;
+import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
@@ -57,20 +59,20 @@ import java.util.Map;
  * @since 1.0.0
  */
 
-public class PropertyBox extends Hbox {
+public class PropertyBox extends HtmlMacroComponent {
     private static final long serialVersionUID = 1L;
     private static final String ON_CLICK_ECHO = Events.ON_CLICK + "Echo";
     public static final int TOOLTIP_LIMIT = -1;
     private final Html html = new Html();
-    private final RenderElement renderElement;
-    private final boolean emailHolder;
-    private final boolean colorHolder;
-    private final boolean urlHolder;
-    private final boolean mediaHolder;
-    private final boolean imageHolder;
-    private final boolean entityTypeHolder;
-    private final boolean panelHolder;
-    private final boolean queryHolder;
+    private RenderElement renderElement;
+    private boolean emailHolder;
+    private boolean colorHolder;
+    private boolean urlHolder;
+    private boolean mediaHolder;
+    private boolean imageHolder;
+    private boolean entityTypeHolder;
+    private boolean panelHolder;
+    private boolean queryHolder;
     private MessageFormat formatter;
     private Entity entity;
     private A navigateLink;
@@ -79,6 +81,8 @@ public class PropertyBox extends Hbox {
     private Popup tooltipPopup;
     private boolean disableNavigateLink;
     private Image image;
+    @Wire
+    private Hbox hbox;
 
     public int getTooltipLimit() {
         return tooltipLimit;
@@ -100,6 +104,12 @@ public class PropertyBox extends Hbox {
 
 
     public PropertyBox(RenderElement renderElement) {
+        compose();
+        setRenderElement(renderElement);
+    }
+
+
+    public void setRenderElement(RenderElement renderElement){
         if (renderElement != null) {
             PropertyMetadata pm = renderElement.getPropertyPath().getLastStep();
             this.renderElement = renderElement;
@@ -123,13 +133,16 @@ public class PropertyBox extends Hbox {
             this.queryHolder = false;
         }
 
-        setHflex("true");
-        setVflex("true");
-
         initStyle();
         initFormat();
     }
 
+    @Override
+    protected void compose() {
+        setMacroURI("/WEB-INF/zbox.zul");
+        setWidth("100%");
+        super.compose();
+    }
 
     public Entity getEntity() {
         return entity;
@@ -301,7 +314,7 @@ public class PropertyBox extends Hbox {
             div.setStyle("border-width: 1px; border-color: black; border-style: solid;");
         }
 
-        setSpacing("3px");
+        hbox.setSpacing("3px");
         html.setZclass("z-label");
         html.setStyle("white-space:nowrap;");
         if (renderElement != null) {
@@ -314,7 +327,7 @@ public class PropertyBox extends Hbox {
                 buildDownloadLink();
             }
 
-            setPack(renderElement.getAlign());
+            hbox.setPack(renderElement.getAlign());
             setWidth(renderElement.getWidth());
         }
     }

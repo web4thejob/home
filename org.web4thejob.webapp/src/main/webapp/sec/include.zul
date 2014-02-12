@@ -1,6 +1,8 @@
+<?component name="pbox" macroURI="/WEB-INF/zbox.zul" class="org.web4thejob.web.zbox.PropertyBox"?>
 <zk>
     <textbox value="@load(vm.targetEntity.name)" style="font-size: 18pt;padding-top: 10px;" readonly="true"
              width="100%"/>
+    <pbox renderElement="@init(vm.getRenderElement('type'))" entity="@load(vm.targetEntity)"/>
     <separator bar="true"/>
     <hbox style="padding: 5px;" spacing="20px" width="100%">
         <vbox hflex="3">
@@ -37,4 +39,6 @@
             <!--<label value="@bind(vm.targetEntity.owner)" style="color: blue"/>-->
         </vbox>
     </hbox>
+
+
 </zk>
