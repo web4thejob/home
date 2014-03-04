@@ -23,6 +23,7 @@
 
     <bean class="org.web4thejob.context.DefaultSessionContext" scope="session"/>
     <bean class="org.web4thejob.web.panel.DefaultDesktopLayoutPanel" scope="prototype"/>
+    <bean class="my.joblet.DefaultMyJobletPanel" scope="prototype" id="defaultMyJobletPanel"/>
 
     <bean id="messageSource"
           class="org.springframework.context.support.ReloadableResourceBundleMessageSource">

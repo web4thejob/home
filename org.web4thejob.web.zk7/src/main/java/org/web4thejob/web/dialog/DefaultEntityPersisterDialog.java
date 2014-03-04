@@ -305,7 +305,7 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
     }
 
     @Override
-    public void onDirty(boolean dirty) {
+    public void onDirty(boolean dirty, Object... params) {
         this.dirty = dirty;
         btnOK.setDisabled(!dirty);
         for (Command command : getCommands()) {

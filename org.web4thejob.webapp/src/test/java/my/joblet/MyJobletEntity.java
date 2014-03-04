@@ -20,10 +20,13 @@ package my.joblet;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.web4thejob.orm.AbstractHibernateEntity;
+import org.web4thejob.security.Identity;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author Veniamin Isaias
@@ -35,6 +38,8 @@ public class MyJobletEntity extends AbstractHibernateEntity {
     private String name;
     @NotNull
     private Date date;
+
+    private Set<Identity> users = new LinkedHashSet<>();
 
     public Date getDate() {
         return date;
@@ -50,6 +55,7 @@ public class MyJobletEntity extends AbstractHibernateEntity {
 
     public void setName(String name) {
         this.name = name;
+        setDirty();
     }
 
     public long getId() {
@@ -60,6 +66,13 @@ public class MyJobletEntity extends AbstractHibernateEntity {
         this.id = id;
     }
 
+    public Set<Identity> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<Identity> users) {
+        this.users = users;
+    }
 
     @Override
     public Serializable getIdentifierValue() {

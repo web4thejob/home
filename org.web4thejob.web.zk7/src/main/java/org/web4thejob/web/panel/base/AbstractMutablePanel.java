@@ -88,6 +88,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
     private List<DirtyListener> dirtyListeners = new ArrayList<DirtyListener>(1);
     private PropertyMetadata statusHolderProp;
     protected Query activeQuery;
+    protected DirtyHandler dirtyHandler;
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -395,15 +396,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
 
             //this mechanism is used for forcing screen refresh for calculated fields
             if (getMutableMode() != MutableMode.READONLY) {
-                this.targetEntity.addDirtyListener(new DirtyListener() {
-                    @Override
-                    public void onDirty(boolean dirty) {
-                        if (dataBinder != null) {
-                            dataBinder.loadAll();
-                            setDirty(true);
-                        }
-                    }
-                });
+                this.targetEntity.addDirtyListener(getDirtyListener());
             }
 
         } else {
@@ -417,6 +410,16 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
 
 
         dispatchTitleChange();
+    }
+
+    /**
+     * Override to attach your own handler.
+     */
+    protected DirtyListener getDirtyListener() {
+        if (dirtyHandler == null) {
+            dirtyHandler = new DirtyHandler();
+        }
+        return dirtyHandler;
     }
 
     protected void loadBinderProxySafe() {
@@ -870,5 +873,16 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
     @Override
     public void beforePersist() {
         //override
+    }
+
+    public class DirtyHandler implements DirtyListener {
+
+        @Override
+        public void onDirty(boolean dirty, Object... args) {
+            if (dataBinder != null) {
+                dataBinder.loadAll();
+                setDirty(true);
+            }
+        }
     }
 }

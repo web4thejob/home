@@ -18,10 +18,13 @@
 
 package org.web4thejob.web.zbox;
 
+import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.ORMUtil;
+import org.web4thejob.orm.Path;
 import org.web4thejob.orm.PathMetadata;
+import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Query;
 import org.web4thejob.orm.scheme.RenderElement;
 import org.web4thejob.util.CoreUtil;
@@ -47,6 +50,7 @@ public class EntityDropdownBox extends AbstractBox<Entity> {
     private Listbox listbox;
     private Popup popup;
     private Entity entity;
+    private String lookupName;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -166,17 +170,32 @@ public class EntityDropdownBox extends AbstractBox<Entity> {
     }
 
     private List<? extends Entity> getModel() {
-        Query defaultQuery = CoreUtil.getDefaultQueryForTargetType(renderElement.getPropertyPath().getLastStep()
-                .getAssociatedEntityMetadata().getEntityType());
-        if (defaultQuery == null) {
-            defaultQuery = ContextUtil.getEntityFactory().buildQuery(renderElement.getPropertyPath().getLastStep()
-                    .getAssociatedEntityMetadata().getEntityType());
+        Query defaultLookup = null;
+
+        if (StringUtils.hasText(lookupName)) {
+            Query q = ContextUtil.getEntityFactory().buildQuery(Query.class);
+            q.addCriterion(new Path(Query.FLD_NAME), Condition.EQ, lookupName);
+            q.addCriterion(new Path(Query.FLD_FLAT_TARGET_TYPE), Condition.EQ,
+                    renderElement.getPropertyPath().getLastStep()
+                            .getAssociatedEntityMetadata().getEntityType().getCanonicalName());
+            defaultLookup = ContextUtil.getDRS().findUniqueByQuery(q);
         }
 
-        defaultQuery.setSubqueries(ORMUtil.buildUniqueKeyCriteria(ZkUtil.getOwningPanelOfComponent(this),
+        if (defaultLookup == null) {
+            defaultLookup = CoreUtil.getDefaultQueryForTargetType(renderElement.getPropertyPath().getLastStep()
+                    .getAssociatedEntityMetadata().getEntityType());
+            if (defaultLookup == null) {
+                defaultLookup = ContextUtil.getEntityFactory().buildQuery(renderElement.getPropertyPath()
+                        .getLastStep()
+                        .getAssociatedEntityMetadata().getEntityType());
+            }
+        }
+
+
+        defaultLookup.setSubqueries(ORMUtil.buildUniqueKeyCriteria(ZkUtil.getOwningPanelOfComponent(this),
                 renderElement));
 
-        return ContextUtil.getDRS().findByQuery(defaultQuery);
+        return ContextUtil.getDRS().findByQuery(defaultLookup);
 
     }
 
@@ -198,6 +217,21 @@ public class EntityDropdownBox extends AbstractBox<Entity> {
 
     protected boolean isEmpty() {
         return entity == null;
+    }
+
+    public String getLookupName() {
+        return lookupName;
+    }
+
+    public void setLookupName(String lookupName) {
+        this.lookupName = lookupName;
+    }
+
+    public void reset() {
+        if (popup != null) {
+            popup.detach();
+            popup = null;
+        }
     }
 
 }

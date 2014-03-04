@@ -51,7 +51,7 @@ public abstract class AbstractComponentController<E extends Entity, B extends Da
     }
 
     @Override
-    public void onDirty(boolean dirty) {
+    public void onDirty(boolean dirty, Object... params) {
         if (component != null && dataBinder != null && entity != null) {
             arrangeAfterUserChange();
         }

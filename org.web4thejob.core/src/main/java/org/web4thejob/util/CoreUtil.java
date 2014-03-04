@@ -21,6 +21,7 @@ package org.web4thejob.util;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.web4thejob.command.CommandEnum;
 import org.web4thejob.context.ContextUtil;
@@ -195,7 +196,7 @@ public abstract class CoreUtil {
     public static String describeClass(Class<?> clazz) {
         List<String> classes = new ArrayList<String>();
         classes.add(clazz.getCanonicalName());
-        for (Class<?> cls : clazz.getInterfaces()) {
+        for (Class<?> cls : ClassUtils.getAllInterfacesForClassAsSet(clazz)) {
             classes.add(cls.getCanonicalName());
         }
         return StringUtils.collectionToDelimitedString(classes, ", ");

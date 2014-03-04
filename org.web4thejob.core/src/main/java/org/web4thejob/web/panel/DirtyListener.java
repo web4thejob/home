@@ -28,5 +28,5 @@ package org.web4thejob.web.panel;
  */
 public interface DirtyListener {
 
-    public void onDirty(boolean dirty);
+    public void onDirty(boolean dirty, Object... args);
 }
