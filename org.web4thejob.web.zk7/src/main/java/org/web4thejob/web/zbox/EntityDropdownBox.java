@@ -51,6 +51,7 @@ public class EntityDropdownBox extends AbstractBox<Entity> {
     private Popup popup;
     private Entity entity;
     private String lookupName;
+    private Query lookupQuery;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -170,9 +171,9 @@ public class EntityDropdownBox extends AbstractBox<Entity> {
     }
 
     private List<? extends Entity> getModel() {
-        Query defaultLookup = null;
+        Query defaultLookup = lookupQuery;
 
-        if (StringUtils.hasText(lookupName)) {
+        if (defaultLookup == null && StringUtils.hasText(lookupName)) {
             Query q = ContextUtil.getEntityFactory().buildQuery(Query.class);
             q.addCriterion(new Path(Query.FLD_NAME), Condition.EQ, lookupName);
             q.addCriterion(new Path(Query.FLD_FLAT_TARGET_TYPE), Condition.EQ,
@@ -225,6 +226,10 @@ public class EntityDropdownBox extends AbstractBox<Entity> {
 
     public void setLookupName(String lookupName) {
         this.lookupName = lookupName;
+    }
+
+    public void setLookupQuery(Query query) {
+        this.lookupQuery = query;
     }
 
     public void reset() {
