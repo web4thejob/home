@@ -33,6 +33,7 @@ import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.PropertyMetadata;
 import org.web4thejob.setting.Setting;
 import org.web4thejob.setting.SettingEnum;
+import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.L10nMessages;
 import org.web4thejob.util.L10nString;
 import org.web4thejob.web.panel.*;
@@ -148,7 +149,17 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
 
     @Override
     protected void prepareContent() {
-        mutablePanel = ContextUtil.getDefaultPanel(mutableType, mutableMode);
+        String defaultEntityView = CoreUtil.getDefaultEntityViewName(entity.getEntityType());
+        if (defaultEntityView != null) {
+            Panel panel = (Panel) ContextUtil.getSessionContext().getBean(defaultEntityView, mutableMode);
+            if (panel instanceof MutablePanel) {
+                mutablePanel = (MutablePanel) panel;
+            }
+        }
+
+        if (mutablePanel == null) {
+            mutablePanel = ContextUtil.getDefaultPanel(mutableType, mutableMode);
+        }
         mutablePanel.attach(dialogContent.getPanelchildren());
         mutablePanel.setSettings(getFilteredSettings());
         mutablePanel.supressCommands(true);

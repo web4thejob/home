@@ -46,10 +46,10 @@ public abstract class AbstractHibernateEntity implements Entity {
     private DirtyListener dirtyListener;
     private Map<String, Object> attributes;
 
-    protected void setDirty() {
+    protected void setDirty(Object... args) {
         calculate();
         if (dirtyListener != null) {
-            dirtyListener.onDirty(true);
+            dirtyListener.onDirty(true, args);
         }
     }
 
