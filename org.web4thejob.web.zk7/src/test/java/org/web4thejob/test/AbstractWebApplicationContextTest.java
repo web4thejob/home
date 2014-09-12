@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.module.JobletInstaller;
 import org.web4thejob.orm.DatasourceProperties;
@@ -38,6 +39,7 @@ import java.util.Properties;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:org/web4thejob/conf/bootstrap.xml"}, loader = TestWebContextLoader.class)
+@WebAppConfiguration
 public abstract class AbstractWebApplicationContextTest {
 
     private static boolean initialized = false;
