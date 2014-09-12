@@ -610,7 +610,7 @@ import java.util.Set;
 
     private GenerationTime getGenerationTiming() {
         if (property.getGeneration() != null) {
-            return GenerationTime.valueOf(property.getGeneration().getName());
+            return GenerationTime.valueOf(property.getGeneration().getName().toUpperCase());
         }
         return GenerationTime.NEVER;
     }
