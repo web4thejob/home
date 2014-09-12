@@ -19,7 +19,7 @@
 package org.web4thejob.orm;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.mapping.KeyValue;
 import org.hibernate.mapping.MetaAttribute;
 import org.hibernate.mapping.PersistentClass;

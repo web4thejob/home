@@ -18,13 +18,13 @@
   ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses />.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
         <groupId>org.web4thejob</groupId>
         <artifactId>web4thejob</artifactId>
-        <version>3.6.1-SNAPSHOT</version>
+        <version>3.6.0-J5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -106,10 +106,10 @@
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.26</version>
                 <configuration>
-                    <useTestClasspath>true</useTestClasspath>
+                    <!--<useTestClasspath>true</useTestClasspath>-->
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>8080</port>
+                            <port>8081</port>
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>

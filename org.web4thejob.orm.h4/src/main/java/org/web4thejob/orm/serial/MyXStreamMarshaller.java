@@ -22,6 +22,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
 import com.thoughtworks.xstream.mapper.CachingMapper;
+import org.hibernate.EntityMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class MyXStreamMarshaller extends XStreamMarshaller {
         // configure xstream to ignore all properties except identifiers.
         for (final ClassMetadata meta : sessionFactory.getAllClassMetadata().values()) {
             for (final String propertyName : meta.getPropertyNames()) {
-                xstream.omitField(meta.getMappedClass(), propertyName);
+                xstream.omitField(meta.getMappedClass(EntityMode.POJO), propertyName);
             }
         }
     }

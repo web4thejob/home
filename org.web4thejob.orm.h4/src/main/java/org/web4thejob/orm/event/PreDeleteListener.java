@@ -18,8 +18,8 @@
 
 package org.web4thejob.orm.event;
 
-import org.hibernate.event.spi.PreDeleteEvent;
-import org.hibernate.event.spi.PreDeleteEventListener;
+import org.hibernate.event.PreDeleteEvent;
+import org.hibernate.event.PreDeleteEventListener;
 
 /**
  * @author Veniamin Isaias

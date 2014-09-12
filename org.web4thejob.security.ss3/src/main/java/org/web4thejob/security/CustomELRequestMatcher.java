@@ -20,7 +20,7 @@ package org.web4thejob.security;
 
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.security.web.util.matcher.ELRequestMatcher;
+import org.springframework.security.web.util.ELRequestMatcher;
 
 import javax.servlet.http.HttpServletRequest;
 

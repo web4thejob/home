@@ -18,13 +18,8 @@
 
 package org.web4thejob.module;
 
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
-import org.hibernate.service.ServiceRegistry;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
-import org.hibernate.tool.hbm2ddl.Target;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -71,7 +66,7 @@ class JobletInstallerImpl implements JobletInstaller {
             Connection conn;
             conn = DriverManager.getConnection(connInfo.getProperty(DatasourceProperties.URL),
                     connInfo.getProperty(DatasourceProperties.USER), connInfo.getProperty(DatasourceProperties
-                    .PASSWORD));
+                            .PASSWORD));
             conn.close();
             return true;
         } catch (SQLException e) {
@@ -96,22 +91,19 @@ class JobletInstallerImpl implements JobletInstaller {
         try {
 
             final Configuration configuration = new Configuration();
-            configuration.setProperty(AvailableSettings.DIALECT, connInfo.getProperty(DatasourceProperties
+            configuration.setProperty("hibernate.dialect", connInfo.getProperty(DatasourceProperties
                     .DIALECT));
-            configuration.setProperty(AvailableSettings.DRIVER, connInfo.getProperty(DatasourceProperties
+            configuration.setProperty("hibernate.connection.driver_class", connInfo.getProperty(DatasourceProperties
                     .DRIVER));
-            configuration.setProperty(AvailableSettings.URL, connInfo.getProperty(DatasourceProperties.URL));
-            configuration.setProperty(AvailableSettings.USER, connInfo.getProperty(DatasourceProperties.USER));
-            configuration.setProperty(AvailableSettings.PASS, connInfo.getProperty(DatasourceProperties
+            configuration.setProperty("hibernate.connection.url", connInfo.getProperty(DatasourceProperties.URL));
+            configuration.setProperty("hibernate.connection.username", connInfo.getProperty(DatasourceProperties.USER));
+            configuration.setProperty("hibernate.connection.password", connInfo.getProperty(DatasourceProperties
                     .PASSWORD));
 
-            final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                    .applySettings(configuration.getProperties())
-                    .build();
 
             if (StringUtils.hasText(connInfo.getProperty(DatasourceProperties.SCHEMA_SYNTAX))) {
                 String schemaSyntax = connInfo.getProperty(DatasourceProperties.SCHEMA_SYNTAX);
-                Connection connection = serviceRegistry.getService(ConnectionProvider.class).getConnection();
+                Connection connection = configuration.buildSettings().getConnectionProvider().getConnection();
 
                 for (Joblet joblet : joblets) {
                     for (String schema : joblet.getSchemas()) {
@@ -132,8 +124,8 @@ class JobletInstallerImpl implements JobletInstaller {
                 }
             }
 
-            SchemaExport schemaExport = new SchemaExport(serviceRegistry, configuration);
-            schemaExport.execute(Target.EXPORT, SchemaExport.Type.CREATE);
+            SchemaExport schemaExport = new SchemaExport(configuration);
+            schemaExport.execute(true, true, false, true);
             exceptions.addAll(schemaExport.getExceptions());
 
         } catch (Exception e) {

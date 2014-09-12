@@ -18,7 +18,7 @@
 
 package org.web4thejob.orm.validation;
 
-import org.hibernate.validator.spi.resourceloading.ResourceBundleLocator;
+import org.hibernate.validator.resourceloading.ResourceBundleLocator;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceResourceBundle;
 import org.springframework.util.Assert;
@@ -34,8 +34,6 @@ import java.util.ResourceBundle;
  */
 public class MessageSourceResourceBundleLocator implements ResourceBundleLocator {
 
-    private final MessageSource messageSource;
-
     /**
      * Build a MessageSourceResourceBundleLocator for the given MessageSource.
      *
@@ -45,6 +43,8 @@ public class MessageSourceResourceBundleLocator implements ResourceBundleLocator
         Assert.notNull(messageSource, "MessageSource must not be null");
         this.messageSource = messageSource;
     }
+
+    private final MessageSource messageSource;
 
     public ResourceBundle getResourceBundle(Locale locale) {
         return new MessageSourceResourceBundle(this.messageSource, locale);

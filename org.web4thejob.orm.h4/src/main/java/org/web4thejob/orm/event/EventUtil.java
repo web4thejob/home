@@ -18,6 +18,7 @@
 
 package org.web4thejob.orm.event;
 
+import org.hibernate.EntityMode;
 import org.hibernate.persister.entity.EntityPersister;
 import org.web4thejob.orm.Entity;
 
@@ -32,6 +33,6 @@ public class EventUtil {
     public static <E extends Entity> void assignValue(E entity, int index, Object value, EntityPersister persister,
                                                       Object[] state) {
         state[index] = value;
-        persister.setPropertyValue(entity, index, value);
+        persister.setPropertyValue(entity, index, value, EntityMode.POJO);
     }
 }

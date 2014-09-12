@@ -18,8 +18,8 @@
 
 package org.web4thejob.orm.event;
 
-import org.hibernate.event.spi.PreInsertEvent;
-import org.hibernate.event.spi.PreInsertEventListener;
+import org.hibernate.event.PreInsertEvent;
+import org.hibernate.event.PreInsertEventListener;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.AnnotationMetadata;
 import org.web4thejob.orm.Entity;

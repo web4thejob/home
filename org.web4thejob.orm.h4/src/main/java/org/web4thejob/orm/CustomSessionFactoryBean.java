@@ -20,19 +20,15 @@ package org.web4thejob.orm;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.engine.jdbc.spi.JdbcServices;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.tool.hbm2ddl.ConnectionHelper;
-import org.hibernate.tool.hbm2ddl.MyDatabaseExporter;
-import org.hibernate.tool.hbm2ddl.MyManagedProviderConnectionHelper;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
+import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.module.Joblet;
@@ -58,30 +54,21 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
 
 // -------------------------- OTHER METHODS --------------------------
 
-    private void createSchemata(LocalSessionFactoryBuilder sfb) {
+    private void createSchemata() {
 
         if (!applicationContext.getResource(SCHEMA_FILE).exists()) {
             return;
         }
 
         try {
-            final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                    .applySettings(sfb.getProperties())
-                    .build();
+            Configuration configuration = new Configuration();
+            configuration.setProperties(getHibernateProperties());
 
-
-            ConnectionHelper connectionHelper = new MyManagedProviderConnectionHelper(
-                    sfb.getProperties());
-            connectionHelper.prepare(true);
-
-            MyDatabaseExporter myDatabaseExporter = new MyDatabaseExporter(
-                    connectionHelper, serviceRegistry
-                    .getService(JdbcServices.class).getSqlExceptionHelper());
-
+            SchemaExport myDatabaseExporter = new SchemaExport(configuration);
 
             for (String schema : FileUtils.readLines(applicationContext.getResource(SCHEMA_FILE).getFile())) {
                 if (StringUtils.hasText(schema)) {
-                    myDatabaseExporter.export(schema);
+                    myDatabaseExporter.execute(true, true, false, true);
                 }
             }
 
@@ -93,19 +80,25 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
         }
     }
 
-    private void applyInterceptor(LocalSessionFactoryBuilder sfb) {
-        sfb.setInterceptor(new HibernateInterceptor());
+    private void applyInterceptor() {
+        setEntityInterceptor(new HibernateInterceptor());
     }
 
     @Override
-    protected SessionFactory buildSessionFactory(LocalSessionFactoryBuilder sfb) {
-        createSchemata(sfb);
-        applyInterceptor(sfb);
-        applyResources(sfb);
-        return super.buildSessionFactory(sfb);
+    protected SessionFactory buildSessionFactory() throws Exception {
+        createSchemata();
+        applyInterceptor();
+        return super.buildSessionFactory();
     }
 
-    private void applyResources(LocalSessionFactoryBuilder sfb) {
+    @Override
+    protected Configuration newConfiguration() throws HibernateException {
+        Configuration configuration = super.newConfiguration();
+        applyResources(configuration);
+        return configuration;
+    }
+
+    private void applyResources(Configuration configuration) {
 
         if (ContextUtil.isInitialized()) {
             List<Joblet> joblets = new ArrayList<Joblet>();
@@ -115,7 +108,7 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
             for (Joblet joblet : joblets) {
                 for (Resource resource : joblet.getResources()) {
                     try {
-                        sfb.addInputStream(resource.getInputStream());
+                        configuration.addInputStream(resource.getInputStream());
                     } catch (IOException e) {
                         e.printStackTrace();
                         throw new RuntimeException(e);
@@ -131,7 +124,7 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
                     Joblet joblet = (Joblet) ((Class) clazz).newInstance();
                     for (Resource resource : joblet.getResources()) {
                         try {
-                            sfb.addInputStream(resource.getInputStream());
+                            configuration.addInputStream(resource.getInputStream());
                         } catch (IOException e) {
                             e.printStackTrace();
                             throw new RuntimeException(e);

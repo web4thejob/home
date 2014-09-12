@@ -19,7 +19,7 @@
 package org.web4thejob.orm.serial;
 
 import com.thoughtworks.xstream.mapper.MapperWrapper;
-import org.hibernate.collection.internal.*;
+import org.hibernate.collection.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.*;
@@ -36,8 +36,6 @@ import java.util.*;
 @SuppressWarnings("rawtypes")
 public class MyHibernateMapper extends MapperWrapper {
 
-    final private Map collectionMap = new HashMap();
-
     @SuppressWarnings("unchecked")
     public MyHibernateMapper(final MapperWrapper mapper) {
         super(mapper);
@@ -48,6 +46,8 @@ public class MyHibernateMapper extends MapperWrapper {
         collectionMap.put(PersistentSortedMap.class, TreeMap.class);
         collectionMap.put(PersistentSortedSet.class, TreeSet.class);
     }
+
+    final private Map collectionMap = new HashMap();
 
     @Override
     public Class defaultImplementationOf(final Class clazz) {

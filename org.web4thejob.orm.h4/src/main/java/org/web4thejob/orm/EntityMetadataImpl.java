@@ -19,6 +19,7 @@
 package org.web4thejob.orm;
 
 import org.apache.log4j.Logger;
+import org.hibernate.EntityMode;
 import org.hibernate.mapping.*;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.Type;
@@ -36,33 +37,6 @@ import java.util.List;
  */
 
 /*package*/class EntityMetadataImpl implements EntityMetadata {
-    // ------------------------------ FIELDS ------------------------------
-    private static final String META_FRIENDLY_NAME = "friendlyName";
-    private static final String META_TABLE_SUBSET = "tableSubset";
-    private static final String META_TABLE_CACHED = "cached";
-    private static final String META_DENY_ADDNEW = "deny-add-new";
-    private static final String META_DENY_UPDATE = "deny-update";
-    private static final String META_DENY_DELETE = "deny-delete";
-    private static final Logger logger = Logger.getLogger(EntityMetadataImpl.class);
-    final private SortedSet<PropertyMetadata> propertySet = new TreeSet<PropertyMetadata>();
-    final private HashMap<String, PropertyMetadata> propertyMap = new HashMap<String, PropertyMetadata>();
-    final private String identifier;
-    final private Type identifierType;
-    final private Class<? extends Entity> entityType;
-    final private ClassMetadata classMetadata;
-    final private boolean versioned;
-    final private PersistentClass persistentClass;
-    final private String friendlyName;
-    final private List<Class<? extends Entity>> subclasses;
-    final private boolean tableSubset;
-    final private boolean cached;
-    final private boolean denyAddNew;
-    final private boolean denyDelete;
-    final private boolean denyUpdate;
-    private List<UniqueKeyConstraint> uniqueKeyConstraints;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     @SuppressWarnings("unchecked")
     public EntityMetadataImpl(ClassMetadata classMetadata) {
         this.classMetadata = classMetadata;
@@ -142,6 +116,33 @@ import java.util.List;
             subclasses = Collections.emptyList();
         }
     }
+
+    // ------------------------------ FIELDS ------------------------------
+    private static final String META_FRIENDLY_NAME = "friendlyName";
+    private static final String META_TABLE_SUBSET = "tableSubset";
+    private static final String META_TABLE_CACHED = "cached";
+    private static final String META_DENY_ADDNEW = "deny-add-new";
+    private static final String META_DENY_UPDATE = "deny-update";
+    private static final String META_DENY_DELETE = "deny-delete";
+    private static final Logger logger = Logger.getLogger(EntityMetadataImpl.class);
+    final private SortedSet<PropertyMetadata> propertySet = new TreeSet<PropertyMetadata>();
+    final private HashMap<String, PropertyMetadata> propertyMap = new HashMap<String, PropertyMetadata>();
+    final private String identifier;
+    final private Type identifierType;
+    final private Class<? extends Entity> entityType;
+    final private ClassMetadata classMetadata;
+    final private boolean versioned;
+    final private PersistentClass persistentClass;
+    final private String friendlyName;
+    final private List<Class<? extends Entity>> subclasses;
+    final private boolean tableSubset;
+    final private boolean cached;
+    final private boolean denyAddNew;
+    final private boolean denyDelete;
+    final private boolean denyUpdate;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private List<UniqueKeyConstraint> uniqueKeyConstraints;
 
     private boolean isDiscriminatorDuplicate(String propertyName) {
         if (persistentClass instanceof RootClass) return false;
@@ -232,7 +233,7 @@ import java.util.List;
 
     @Override
     public <E extends Entity> Integer getVersion(E entity) {
-        return (Integer) classMetadata.getVersion(entity);
+        return (Integer) classMetadata.getVersion(entity, EntityMode.POJO);
     }
 
     @Override
@@ -261,7 +262,7 @@ import java.util.List;
     @Override
     @SuppressWarnings("unchecked")
     public Class<? extends Entity> getMappedClass() {
-        return classMetadata.getMappedClass();
+        return classMetadata.getMappedClass(EntityMode.POJO);
     }
 
     @Override
@@ -310,7 +311,7 @@ import java.util.List;
 
     @Override
     public boolean isAbstract() {
-        return Modifier.isAbstract(classMetadata.getMappedClass().getModifiers());
+        return Modifier.isAbstract(classMetadata.getMappedClass(EntityMode.POJO).getModifiers());
     }
 
     @Override
@@ -339,7 +340,7 @@ import java.util.List;
         if (!versioned) return null;
         if (!entity.getEntityType().equals(getEntityType())) return null;
 
-        return classMetadata.getPropertyValue(entity, persistentClass.getVersion().getName());
+        return classMetadata.getPropertyValue(entity, persistentClass.getVersion().getName(), EntityMode.POJO);
     }
 
     @Override
@@ -348,7 +349,7 @@ import java.util.List;
         if (!versioned) return;
         if (!entity.getEntityType().equals(getEntityType())) return;
 
-        classMetadata.setPropertyValue(entity, persistentClass.getVersion().getName(), value);
+        classMetadata.setPropertyValue(entity, persistentClass.getVersion().getName(), value, EntityMode.POJO);
     }
 
     @Override

@@ -25,7 +25,7 @@ import my.joblet.Master2;
 import my.joblet.Reference1;
 import org.junit.Test;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.query.Condition;
 import org.web4thejob.orm.query.Criterion;

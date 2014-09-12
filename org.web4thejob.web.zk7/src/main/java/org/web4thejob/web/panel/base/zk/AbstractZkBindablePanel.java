@@ -18,7 +18,7 @@
 
 package org.web4thejob.web.panel.base.zk;
 
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.web4thejob.SystemProtectedEntryException;
 import org.web4thejob.command.Command;
 import org.web4thejob.command.CommandEnum;
@@ -50,6 +50,7 @@ import org.zkoss.zul.Panel;
 public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
 // ------------------------------ FIELDS ------------------------------
 
+    private static final String EVENT_BIND_ECHO = "onBindEcho";
     public static final L10nString L10N_MSG_DELETE_CONFIRMATION = new L10nString(AbstractZkBindablePanel.class,
             "message_delete_confirmation", "Are you sure you want to delete the selected entry?");
     public static final L10nString L10N_MSG_ENTITY_MODIFIED_BY_OTHERS = new L10nString(AbstractZkBindablePanel.class,
@@ -60,7 +61,6 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
     public static final L10nString L10N_MSG_DELETION_FAILED = new L10nString(AbstractZkBindablePanel.class,
             "message_delete_failed", "Deletion of entry failed. Most probably the entry is still referenced by other " +
             "" + "entries.");
-    private static final String EVENT_BIND_ECHO = "onBindEcho";
 
 // ------------------------ INTERFACE METHODS ------------------------
 

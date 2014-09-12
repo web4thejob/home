@@ -18,7 +18,7 @@
 
 package org.web4thejob.security;
 
-import org.springframework.security.web.util.matcher.IpAddressMatcher;
+import org.springframework.security.web.util.IpAddressMatcher;
 import org.web4thejob.context.ContextUtil;
 
 /**

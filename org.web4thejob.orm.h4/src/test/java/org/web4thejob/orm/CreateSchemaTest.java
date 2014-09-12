@@ -18,13 +18,9 @@
 
 package org.web4thejob.orm;
 
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
-import org.hibernate.service.ServiceRegistry;
+import org.hibernate.tool.hbm2ddl.MyManagedProviderConnectionHelper;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
-import org.hibernate.tool.hbm2ddl.Target;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -52,18 +48,19 @@ public class CreateSchemaTest {
         datasource.load(new ClassPathResource(DatasourceProperties.PATH).getInputStream());
 
         final Configuration configuration = new Configuration();
-        configuration.setProperty(AvailableSettings.DIALECT, datasource.getProperty(DatasourceProperties.DIALECT));
-        configuration.setProperty(AvailableSettings.DRIVER, datasource.getProperty(DatasourceProperties.DRIVER));
-        configuration.setProperty(AvailableSettings.URL, "jdbc:hsqldb:mem:mydb");
-        configuration.setProperty(AvailableSettings.USER, datasource.getProperty(DatasourceProperties.USER));
-        configuration.setProperty(AvailableSettings.PASS, datasource.getProperty(DatasourceProperties.PASSWORD));
+        configuration.setProperty("hibernate.dialect", datasource.getProperty(DatasourceProperties.DIALECT));
+        configuration.setProperty("hibernate.connection.driver_class", datasource.getProperty(DatasourceProperties.DRIVER));
+        configuration.setProperty("hibernate.connection.url", "jdbc:hsqldb:mem:mydb");
+        configuration.setProperty("hibernate.connection.username", datasource.getProperty(DatasourceProperties.USER));
+        configuration.setProperty("hibernate.connection.password", datasource.getProperty(DatasourceProperties.PASSWORD));
+        configuration.setProperty("hibernate.show_sql", "true");
 
-        final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                .applySettings(configuration.getProperties())
-                .build();
+        MyManagedProviderConnectionHelper connectionHelper = new MyManagedProviderConnectionHelper(
+                configuration.getProperties());
+        connectionHelper.prepare(true);
 
 
-        Connection connection = serviceRegistry.getService(ConnectionProvider.class).getConnection();
+        Connection connection = connectionHelper.getConnection();
         Statement statement = connection.createStatement();
         statement.executeUpdate("CREATE SCHEMA w4tj;");
         statement.close();
@@ -83,8 +80,8 @@ public class CreateSchemaTest {
             throw new RuntimeException(e);
         }
 
-        SchemaExport schemaExport = new SchemaExport(serviceRegistry, configuration);
-        schemaExport.execute(Target.EXPORT, SchemaExport.Type.CREATE);
+        SchemaExport schemaExport = new SchemaExport(configuration);
+        schemaExport.execute(true, true, false, true);
 
         if (!schemaExport.getExceptions().isEmpty()) {
             throw new RuntimeException((Throwable) schemaExport.getExceptions().get(0));

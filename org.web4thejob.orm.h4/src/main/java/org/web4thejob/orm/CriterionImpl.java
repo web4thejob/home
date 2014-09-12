@@ -19,7 +19,7 @@
 package org.web4thejob.orm;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.orm.hibernate4.HibernateObjectRetrievalFailureException;
+import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.util.StringUtils;
@@ -43,6 +43,15 @@ import java.util.List;
  */
 
 /*package*/class CriterionImpl extends AbstractHibernateEntity implements Criterion {
+    public CriterionImpl(boolean isMaster) {
+        master = isMaster;
+    }
+
+    public CriterionImpl() {
+        this(false);
+    }
+
+    private final boolean master;
     private Condition condition;
     private long id;
     private int index;
@@ -52,19 +61,8 @@ import java.util.List;
     private String flatPropertyPath;
     private String flatValue;
     private boolean fixed;
-
     private PathMetadata propertyPath;
     private Object value;
-
-    private final boolean master;
-
-    public CriterionImpl(boolean isMaster) {
-        master = isMaster;
-    }
-
-    public CriterionImpl() {
-        this(false);
-    }
 
     @SuppressWarnings("rawtypes")
     private Object deserializeValue(String flatValue) {
@@ -121,11 +119,21 @@ import java.util.List;
     }
 
     @Override
+    public void setCondition(Condition condition) {
+        this.condition = condition;
+    }
+
+    @Override
     public String getFlatCondition() {
         if (condition != null) {
             return condition.getKey();
         }
         return null;
+    }
+
+    @Override
+    public void setFlatCondition(String flatCondition) {
+        condition = Condition.fromKey(flatCondition);
     }
 
     @Override
@@ -137,6 +145,12 @@ import java.util.List;
     }
 
     @Override
+    public void setFlatPropertyPath(String flatPropertyPath) {
+        this.flatPropertyPath = flatPropertyPath;
+        this.propertyPath = null;
+    }
+
+    @Override
     public String getFlatValue() {
         if (flatValue == null && value != null) {
             flatValue = serializeValue(value);
@@ -145,13 +159,27 @@ import java.util.List;
     }
 
     @Override
+    public void setFlatValue(String flatValue) {
+        this.flatValue = flatValue;
+        this.value = null;
+    }
+
+    @Override
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override
     public int getIndex() {
         return index;
+    }
+
+    public void setIndex(int ordering) {
+        this.index = ordering;
     }
 
     @Override
@@ -168,8 +196,18 @@ import java.util.List;
     }
 
     @Override
+    public void setPropertyPath(PathMetadata pathMetadata) {
+        this.propertyPath = pathMetadata;
+        this.flatPropertyPath = null;
+    }
+
+    @Override
     public Query getQuery() {
         return query;
+    }
+
+    public void setQuery(Query query) {
+        this.query = query;
     }
 
     @Override
@@ -185,54 +223,14 @@ import java.util.List;
     }
 
     @Override
-    public boolean isLocal() {
-        return propertyPath == null || !propertyPath.isMultiStep();
-    }
-
-    @Override
-    public void setCondition(Condition condition) {
-        this.condition = condition;
-    }
-
-    @Override
-    public void setFlatCondition(String flatCondition) {
-        condition = Condition.fromKey(flatCondition);
-    }
-
-    @Override
-    public void setFlatPropertyPath(String flatPropertyPath) {
-        this.flatPropertyPath = flatPropertyPath;
-        this.propertyPath = null;
-    }
-
-    @Override
-    public void setFlatValue(String flatValue) {
-        this.flatValue = flatValue;
-        this.value = null;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setIndex(int ordering) {
-        this.index = ordering;
-    }
-
-    @Override
-    public void setPropertyPath(PathMetadata pathMetadata) {
-        this.propertyPath = pathMetadata;
-        this.flatPropertyPath = null;
-    }
-
-    public void setQuery(Query query) {
-        this.query = query;
-    }
-
-    @Override
     public void setValue(Object value) {
         this.value = value;
         this.flatValue = null;
+    }
+
+    @Override
+    public boolean isLocal() {
+        return propertyPath == null || !propertyPath.isMultiStep();
     }
 
     @Override

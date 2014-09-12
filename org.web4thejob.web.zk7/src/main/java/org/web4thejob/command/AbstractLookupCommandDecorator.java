@@ -19,7 +19,7 @@
 package org.web4thejob.command;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.web4thejob.ProcessingException;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.message.Message;
@@ -57,26 +57,6 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
         LookupCommandDecorator<E>, EventListener<Event> {
     // ------------------------------ FIELDS ------------------------------
 
-    public static final L10nString L10N_COMBOBUTTON_LOOKUP = new L10nString(AbstractLookupCommandDecorator.class,
-            "combobutton_lookup", "Lookup");
-
-    private final Div div = new Div();
-    private final Combobox combobox = new Combobox();
-    private final Combobutton combobutton = new Combobutton();
-    private final SubcommandsOwner subcommandsOwner;
-    private boolean modified;
-    // --------------------------- CONSTRUCTORS ---------------------------
-
-
-    @Override
-    public void dispatchMessage(Message message) {
-        if (MessageEnum.ENTITY_UPDATED == message.getId() && subcommandsOwner.hasCommand(CommandEnum.UPDATE)) {
-            setModified(true);
-            return;
-        }
-        super.dispatchMessage(message);
-    }
-
     protected AbstractLookupCommandDecorator(Command command) {
         super(command);
 
@@ -110,6 +90,23 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
             decorator.render();
         }
         arrangeForState(PanelState.READY);
+    }
+    public static final L10nString L10N_COMBOBUTTON_LOOKUP = new L10nString(AbstractLookupCommandDecorator.class,
+            "combobutton_lookup", "Lookup");
+    private final Div div = new Div();
+    private final Combobox combobox = new Combobox();
+    private final Combobutton combobutton = new Combobutton();
+    private final SubcommandsOwner subcommandsOwner;
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private boolean modified;
+
+    @Override
+    public void dispatchMessage(Message message) {
+        if (MessageEnum.ENTITY_UPDATED == message.getId() && subcommandsOwner.hasCommand(CommandEnum.UPDATE)) {
+            setModified(true);
+            return;
+        }
+        super.dispatchMessage(message);
     }
 
     protected void arrangeForState(PanelState newState) {
@@ -308,6 +305,11 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
     }
 
     @Override
+    public boolean isModified() {
+        return modified;
+    }
+
+    @Override
     public void setModified(boolean modified) {
         Entity selection = getLookupSelection();
         if (selection != null && this.modified != modified) {
@@ -326,11 +328,6 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
             }
         }
 
-    }
-
-    @Override
-    public boolean isModified() {
-        return modified;
     }
 
     @SuppressWarnings("unchecked")
@@ -387,13 +384,13 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
     // -------------------------- INNER CLASSES --------------------------
 
     protected class SubcommandsOwner implements CommandAware {
-        private SortedMap<CommandEnum, Command> commands = new TreeMap<CommandEnum, Command>();
-
         public SubcommandsOwner(Command parent) {
             for (CommandEnum id : command.getId().getSubcommands()) {
                 registerCommand(ContextUtil.getSubcommand(id, parent, this));
             }
         }
+
+        private SortedMap<CommandEnum, Command> commands = new TreeMap<CommandEnum, Command>();
 
         private void registerCommand(Command command) {
             if (command != null) {

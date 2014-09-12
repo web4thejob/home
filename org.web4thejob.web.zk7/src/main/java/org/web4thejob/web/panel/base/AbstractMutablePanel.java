@@ -20,7 +20,7 @@ package org.web4thejob.web.panel.base;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.hibernate4.HibernateObjectRetrievalFailureException;
+import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
 import org.springframework.util.StringUtils;
 import org.web4thejob.command.Command;
 import org.web4thejob.command.CommandDecorator;
@@ -68,34 +68,61 @@ import java.util.*;
  */
 
 public abstract class AbstractMutablePanel extends AbstractZkBindablePanel implements MutablePanel {
+    protected AbstractMutablePanel(MutableMode mutableMode) {
+        this.mutableMode = mutableMode;
+    }
+
+    protected static final String ATTRIB_PATH_META = PathMetadata.class.getName();
+    protected static final String DEFAULT_BEAN_ID = "entity";
+    protected static final String[] MONITOR_EVENTS = {Events.ON_CHANGE, Events.ON_CHANGING, Events.ON_CHECK};
     // ------------------------------ FIELDS ------------------------------
     public static final L10nString L10N_COLUMN_ATTRIBUTE = new L10nString("column_attribute", "Attribute");
     public static final L10nString L10N_COLUMN_VALUE = new L10nString("column_value", "Value");
     public static final L10nString L10N_MSG_REFRESH_FAILED = new L10nString(AbstractMutablePanel.class,
             "msg_refresh_failed", "The entity does not exist any more. Maybe it has been deleted by another user.");
-    protected static final String ATTRIB_PATH_META = PathMetadata.class.getName();
-    protected static final String DEFAULT_BEAN_ID = "entity";
-    protected static final String[] MONITOR_EVENTS = {Events.ON_CHANGE, Events.ON_CHANGING, Events.ON_CHECK};
-    protected DataBinder dataBinder;
     private final DialogListener dialogListener = new DialogListener();
 
     private final MutableMode mutableMode;
+    protected DataBinder dataBinder;
+    protected ChangeMonitor changeMonitor = new ChangeMonitor();
+    protected Query activeQuery;
     private Entity targetEntity;
     private Entity targetEntityOrig;
     private QueryDialog queryDialog;
     private Boolean dirty = null;
-    protected ChangeMonitor changeMonitor = new ChangeMonitor();
     private List<DirtyListener> dirtyListeners = new ArrayList<DirtyListener>(1);
-    private PropertyMetadata statusHolderProp;
-    protected Query activeQuery;
 
     // --------------------------- CONSTRUCTORS ---------------------------
-
-    protected AbstractMutablePanel(MutableMode mutableMode) {
-        this.mutableMode = mutableMode;
-    }
+    private PropertyMetadata statusHolderProp;
 
     // --------------------- GETTER / SETTER METHODS ---------------------
+
+    protected static Component buildViewer(String clazzName) {
+        try {
+            return (Component) Class.forName(clazzName).newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException(clazzName + " not a valid zk component");
+        }
+    }
+
+    protected static Grid buildGrid() {
+        Grid grid = new Grid();
+        grid.setVflex("true");
+//        grid.setWidth("100%");
+        grid.setSpan(true);
+        new Columns().setParent(grid);
+        new Rows().setParent(grid);
+        grid.getColumns().setSizable(true);
+        Column col;
+        col = new Column(L10N_COLUMN_ATTRIBUTE.toString());
+        col.setParent(grid.getColumns());
+        col.setWidth("30%");
+        col = new Column(L10N_COLUMN_VALUE.toString());
+        col.setParent(grid.getColumns());
+
+        return grid;
+    }
 
     @Override
     public MutableMode getMutableMode() {
@@ -110,18 +137,46 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         return targetEntity;
     }
 
+    // ------------------------ INTERFACE METHODS ------------------------
+
+    // --------------------- Interface CommandAware ---------------------
+
     protected Entity getTargetEntityDirect() {
         return targetEntity;
     }
+
+    // --------------------- Interface I18nAware ---------------------
 
     @Override
     public boolean isDirty() {
         return dirty;
     }
 
-    // ------------------------ INTERFACE METHODS ------------------------
+    // --------------------- Interface MessageListener ---------------------
 
-    // --------------------- Interface CommandAware ---------------------
+    @Override
+    public void setDirty(boolean dirty) {
+        //always notify component controllers
+        if (dirty) {
+            for (DirtyListener dirtyListener : dirtyListeners) {
+                if (dirtyListener instanceof ComponentController) {
+                    dirtyListener.onDirty(true);
+                }
+            }
+        }
+
+        if (this.dirty != null && this.dirty == dirty) {
+            return;
+        }
+        this.dirty = dirty;
+        monitorComponents(!this.dirty);
+
+        for (DirtyListener dirtyListener : dirtyListeners) {
+            if (!(dialogListener instanceof ComponentController)) {
+                dirtyListener.onDirty(this.dirty);
+            }
+        }
+    }
 
     @Override
     public Set<CommandEnum> getSupportedCommands() {
@@ -135,7 +190,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         return Collections.unmodifiableSet(supported);
     }
 
-    // --------------------- Interface I18nAware ---------------------
+    // --------------------- Interface MutablePanel ---------------------
 
     @Override
     public void setL10nMode(boolean l10nMode) {
@@ -149,8 +204,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
             }
         }
     }
-
-    // --------------------- Interface MessageListener ---------------------
 
     @Override
     public void render() {
@@ -198,12 +251,9 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         }
     }
 
-    // --------------------- Interface MutablePanel ---------------------
-
     protected void ensureVisible(Component comp) {
         Clients.scrollIntoView(comp);
     }
-
 
     protected List<Component> getBoundComponents() {
 
@@ -253,7 +303,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         return Collections.emptySet();
     }
 
-
     private void checkInsertableIdentifiers() {
         if (getMutableMode() == MutableMode.INSERT) {
             EntityMetadata entityMetadata = ContextUtil.getMRS().getEntityMetadata(getTargetType());
@@ -282,6 +331,8 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
             }
         }
     }
+
+    // -------------------------- OTHER METHODS --------------------------
 
     protected void persistLocal() throws Exception {
         ContextUtil.getDWS().save(getTargetEntity());
@@ -367,8 +418,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
             dirtyListeners.add(dirtyListener);
         }
     }
-
-    // -------------------------- OTHER METHODS --------------------------
 
     @Override
     protected void arrangeForMasterEntity() {
@@ -480,7 +529,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         }
     }
 
-
     @Override
     protected void arrangeForNullTargetType() {
         super.arrangeForNullTargetType();
@@ -527,30 +575,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
             arrangeForState(PanelState.READY);
         } else {
             arrangeForState(PanelState.UNDEFINED);
-        }
-    }
-
-    @Override
-    public void setDirty(boolean dirty) {
-        //always notify component controllers
-        if (dirty) {
-            for (DirtyListener dirtyListener : dirtyListeners) {
-                if (dirtyListener instanceof ComponentController) {
-                    dirtyListener.onDirty(true);
-                }
-            }
-        }
-
-        if (this.dirty != null && this.dirty == dirty) {
-            return;
-        }
-        this.dirty = dirty;
-        monitorComponents(!this.dirty);
-
-        for (DirtyListener dirtyListener : dirtyListeners) {
-            if (!(dialogListener instanceof ComponentController)) {
-                dirtyListener.onDirty(this.dirty);
-            }
         }
     }
 
@@ -635,6 +659,8 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         }
     }
 
+    // -------------------------- INNER CLASSES --------------------------
+
     protected Class<? extends MutablePanel> getMutableType() {
         return MutableEntityViewPanel.class;
     }
@@ -642,58 +668,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
     @Override
     public boolean hasTargetEntity() {
         return getTargetEntity() != null;
-    }
-
-    // -------------------------- INNER CLASSES --------------------------
-
-    private class ChangeMonitor implements EventListener<Event> {
-        @Override
-        public void onEvent(Event event) throws Exception {
-            setDirty(true);
-        }
-    }
-
-    private class DialogListener implements MessageListener {
-        @Override
-        public void processMessage(Message message) {
-            switch (message.getId()) {
-                case AFFIRMATIVE_RESPONSE:
-                    if (QueryDialog.class.isInstance(message.getSender())) {
-                        Entity entity = message.getArg(MessageArgEnum.ARG_ITEM, Entity.class);
-                        if (entity != null) {
-                            bind(entity);
-                            activeQuery = ((QueryDialog) message.getSender()).getQuery();
-
-                            Command command = getCommand(CommandEnum.QUERY);
-                            if (command != null) {
-                                command.dispatchMessage(ContextUtil.getMessage(MessageEnum.MARK_DIRTY, command,
-                                        MessageArgEnum.ARG_ITEM, activeQuery.hasAttribute(CommandDecorator
-                                        .ATTRIB_MODIFIED)));
-                            }
-
-                        }
-                    } else if (EntityPersisterDialog.class.isInstance(message.getSender())) {
-                        Entity entity = message.getArg(MessageArgEnum.ARG_ITEM, Entity.class);
-                        if (entity != null) {
-                            bind(entity);
-                        }
-                    }
-                    break;
-                case ENTITY_UPDATED:
-                    processEntityUpdate(message.getArg(MessageArgEnum.ARG_ITEM, Entity.class));
-                    dispatchMessage(message);
-                    break;
-                case ENTITY_INSERTED:
-                    processEntityInsertion(message.getArg(MessageArgEnum.ARG_ITEM, Entity.class));
-                    //dispatchMessage(ContextUtil.getMessage(message.getId(), this, message.getArgs()));
-                    break;
-                case NEGATIVE_RESPONSE:
-                    if (QueryDialog.class.isInstance(message.getSender())) {
-                        activeQuery = ((QueryDialog) message.getSender()).getQuery();
-                    }
-                    break;
-            }
-        }
     }
 
     @Override
@@ -736,33 +710,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
             return true;
         }
         return false;
-    }
-
-    protected static Component buildViewer(String clazzName) {
-        try {
-            return (Component) Class.forName(clazzName).newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException(clazzName + " not a valid zk component");
-        }
-    }
-
-    protected static Grid buildGrid() {
-        Grid grid = new Grid();
-        grid.setVflex("true");
-//        grid.setWidth("100%");
-        grid.setSpan(true);
-        new Columns().setParent(grid);
-        new Rows().setParent(grid);
-        grid.getColumns().setSizable(true);
-        Column col;
-        col = new Column(L10N_COLUMN_ATTRIBUTE.toString());
-        col.setParent(grid.getColumns());
-        col.setWidth("30%");
-        col = new Column(L10N_COLUMN_VALUE.toString());
-        col.setParent(grid.getColumns());
-
-        return grid;
     }
 
     protected void arrangeForRenderScheme(Grid grid, RenderScheme renderScheme) {
@@ -892,5 +839,55 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
     @Override
     public void beforePersist() {
         //override
+    }
+
+    private class ChangeMonitor implements EventListener<Event> {
+        @Override
+        public void onEvent(Event event) throws Exception {
+            setDirty(true);
+        }
+    }
+
+    private class DialogListener implements MessageListener {
+        @Override
+        public void processMessage(Message message) {
+            switch (message.getId()) {
+                case AFFIRMATIVE_RESPONSE:
+                    if (QueryDialog.class.isInstance(message.getSender())) {
+                        Entity entity = message.getArg(MessageArgEnum.ARG_ITEM, Entity.class);
+                        if (entity != null) {
+                            bind(entity);
+                            activeQuery = ((QueryDialog) message.getSender()).getQuery();
+
+                            Command command = getCommand(CommandEnum.QUERY);
+                            if (command != null) {
+                                command.dispatchMessage(ContextUtil.getMessage(MessageEnum.MARK_DIRTY, command,
+                                        MessageArgEnum.ARG_ITEM, activeQuery.hasAttribute(CommandDecorator
+                                                .ATTRIB_MODIFIED)));
+                            }
+
+                        }
+                    } else if (EntityPersisterDialog.class.isInstance(message.getSender())) {
+                        Entity entity = message.getArg(MessageArgEnum.ARG_ITEM, Entity.class);
+                        if (entity != null) {
+                            bind(entity);
+                        }
+                    }
+                    break;
+                case ENTITY_UPDATED:
+                    processEntityUpdate(message.getArg(MessageArgEnum.ARG_ITEM, Entity.class));
+                    dispatchMessage(message);
+                    break;
+                case ENTITY_INSERTED:
+                    processEntityInsertion(message.getArg(MessageArgEnum.ARG_ITEM, Entity.class));
+                    //dispatchMessage(ContextUtil.getMessage(message.getId(), this, message.getArgs()));
+                    break;
+                case NEGATIVE_RESPONSE:
+                    if (QueryDialog.class.isInstance(message.getSender())) {
+                        activeQuery = ((QueryDialog) message.getSender()).getQuery();
+                    }
+                    break;
+            }
+        }
     }
 }

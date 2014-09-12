@@ -144,7 +144,7 @@ import java.util.Map;
         if (sessionFactory.getCache() != null) {
             sessionFactory.getCache().evictCollectionRegions();
             sessionFactory.getCache().evictEntityRegions();
-            sessionFactory.getCache().evictNaturalIdRegions();
+            sessionFactory.getCache().evictDefaultQueryRegion();
             sessionFactory.getCache().evictQueryRegions();
         }
     }

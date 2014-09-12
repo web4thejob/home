@@ -20,8 +20,8 @@ package org.web4thejob.orm;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.hibernate.internal.util.ReflectHelper;
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.util.ReflectHelper;
 import org.springframework.util.ReflectionUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.validation.ValidatingGroup;

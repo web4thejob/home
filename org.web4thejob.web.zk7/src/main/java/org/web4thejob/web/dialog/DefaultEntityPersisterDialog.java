@@ -20,7 +20,7 @@ package org.web4thejob.web.dialog;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 import org.web4thejob.command.Command;
 import org.web4thejob.command.CommandEnum;
@@ -56,23 +56,6 @@ import java.util.Set;
 @Component
 @Scope("prototype")
 public class DefaultEntityPersisterDialog extends AbstractDialog implements EntityPersisterDialog, DirtyListener {
-    public static final L10nString L10N_MESSAGE_UNEXPECTED_ERRORS = new L10nString(DefaultEntityPersisterDialog
-            .class, "message_unexpected_errors", "Save failed due to unexpected error.");
-    public static final L10nString L10N_MESSAGE_DATA_NTEGRITY_ERRORS = new L10nString(DefaultEntityPersisterDialog
-            .class, "message_data_integrity_error", "Save failed due to data integrity error.");
-    public static final L10nString L10N_MESSAGE_IGNORE_CHANGES = new L10nString(DefaultEntityPersisterDialog
-            .class, "message_ignore_changes", "Ignore changes?");
-
-    private Entity entity;
-    private final Set<Setting<?>> settings;
-    private final boolean inMemoryEditing;
-    private final boolean skipValidation;
-    private final boolean allowMultipleNew;
-    private final MutableMode mutableMode;
-    private MutablePanel mutablePanel;
-    private Class<? extends MutablePanel> mutableType = MutableEntityViewPanel.class;
-    private boolean dirty;
-
     protected DefaultEntityPersisterDialog(Entity entity, Set<Setting<?>> settings, MutableMode mutableMode) {
         this(entity, settings, mutableMode, false, false);
     }
@@ -98,6 +81,22 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
         this.allowMultipleNew = allowMultipleNew;
     }
 
+    public static final L10nString L10N_MESSAGE_UNEXPECTED_ERRORS = new L10nString(DefaultEntityPersisterDialog
+            .class, "message_unexpected_errors", "Save failed due to unexpected error.");
+    public static final L10nString L10N_MESSAGE_DATA_NTEGRITY_ERRORS = new L10nString(DefaultEntityPersisterDialog
+            .class, "message_data_integrity_error", "Save failed due to data integrity error.");
+    public static final L10nString L10N_MESSAGE_IGNORE_CHANGES = new L10nString(DefaultEntityPersisterDialog
+            .class, "message_ignore_changes", "Ignore changes?");
+    private final Set<Setting<?>> settings;
+    private final boolean inMemoryEditing;
+    private final boolean skipValidation;
+    private final boolean allowMultipleNew;
+    private final MutableMode mutableMode;
+    private Entity entity;
+    private MutablePanel mutablePanel;
+    private Class<? extends MutablePanel> mutableType = MutableEntityViewPanel.class;
+    private boolean dirty;
+
     @Override
     public MutableMode getMutableMode() {
         return mutableMode;
@@ -109,13 +108,13 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
     }
 
     @Override
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
+    public boolean isDirty() {
+        return dirty;
     }
 
     @Override
-    public boolean isDirty() {
-        return dirty;
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
     @Override

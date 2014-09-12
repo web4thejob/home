@@ -19,7 +19,7 @@
 package org.web4thejob.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.matcher.IpAddressMatcher;
+import org.springframework.security.web.util.IpAddressMatcher;
 import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 
@@ -31,11 +31,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 public class CustomELRequestMatcherContext {
-    private final HttpServletRequest request;
-
     public CustomELRequestMatcherContext(HttpServletRequest request) {
         this.request = request;
     }
+
+    private final HttpServletRequest request;
 
     public boolean hasIpAddress(String ipAddress) {
         return (new IpAddressMatcher(ipAddress).matches(request));

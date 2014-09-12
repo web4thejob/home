@@ -18,13 +18,14 @@
 
 package org.web4thejob.orm;
 
+import org.hibernate.EntityMode;
 import org.hibernate.SessionFactory;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.internal.SessionFactoryImpl;
-import org.hibernate.internal.util.ReflectHelper;
+import org.hibernate.engine.SessionImplementor;
+import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
+import org.hibernate.util.ReflectHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -170,13 +171,13 @@ import java.util.*;
 
     @Override
     public void refreshMetaCache() {
-        ((SessionFactoryImpl) sessionFactory).registerEntityNameResolver(EntityNameResolverImpl.INSTANCE);
+        ((SessionFactoryImpl) sessionFactory).registerEntityNameResolver(EntityNameResolverImpl.INSTANCE, EntityMode.POJO);
 
         annoCache.clear();
         for (final ClassMetadata classMetadata : sessionFactory.getAllClassMetadata().values()) {
             final AnnotationReader reader = new AnnotationReader(classMetadata.getEntityName());
 
-            ReflectionUtils.doWithFields(classMetadata.getMappedClass(), reader);
+            ReflectionUtils.doWithFields(classMetadata.getMappedClass(EntityMode.POJO), reader);
 
             if (reader.map.size() > 0) {
                 annoCache.put(classMetadata.getEntityName(), reader.map);
@@ -225,14 +226,13 @@ import java.util.*;
     // -------------------------- INNER CLASSES --------------------------
 
     private class AnnotationReader implements FieldCallback {
-        public final Map<String, Map<String, AnnotationMetadata<? extends Annotation>>> map = new HashMap<String,
-                Map<String, AnnotationMetadata<? extends Annotation>>>();
-
-        private final String declaringType;
-
         public AnnotationReader(String declaringType) {
             this.declaringType = declaringType;
         }
+
+        private final String declaringType;
+        public final Map<String, Map<String, AnnotationMetadata<? extends Annotation>>> map = new HashMap<String,
+                Map<String, AnnotationMetadata<? extends Annotation>>>();
 
         private <A extends Annotation> void appendMetadata(Class<A> annotationType, AnnotationMetadata<A> metadata) {
             if (!map.containsKey(annotationType.getName())) {

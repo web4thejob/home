@@ -18,11 +18,12 @@
 
 package org.web4thejob.orm;
 
-import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.EntityMode;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.mapping.*;
 import org.hibernate.persister.entity.Joinable;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.tuple.GenerationTiming;
 import org.hibernate.type.*;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -48,35 +49,6 @@ import java.util.Set;
 
 /*package*/class PropertyMetadataImpl implements PropertyMetadata, Comparable<PropertyMetadata> {
     // ------------------------------ FIELDS ------------------------------
-
-    private static final String META_FRIENDLY_NAME = "friendlyName";
-    private static final String META_INDEX = "index";
-    private static final String META_DISABLE_USER_INSERT = "disable-user-insert";
-    private static final String META_DISABLE_USER_UPDATE = "disable-user-update";
-    private static final String META_DEFAULT_FORMAT = "default-format";
-    private static final String META_DEFAULT_STYLE = "default-style";
-    private static final String META_DEFAULT_ALIGN = "default-align";
-    private static final String META_DEFAULT_WIDTH = "default-width";
-    private static final String META_DEFAULT_HEIGHT = "default-height";
-    private final EntityMetadataImpl entityMetadata;
-    private final String associatedEntityName;
-    private final Property property;
-    private final int maxLength;
-    private final int index;
-    private final boolean disableUserInsert;
-    private final boolean disableUserUpdate;
-    private final boolean identifier;
-    private final boolean identityIdentifier;
-    private final boolean formula;
-    private final String friendlyName;
-    private final String format;
-    private final String align;
-    private final String style;
-    private final String width;
-    private final String height;
-    private final Map<String, AnnotationMetadata<? extends Annotation>> annotations;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
 
     public PropertyMetadataImpl(EntityMetadataImpl entityMetadata, String propertyName) {
         this(entityMetadata, propertyName, null);
@@ -164,6 +136,35 @@ import java.util.Set;
             height = null;
         }
     }
+
+    private static final String META_FRIENDLY_NAME = "friendlyName";
+    private static final String META_INDEX = "index";
+    private static final String META_DISABLE_USER_INSERT = "disable-user-insert";
+    private static final String META_DISABLE_USER_UPDATE = "disable-user-update";
+    private static final String META_DEFAULT_FORMAT = "default-format";
+    private static final String META_DEFAULT_STYLE = "default-style";
+    private static final String META_DEFAULT_ALIGN = "default-align";
+    private static final String META_DEFAULT_WIDTH = "default-width";
+    private static final String META_DEFAULT_HEIGHT = "default-height";
+    private final EntityMetadataImpl entityMetadata;
+    private final String associatedEntityName;
+    private final Property property;
+    private final int maxLength;
+    private final int index;
+    private final boolean disableUserInsert;
+    private final boolean disableUserUpdate;
+    private final boolean identifier;
+    private final boolean identityIdentifier;
+    private final boolean formula;
+    private final String friendlyName;
+    private final String format;
+    private final String align;
+    private final String style;
+    private final String width;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private final String height;
+    private final Map<String, AnnotationMetadata<? extends Annotation>> annotations;
 
     private Map<String, AnnotationMetadata<? extends Annotation>> getAnnotations() {
         final Map<String, AnnotationMetadata<? extends Annotation>> propAnnotations = new HashMap<String,
@@ -338,7 +339,7 @@ import java.util.Set;
 
         T value;
         if (!isIdentifier()) {
-            value = (T) entityMetadata.getClassMetadata().getPropertyValue(entity, getName());
+            value = (T) entityMetadata.getClassMetadata().getPropertyValue(entity, getName(), EntityMode.POJO);
         } else {
             value = (T) PropertyAccessorFactory.forDirectFieldAccess(entity).getPropertyValue(getName());
         }
@@ -449,7 +450,7 @@ import java.util.Set;
     @Override
     public boolean isInsertable() {
         return !entityMetadata.isReadOnly() && property.isInsertable() && !disableUserInsert && !formula &&
-                !isIdentityIdentifier() && (GenerationTiming.NEVER == getGenerationTiming());
+                !isIdentityIdentifier() && (GenerationTime.NEVER == getGenerationTiming());
     }
 
     @Override
@@ -593,7 +594,7 @@ import java.util.Set;
                 entity = ContextUtil.getMRS().deproxyEntity(entity);
             }
 
-            Object value = entityMetadata.getClassMetadata().getPropertyValue(entity, getName());
+            Object value = entityMetadata.getClassMetadata().getPropertyValue(entity, getName(), EntityMode.POJO);
             return value != null && value instanceof HibernateProxy;
         } else {
             return false;
@@ -603,21 +604,21 @@ import java.util.Set;
     @Override
     public boolean isUpdateable() {
         return !entityMetadata.isReadOnly() && property.isUpdateable() && !disableUserUpdate && !formula &&
-                !isIdentityIdentifier() && (GenerationTiming.NEVER == getGenerationTiming() ||
-                GenerationTiming.INSERT == getGenerationTiming());
+                !isIdentityIdentifier() && (GenerationTime.NEVER == getGenerationTiming() ||
+                GenerationTime.INSERT == getGenerationTiming());
     }
 
-    private GenerationTiming getGenerationTiming() {
-        if (property.getValueGenerationStrategy() != null) {
-            return property.getValueGenerationStrategy().getGenerationTiming();
+    private GenerationTime getGenerationTiming() {
+        if (property.getGeneration() != null) {
+            return GenerationTime.valueOf(property.getGeneration().getName());
         }
-        return GenerationTiming.NEVER;
+        return GenerationTime.NEVER;
     }
 
     @Override
     public <E extends Entity> void setValue(E entity, Object value) {
         if (!identifier) {
-            entityMetadata.getClassMetadata().setPropertyValue(entity, getName(), value);
+            entityMetadata.getClassMetadata().setPropertyValue(entity, getName(), value, EntityMode.POJO);
         } else {
             PropertyAccessorFactory.forDirectFieldAccess(entity).setPropertyValue(getName(), value);
         }

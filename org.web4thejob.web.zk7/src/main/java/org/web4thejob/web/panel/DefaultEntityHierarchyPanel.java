@@ -18,7 +18,7 @@
 package org.web4thejob.web.panel;
 
 import org.springframework.context.annotation.Scope;
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.util.StringUtils;
@@ -60,19 +60,6 @@ import java.util.*;
 @SuppressWarnings({"unsafe", "unchecked"})
 public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel implements EntityHierarchyPanel,
         EventListener<Event> {
-    public static final L10nString L10N_MSG_CANNOT_DELETE_PARENT = new L10nString(EntityHierarchyPanel.class,
-            "message_cannot_delete_parent", "This item cannot be deleted because it has child items. Remove child " +
-            "items and retry.");
-    private static final String ATTRIB_HIERARCHY = "ATTRIB_HIERARCHY";
-    private static final String ATTRIB_ITEM = "ATTRIB_ITEM";
-    private static final String ON_OPEN_ECHO = Events.ON_OPEN + "Echo";
-    private static final String ON_DOUBLE_CLICK_ECHO = Events.ON_DOUBLE_CLICK + "Echo";
-    private final Tree tree = new Tree();
-    private final boolean showChildren;
-    private final boolean readOnly;
-    private EntityHierarchy HIERARCHY_INSTANCE;
-
-
     public DefaultEntityHierarchyPanel() {
         this(false, true);
     }
@@ -86,6 +73,17 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
         tree.addEventListener(Events.ON_SELECT, this);
         new Treechildren().setParent(tree);
     }
+    private static final String ATTRIB_HIERARCHY = "ATTRIB_HIERARCHY";
+    private static final String ATTRIB_ITEM = "ATTRIB_ITEM";
+    private static final String ON_OPEN_ECHO = Events.ON_OPEN + "Echo";
+    private static final String ON_DOUBLE_CLICK_ECHO = Events.ON_DOUBLE_CLICK + "Echo";
+    public static final L10nString L10N_MSG_CANNOT_DELETE_PARENT = new L10nString(EntityHierarchyPanel.class,
+            "message_cannot_delete_parent", "This item cannot be deleted because it has child items. Remove child " +
+            "items and retry.");
+    private final Tree tree = new Tree();
+    private final boolean showChildren;
+    private final boolean readOnly;
+    private EntityHierarchy HIERARCHY_INSTANCE;
 
     @Override
     public Set<CommandEnum> getSupportedCommands() {

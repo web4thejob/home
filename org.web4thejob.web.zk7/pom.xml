@@ -18,13 +18,13 @@
   ~ along with web4thejob.  If not, see <http://www.gnu.org/licenses />.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
         <groupId>org.web4thejob</groupId>
         <artifactId>web4thejob</artifactId>
-        <version>3.6.1-SNAPSHOT</version>
+        <version>3.6.0-J5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -94,16 +94,6 @@
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkbind</artifactId>
-            <version>${org.zkoss.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.theme</groupId>
-            <artifactId>sapphire</artifactId>
-            <version>${org.zkoss.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.theme</groupId>
-            <artifactId>silvertail</artifactId>
             <version>${org.zkoss.version}</version>
         </dependency>
 
