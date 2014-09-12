@@ -124,12 +124,10 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         return grid;
     }
 
-    @Override
     public MutableMode getMutableMode() {
         return mutableMode;
     }
 
-    @Override
     public Entity getTargetEntity() {
         if (dataBinder != null && targetEntity != null) {
             dataBinder.saveAll();
@@ -147,14 +145,12 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
 
     // --------------------- Interface I18nAware ---------------------
 
-    @Override
     public boolean isDirty() {
         return dirty;
     }
 
     // --------------------- Interface MessageListener ---------------------
 
-    @Override
     public void setDirty(boolean dirty) {
         //always notify component controllers
         if (dirty) {
@@ -258,7 +254,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
     protected List<Component> getBoundComponents() {
 
         if (dataBinder != null) {
-            List<Component> components = new ArrayList<>();
+            List<Component> components = new ArrayList<Component>();
             for (Binding binding : dataBinder.getAllBindings()) {
                 if (binding.getComponent() != null) {
                     components.add(binding.getComponent());
@@ -270,7 +266,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         return Collections.emptyList();
     }
 
-    @Override
     public Set<ConstraintViolation<Entity>> validate() {
         if (hasTargetEntity()) {
 
@@ -342,7 +337,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         targetEntityOrig = targetEntity.clone();
     }
 
-    @Override
     public void persist() throws Exception {
         if (hasTargetEntity()) {
             Set<ConstraintViolation<Entity>> violations = validate();
@@ -412,7 +406,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         }
     }
 
-    @Override
     public void addDirtyListener(DirtyListener dirtyListener) {
         if (!dirtyListeners.contains(dirtyListener)) {
             dirtyListeners.add(dirtyListener);
@@ -467,7 +460,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
             //this mechanism is used for forcing screen refresh for calculated fields
             if (getMutableMode() != MutableMode.READONLY) {
                 this.targetEntity.addDirtyListener(new DirtyListener() {
-                    @Override
                     public void onDirty(boolean dirty) {
                         if (dataBinder != null) {
                             dataBinder.loadAll();
@@ -665,7 +657,6 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         return MutableEntityViewPanel.class;
     }
 
-    @Override
     public boolean hasTargetEntity() {
         return getTargetEntity() != null;
     }
@@ -836,20 +827,17 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         return null;
     }
 
-    @Override
     public void beforePersist() {
         //override
     }
 
     private class ChangeMonitor implements EventListener<Event> {
-        @Override
         public void onEvent(Event event) throws Exception {
             setDirty(true);
         }
     }
 
     private class DialogListener implements MessageListener {
-        @Override
         public void processMessage(Message message) {
             switch (message.getId()) {
                 case AFFIRMATIVE_RESPONSE:

@@ -30,11 +30,6 @@ import java.util.Set;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultIncludeEntityViewPanel extends AbstractMutablePanel implements IncludeEntityViewPanel {
-    protected BindComposer<Component> bc;
-    protected RenderScheme renderScheme;
-    protected Component root;
-    protected Map<String, Component> bindings = new HashMap<>();
-
     public DefaultIncludeEntityViewPanel() {
         this(MutableMode.READONLY);
     }
@@ -42,7 +37,10 @@ public class DefaultIncludeEntityViewPanel extends AbstractMutablePanel implemen
     protected DefaultIncludeEntityViewPanel(MutableMode mutableMode) {
         super(mutableMode);
     }
-
+    protected BindComposer<Component> bc;
+    protected RenderScheme renderScheme;
+    protected Component root;
+    protected Map<String, Component> bindings = new HashMap<String, Component>();
 
     @Override
     public Set<CommandEnum> getSupportedCommands() {
@@ -75,13 +73,13 @@ public class DefaultIncludeEntityViewPanel extends AbstractMutablePanel implemen
         if (bc != null) return;
 
 
-        Map<String, String> args = new HashMap<>();
+        Map<String, String> args = new HashMap<String, String>();
         args.put("mutableMode", getMutableMode().name());
         ((org.zkoss.zul.Panel) base).getPanelchildren().setStyle("overflow: auto;");
         root = Executions.createComponentsDirectly("<include src=\"sec/include.zul\"/>", null,
                 ((org.zkoss.zul.Panel) base).getPanelchildren(), args);
 
-        bc = new BindComposer<>();
+        bc = new BindComposer<Component>();
         bc.setViewModel(this);
         root.setAttribute("vm", this);
         try {

@@ -238,7 +238,7 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
     }
 
     protected List<Treeitem> getMatchingItems(EntityHierarchyItem ehi) {
-        List<Treeitem> matched = new ArrayList<>();
+        List<Treeitem> matched = new ArrayList<Treeitem>();
 
         for (Treeitem root : tree.getTreechildren().getItems()) {
             if (ehi.equals(root.getAttribute(ATTRIB_ITEM))) {
@@ -272,7 +272,6 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
         return matched;
     }
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_SELECT.equals(event.getName())) {
             arrangeForState(PanelState.FOCUSED);
@@ -441,7 +440,6 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                             Messagebox.Button.CANCEL},
                             null, Messagebox.QUESTION, Messagebox.Button.CANCEL,
                             new EventListener<Messagebox.ClickEvent>() {
-                                @Override
                                 public void onEvent(Messagebox.ClickEvent event) throws Exception {
                                     if (Messagebox.Button.OK == event.getButton()) {
                                         Message message = ContextUtil.getMessage(MessageEnum.ENTITY_DELETED,
@@ -480,7 +478,6 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                     templEntity, settings, MutableMode.INSERT, true);
             dialog.setL10nMode(getL10nMode());
             dialog.show(new MessageListener() {
-                @Override
                 public void processMessage(Message message) {
                     if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId()) {
                         List<Entity> toSave = new ArrayList<Entity>(2);
@@ -543,7 +540,6 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
                             ehi, settings, MutableMode.UPDATE);
                     dialog.setL10nMode(getL10nMode());
                     dialog.show(new MessageListener() {
-                        @Override
                         public void processMessage(Message message) {
                             if (MessageEnum.ENTITY_UPDATED == message.getId()) {
                                 EntityHierarchyItem ehi2 = message.getArg(MessageArgEnum.ARG_ITEM,
@@ -620,7 +616,6 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
         }
     }
 
-    @Override
     public EntityHierarchyItem getSelectedItem() {
         if (tree.getSelectedItem() != null) {
             return (EntityHierarchyItem) tree.getSelectedItem().getAttribute(ATTRIB_ITEM);
@@ -628,12 +623,10 @@ public class DefaultEntityHierarchyPanel extends AbstractZkTargetTypeAwarePanel 
         return null;
     }
 
-    @Override
     public int getItemCount() {
         return tree.getItemCount();
     }
 
-    @Override
     public boolean isReadOnly() {
         return readOnly;
     }

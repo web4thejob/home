@@ -25,7 +25,7 @@ public class MessageChainFlattener extends LinkedHashMap<Panel, Set<Message>> {
             return;
         }
 
-        Set<Message> set = new LinkedHashSet<>();
+        Set<Message> set = new LinkedHashSet<Message>();
         set.add(message);
         put(panel, set);
     }

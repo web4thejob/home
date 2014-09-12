@@ -39,7 +39,6 @@ import org.zkoss.zul.Window;
 public class CredentialsRenewWindow implements Composer<Window>, MessageListener {
     private UserIdentity userIdentity;
 
-    @Override
     public void doAfterCompose(Window comp) throws Exception {
 
         if (ContextUtil.getSessionContext().getSecurityContext().getUserIdentity() == null) {
@@ -65,7 +64,6 @@ public class CredentialsRenewWindow implements Composer<Window>, MessageListener
         passwordDialog.show(this);
     }
 
-    @Override
     public void processMessage(Message message) {
         SecurityContext securityContext = ContextUtil.getSessionContext().getSecurityContext();
         if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId()) {
