@@ -45,7 +45,6 @@ public abstract class AbstractTargetTypeAwarePanel extends AbstractContentPanel 
 
     // --------------------- Interface TargetType ---------------------
 
-    @Override
     public Class<? extends Entity> getTargetType() {
         final Class<? extends Entity> entityType = getSettingValue(SettingEnum.TARGET_TYPE, null);
         if (entityType == null) return null;
@@ -54,7 +53,6 @@ public abstract class AbstractTargetTypeAwarePanel extends AbstractContentPanel 
 
     // --------------------- Interface TargetTypeAware ---------------------
 
-    @Override
     public void setTargetType(Class<? extends Entity> targetType) {
         setSettingValue(SettingEnum.TARGET_TYPE, targetType);
     }
@@ -93,7 +91,6 @@ public abstract class AbstractTargetTypeAwarePanel extends AbstractContentPanel 
         dispatchTitleChange();
     }
 
-    @Override
     public boolean hasTargetType() {
         return getTargetType() != null;
     }

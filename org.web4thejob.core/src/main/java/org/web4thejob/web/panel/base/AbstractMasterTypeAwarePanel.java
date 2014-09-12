@@ -42,7 +42,6 @@ public abstract class AbstractMasterTypeAwarePanel extends AbstractTargetTypeAwa
 
     // --------------------- Interface MasterType ---------------------
 
-    @Override
     public Class<? extends Entity> getMasterType() {
         final Class<? extends Entity> entityType = getSettingValue(SettingEnum.MASTER_TYPE, null);
         if (entityType == null) return null;
@@ -51,7 +50,6 @@ public abstract class AbstractMasterTypeAwarePanel extends AbstractTargetTypeAwa
 
     // --------------------- Interface MasterTypeAware ---------------------
 
-    @Override
     public void setMasterType(Class<? extends Entity> masterType) {
         setSettingValue(SettingEnum.MASTER_TYPE, masterType);
     }
@@ -80,7 +78,6 @@ public abstract class AbstractMasterTypeAwarePanel extends AbstractTargetTypeAwa
 
     protected abstract void arrangeForNullMasterType();
 
-    @Override
     public boolean hasMasterType() {
         return getMasterType() != null;
     }

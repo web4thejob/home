@@ -35,13 +35,6 @@ import java.io.Serializable;
 public class DefaultSetting<T extends Serializable> implements Setting<T> {
 // ------------------------------ FIELDS ------------------------------
 
-    private final SettingEnum id;
-    private boolean hidden;
-
-    private T value;
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
     protected DefaultSetting(SettingEnum id, T value) {
         this.id = id;
         setValue(value);
@@ -53,19 +46,22 @@ public class DefaultSetting<T extends Serializable> implements Setting<T> {
         coerceFromString(value);
     }
 
+    private final SettingEnum id;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private boolean hidden;
+    private T value;
+
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public SettingEnum getId() {
         return id;
     }
 
-    @Override
     public T getValue() {
         return value;
     }
 
-    @Override
     public void setValue(T value) {
         if (value != null && !getType().isAssignableFrom(value.getClass())) {
             throw new IllegalArgumentException(value.toString() + " (" + value.getClass().getName() + ") is not " +
@@ -75,12 +71,10 @@ public class DefaultSetting<T extends Serializable> implements Setting<T> {
         this.value = value;
     }
 
-    @Override
     public boolean isHidden() {
         return hidden;
     }
 
-    @Override
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
     }
@@ -126,7 +120,6 @@ public class DefaultSetting<T extends Serializable> implements Setting<T> {
 // --------------------- Interface Comparable ---------------------
 
 
-    @Override
     public int compareTo(Setting<?> o) {
         return id.compareTo(o.getId());
     }
@@ -134,22 +127,18 @@ public class DefaultSetting<T extends Serializable> implements Setting<T> {
 // --------------------- Interface Setting ---------------------
 
     @SuppressWarnings("unchecked")
-    @Override
     public Class<T> getType() {
         return (Class<T>) id.getType();
     }
 
-    @Override
     public Class<?> getSubType() {
         return id.getSubType();
     }
 
-    @Override
     public void coerceFromString(String newValue) {
         setValue(ContextUtil.getBean(ConversionService.class).convert(newValue, getType()));
     }
 
-    @Override
     public String coerceToString() {
         return ContextUtil.getBean(ConversionService.class).convert(value, String.class);
     }

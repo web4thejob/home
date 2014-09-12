@@ -34,22 +34,18 @@ public abstract class AbstractMasterDetailTypeAwarePanel extends AbstractMasterT
         registerSetting(SettingEnum.BIND_PROPERTY, "");
     }
 
-    @Override
     public String getBindProperty() {
         return getSettingValue(SettingEnum.BIND_PROPERTY, null);
     }
 
-    @Override
     public void setBindProperty(String propertyName) {
         setSettingValue(SettingEnum.BIND_PROPERTY, propertyName);
     }
 
-    @Override
     public boolean hasBindProperty() {
         return getBindProperty() != null;
     }
 
-    @Override
     public boolean isMasterDetail() {
         return hasMasterType() && hasBindProperty();
     }

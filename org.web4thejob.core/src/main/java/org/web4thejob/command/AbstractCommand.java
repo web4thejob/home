@@ -35,11 +35,16 @@ import java.util.*;
  */
 
 public abstract class AbstractCommand implements Command {
+    protected AbstractCommand(CommandEnum id, CommandAware owner) {
+        this.id = id;
+        this.owner = owner;
+    }
+
     private final CommandEnum id;
     private final CommandAware owner;
+    private final Set<MessageAware> listeners = new LinkedHashSet<MessageAware>();
     private Map<String, Object> args;
     private Message stateCache; //may be this should be a map in order to store multiple messages
-    private final Set<MessageAware> listeners = new LinkedHashSet<MessageAware>();
     private Object value;
     private boolean active = false;
     private boolean registered = false;
@@ -48,22 +53,14 @@ public abstract class AbstractCommand implements Command {
         return L10nUtil.getMessage(id.getClass(), id.name(), id.name());
     }
 
-    @Override
     public String getName() {
         return toLocalizedName(id);
     }
 
-    protected AbstractCommand(CommandEnum id, CommandAware owner) {
-        this.id = id;
-        this.owner = owner;
-    }
-
-    @Override
     public int compareTo(Command o) {
         return id.compareTo(o.getId());
     }
 
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
@@ -71,12 +68,10 @@ public abstract class AbstractCommand implements Command {
 
     }
 
-    @Override
     public CommandEnum getId() {
         return id;
     }
 
-    @Override
     public CommandAware getOwner() {
         return owner;
     }
@@ -90,7 +85,6 @@ public abstract class AbstractCommand implements Command {
         return result;
     }
 
-    @Override
     public void process() throws CommandProcessingException {
         if (isActive()) {
             owner.process(this);
@@ -107,13 +101,12 @@ public abstract class AbstractCommand implements Command {
         return sb.toString();
     }
 
-    @Override
     public void afterPropertiesSet() throws Exception {
         // serves as a convenient pointcut for various purposes (e.g.
         // security)
     }
 
-    @Override
+
     public boolean addMessageListener(MessageAware messageAware) {
         if (listeners.add(messageAware)) {
             if (stateCache != null) {
@@ -124,7 +117,7 @@ public abstract class AbstractCommand implements Command {
         return false;
     }
 
-    @Override
+
     public String getSid() {
         StringBuilder sb = new StringBuilder();
         if (owner instanceof SecuredResource) {
@@ -134,7 +127,7 @@ public abstract class AbstractCommand implements Command {
         return sb.toString();
     }
 
-    @Override
+
     public void dispatchMessage(Message message) {
         stateCache = message;
         // we need new LinkedHashSet to solve ConcurrentModificationException
@@ -143,17 +136,14 @@ public abstract class AbstractCommand implements Command {
         }
     }
 
-    @Override
     public boolean removeMessageListener(MessageAware messageAware) {
         return listeners.remove(messageAware);
     }
 
-    @Override
     public boolean isActive() {
         return active;
     }
 
-    @Override
     public void setActivated(boolean active) {
         if (this.active != active) {
             this.active = active;
@@ -178,17 +168,11 @@ public abstract class AbstractCommand implements Command {
         }
     }
 
-    @Override
+
     public Object getValue() {
         return value;
     }
 
-    @Override
-    public void setHighlighted(boolean highlighted) {
-        dispatchMessage(ContextUtil.getMessage(MessageEnum.HIGHLIGHT, this, MessageArgEnum.ARG_ITEM, highlighted));
-    }
-
-    @Override
     public void setValue(Object value) {
         Object oldValue = this.value;
         this.value = value; //always apply new value since a change could reside in attributes attached to value (e.g
@@ -198,14 +182,16 @@ public abstract class AbstractCommand implements Command {
         }
     }
 
-    @Override
+    public void setHighlighted(boolean highlighted) {
+        dispatchMessage(ContextUtil.getMessage(MessageEnum.HIGHLIGHT, this, MessageArgEnum.ARG_ITEM, highlighted));
+    }
+
     public void removeArgs() {
         if (args != null) {
             args = null;
         }
     }
 
-    @Override
     public <T> void setArg(String key, T value) {
         if (args == null) {
             args = new HashMap<String, Object>(1);
@@ -213,7 +199,6 @@ public abstract class AbstractCommand implements Command {
         args.put(key, value);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T removeArg(String key) {
         if (args != null) {
@@ -222,7 +207,6 @@ public abstract class AbstractCommand implements Command {
         return null;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T getArg(String key, Class<T> clazz) {
         if (args != null) {
@@ -232,22 +216,18 @@ public abstract class AbstractCommand implements Command {
         }
     }
 
-    @Override
     public boolean hasArg(String key) {
         return args != null && args.containsKey(key);
     }
 
-    @Override
     public void processMessage(Message message) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public boolean isRegistered() {
         return registered;
     }
 
-    @Override
     public void setRegistered(boolean registered) {
         if (this.registered != registered) {
             this.registered = registered;
@@ -260,7 +240,6 @@ public abstract class AbstractCommand implements Command {
         }
     }
 
-    @Override
     public Set<MessageAware> getListeners() {
         return Collections.unmodifiableSet(listeners);
     }

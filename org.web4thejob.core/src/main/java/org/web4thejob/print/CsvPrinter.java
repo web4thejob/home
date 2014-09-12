@@ -97,7 +97,12 @@ public class CsvPrinter implements Printer {
         }
     }
 
-    @Override
+    public static String getActualTextFromHtml(String html) {
+        String s = html.replaceAll("\\<.*?>", "");
+        s = StringEscapeUtils.unescapeHtml(s);
+        return s;
+    }
+
     public File print(String title, RenderScheme renderScheme, Query query, Entity entity) {
         List<RenderScheme> renderSchemes = new ArrayList<RenderScheme>(1);
         renderSchemes.add(renderScheme);
@@ -106,7 +111,6 @@ public class CsvPrinter implements Printer {
         return print(title, renderSchemes, query, entities);
     }
 
-    @Override
     public File print(String title, RenderScheme renderScheme, Query query, List<Entity> entities) {
         Assert.notNull(renderScheme);
         Assert.isTrue(renderScheme.getSchemeType() == SchemeType.LIST_SCHEME);
@@ -170,19 +174,16 @@ public class CsvPrinter implements Printer {
         return file;
     }
 
-    @Override
     public File print(String title, RenderScheme renderScheme, Entity entity) {
         Assert.notNull(entity);
         return print(title, renderScheme, null, entity);
     }
 
-    @Override
     public File print(String title, RenderScheme renderScheme, List<Entity> entities) {
         Assert.notNull(entities);
         return print(title, renderScheme, null, entities);
     }
 
-    @Override
     public File print(String title, List<RenderScheme> renderSchemes, Query query, List<Entity> entities) {
         Assert.notNull(renderSchemes);
 
@@ -241,12 +242,11 @@ public class CsvPrinter implements Printer {
 
     }
 
-    @Override
+// -------------------------- OTHER METHODS --------------------------
+
     public File print(String title, List<RenderScheme> renderSchemes, List<Entity> entities) {
         return print(title, renderSchemes, null, entities);
     }
-
-// -------------------------- OTHER METHODS --------------------------
 
     private File createTempFile() throws IOException {
         File file = File.createTempFile("w4tj_", ".csv");
@@ -323,12 +323,6 @@ public class CsvPrinter implements Printer {
             buffer.append(System.getProperty("line.separator"));
         }
         return buffer.toString();
-    }
-
-    public static String getActualTextFromHtml(String html) {
-        String s = html.replaceAll("\\<.*?>", "");
-        s = StringEscapeUtils.unescapeHtml(s);
-        return s;
     }
 
 }

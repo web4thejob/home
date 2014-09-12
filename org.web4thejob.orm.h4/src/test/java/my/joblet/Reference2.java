@@ -32,12 +32,18 @@ import java.util.Set;
  */
 
 public class Reference2 extends AbstractHibernateEntity {
+    public Reference2() {
+
+    }
+
+    public Reference2(String name) {
+        this.name = name;
+    }
     public static final String FLD_ID = "id";
     public static final String FLD_NAME = "name";
     public static final String FLD_STATUS1 = "status1";
     public static final String FLD_STATUS2 = "status2";
     public static final String FLD_REFERENCES1 = "references1";
-
     private long id;
     @NotBlank
     private String name;
@@ -47,60 +53,50 @@ public class Reference2 extends AbstractHibernateEntity {
     private boolean status2 = true;
     private Set<Reference1> references1 = new HashSet<Reference1>(0);
 
-    public Reference2() {
-
-    }
-
-    public Reference2(String name) {
-        this.name = name;
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public long getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public Set<Reference1> getReferences1() {
+        return references1;
     }
 
     public void setReferences1(Set<Reference1> references1) {
         this.references1 = references1;
     }
 
-    public Set<Reference1> getReferences1() {
-        return references1;
+    public boolean isStatus1() {
+        return status1;
     }
 
     public void setStatus1(boolean status1) {
         this.status1 = status1;
     }
 
-    public boolean isStatus1() {
-        return status1;
+    public boolean isStatus2() {
+        return status2;
     }
 
     public void setStatus2(boolean status2) {
         this.status2 = status2;
     }
 
-    public boolean isStatus2() {
-        return status2;
-    }
-
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }

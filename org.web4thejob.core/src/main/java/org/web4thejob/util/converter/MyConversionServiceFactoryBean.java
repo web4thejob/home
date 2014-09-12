@@ -45,17 +45,14 @@ public class MyConversionServiceFactoryBean implements FactoryBean<ConversionSer
 
     // --------------------- Interface FactoryBean ---------------------
 
-    @Override
     public ConversionService getObject() {
         return this.conversionService;
     }
 
-    @Override
     public Class<? extends ConversionService> getObjectType() {
         return GenericConversionService.class;
     }
 
-    @Override
     public boolean isSingleton() {
         return true;
     }
@@ -63,7 +60,6 @@ public class MyConversionServiceFactoryBean implements FactoryBean<ConversionSer
     // --------------------- Interface InitializingBean ---------------------
 
     @SuppressWarnings("rawtypes")
-    @Override
     public void afterPropertiesSet() throws Exception {
         this.conversionService = createConversionService();
         // ConversionServiceFactory.addDefaultConverters(this.conversionService);

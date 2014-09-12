@@ -32,7 +32,6 @@ public abstract class AbstractJoblet extends AbstractModule implements Joblet {
         return ModuleType.JOBLET;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Exception> List<E> setup() {
         return Collections.emptyList();

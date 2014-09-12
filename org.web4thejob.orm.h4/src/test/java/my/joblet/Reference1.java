@@ -35,13 +35,20 @@ import java.util.Set;
  */
 
 public class Reference1 extends AbstractHibernateEntity {
+    public Reference1() {
+
+    }
+
+    public Reference1(Reference2 reference2, String name) {
+        this.reference2 = reference2;
+        this.name = name;
+    }
     public static final String FLD_ID = "id";
     public static final String FLD_NAME = "name";
     public static final String FLD_MASTERS1 = "masters1";
     public static final String FLD_REFERENCE2 = "reference2";
     public static final String FLD_CREATE_TIME = "createTime";
     public static final String FLD_UPDATE_TIME = "updateTime";
-
     private long id;
     @NotBlank
     private String name;
@@ -53,45 +60,36 @@ public class Reference1 extends AbstractHibernateEntity {
     @UpdateTimeHolder
     private Timestamp updateTime;
 
-    public Reference1() {
-
-    }
-
-    public Reference1(Reference2 reference2, String name) {
-        this.reference2 = reference2;
-        this.name = name;
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public long getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public Set<Master1> getMasters1() {
+        return masters1;
     }
 
     public void setMasters1(Set<Master1> masters1) {
         this.masters1 = masters1;
     }
 
-    public Set<Master1> getMasters1() {
-        return masters1;
+    public Reference2 getReference2() {
+        return reference2;
     }
 
     public void setReference2(Reference2 reference2) {
         this.reference2 = reference2;
-    }
-
-    public Reference2 getReference2() {
-        return reference2;
     }
 
     public Timestamp getCreateTime() {
@@ -102,12 +100,10 @@ public class Reference1 extends AbstractHibernateEntity {
         return updateTime;
     }
 
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }

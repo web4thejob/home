@@ -35,20 +35,13 @@ import java.util.*;
  */
 
 public class SubpanelHolder extends AbstractCollection<Panel> implements Subpanels {
-    private static class ChildrenComparator implements Comparator<Panel> {
-        @Override
-        public int compare(Panel o1, Panel o2) {
-            return Integer.valueOf(o1.getIndex()).compareTo(o2.getIndex());
-        }
+    public SubpanelHolder(ParentCapable owner) {
+        this.owner = owner;
     }
 
     private static final ChildrenComparator comparator = new ChildrenComparator();
     private final ParentCapable owner;
     private final List<Panel> children = new ArrayList<Panel>(3);
-
-    public SubpanelHolder(ParentCapable owner) {
-        this.owner = owner;
-    }
 
     @Override
     public boolean add(Panel panel) {
@@ -77,7 +70,6 @@ public class SubpanelHolder extends AbstractCollection<Panel> implements Subpane
         return result;
     }
 
-    @Override
     public boolean addMessageListener(MessageAware messageAware) {
         throw new UnsupportedOperationException();
     }
@@ -125,19 +117,15 @@ public class SubpanelHolder extends AbstractCollection<Panel> implements Subpane
         owner.processMessage(message);
     }
 
-
-    @Override
     public void dispatchMessage(Message message) {
         owner.dispatchMessage(message);
     }
 
-    @Override
     public Panel first() {
         if (!isEmpty()) return children.get(0);
         return null;
     }
 
-    @Override
     public Panel get(int index) {
         return children.get(index);
     }
@@ -147,7 +135,6 @@ public class SubpanelHolder extends AbstractCollection<Panel> implements Subpane
         return Collections.unmodifiableList(children).iterator();
     }
 
-    @Override
     public void processMessage(Message message) {
         for (final Panel panel : this) {
             if (panel instanceof MessageAware) {
@@ -183,12 +170,10 @@ public class SubpanelHolder extends AbstractCollection<Panel> implements Subpane
         return result;
     }
 
-    @Override
     public boolean removeMessageListener(MessageAware messageAware) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public boolean replace(Panel oldItem, Panel newItem) {
         if (contains(oldItem) && !contains(newItem)) {
             dispatchBeforeReplace(oldItem, newItem);
@@ -200,7 +185,6 @@ public class SubpanelHolder extends AbstractCollection<Panel> implements Subpane
         return false;
     }
 
-    @Override
     public void sort() {
         Collections.sort(children, comparator);
     }
@@ -215,9 +199,14 @@ public class SubpanelHolder extends AbstractCollection<Panel> implements Subpane
         return children.size();
     }
 
-    @Override
     public Set<MessageAware> getListeners() {
         throw new UnsupportedOperationException();
+    }
+
+    private static class ChildrenComparator implements Comparator<Panel> {
+        public int compare(Panel o1, Panel o2) {
+            return Integer.valueOf(o1.getIndex()).compareTo(o2.getIndex());
+        }
     }
 
 }

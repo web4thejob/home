@@ -49,22 +49,22 @@ public abstract class AbstractIdentityImpl extends AbstractHibernateEntity imple
     private Set<RenderScheme> renderSchemes = new HashSet<RenderScheme>(0);
     private Set<Query> queries = new HashSet<Query>(0);
 
-    @Override
+
     public long getId() {
         return id;
     }
 
-    @Override
+
     public void setId(long id) {
         this.id = id;
     }
 
-    @Override
+
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
+
     public void setAsNew() {
         id = 0;
     }
@@ -101,12 +101,12 @@ public abstract class AbstractIdentityImpl extends AbstractHibernateEntity imple
         this.queries = queries;
     }
 
-    @Override
+
     public String getEmail() {
         return email;
     }
 
-    @Override
+
     public void setEmail(String email) {
         if (email != null && email.trim().length() == 0) {
             email = null; //so that unique constraint will work correctly for multiple null values
@@ -114,12 +114,12 @@ public abstract class AbstractIdentityImpl extends AbstractHibernateEntity imple
         this.email = email;
     }
 
-    @Override
+
     public String getCode() {
         return code;
     }
 
-    @Override
+
     public void setCode(String code) {
         this.code = code;
     }

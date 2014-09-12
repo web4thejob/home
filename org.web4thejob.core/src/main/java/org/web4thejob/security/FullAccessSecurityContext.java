@@ -28,42 +28,34 @@ import org.web4thejob.context.ContextUtil;
 public class FullAccessSecurityContext implements SecurityContext {
 
 
-    @Override
     public void clearContext() {
         //do nothing
     }
 
-    @Override
     public UserIdentity getUserIdentity() {
         return ContextUtil.getBean(SecurityService.class).getAdministratorIdentity();
     }
 
-    @Override
     public boolean hasRole(String role) {
         return true;
     }
 
-    @Override
     public boolean isAccessible(String securityId) {
         return true;
     }
 
-    @Override
     public boolean isPasswordValid(String rawPassword) {
         return true;
     }
 
-    @Override
     public boolean isAdministrator() {
         return true;
     }
 
-    @Override
     public boolean renewPassword(String oldPassword, String newPassword) {
         return true;
     }
 
-    @Override
     public String getAuthorizationMenu() {
         return null;
     }

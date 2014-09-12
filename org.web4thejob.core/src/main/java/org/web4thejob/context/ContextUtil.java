@@ -318,12 +318,11 @@ public class ContextUtil implements ApplicationContextAware {
         ((ConfigurableApplicationContext) rootContext).refresh();
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        rootContext = applicationContext;
-    }
-
     public static boolean isInitialized() {
         return rootContext != null;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        rootContext = applicationContext;
     }
 }

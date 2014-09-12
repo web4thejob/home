@@ -27,7 +27,6 @@ import org.web4thejob.orm.Entity;
  */
 
 public class EntityToStringConverter implements Converter<Entity, String> {
-    @Override
     public String convert(Entity entity) {
         return entity.toString();
     }

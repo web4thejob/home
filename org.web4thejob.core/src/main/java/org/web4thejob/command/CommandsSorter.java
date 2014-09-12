@@ -26,7 +26,7 @@ import java.util.Comparator;
  */
 
 public class CommandsSorter implements Comparator<Command> {
-    @Override
+
     public int compare(Command o1, Command o2) {
         Integer i1 = (o1.getId().getSubcommands().isEmpty() ? 10000 : 0) + o1.getId().ordinal();
         Integer i2 = (o2.getId().getSubcommands().isEmpty() ? 10000 : 0) + o2.getId().ordinal();

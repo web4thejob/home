@@ -50,7 +50,10 @@ public class Master2 extends AbstractHibernateEntity implements ValidatingGroup 
         return details;
     }
 
-    @Override
+    public void setDetails(Set<Detail> details) {
+        this.details = details;
+    }
+
     public Class<?>[] getGroupNames() {
         if (name == null) {
             return null;
@@ -63,28 +66,22 @@ public class Master2 extends AbstractHibernateEntity implements ValidatingGroup 
         return key;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setDetails(Set<Detail> details) {
-        this.details = details;
-    }
-
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override
     public Serializable getIdentifierValue() {
         return getKey();
     }
 
-    @Override
     public void setAsNew() {
         key = null;
     }

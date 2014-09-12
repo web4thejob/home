@@ -24,11 +24,6 @@ package org.web4thejob.util;
  */
 
 public class L10nString implements java.io.Serializable, Comparable<L10nString>, CharSequence {
-    private static final long serialVersionUID = 1L;
-    private final String key;
-    private final Class<?> clazz;
-    private final String defaultValue;
-
     public L10nString(String key, String defaultValue) {
         this.key = key;
         this.clazz = getClass();
@@ -46,6 +41,11 @@ public class L10nString implements java.io.Serializable, Comparable<L10nString>,
         this.clazz = clazz;
         this.defaultValue = defaultValue;
     }
+
+    private static final long serialVersionUID = 1L;
+    private final String key;
+    private final Class<?> clazz;
+    private final String defaultValue;
 
     @Override
     public String toString() {
@@ -72,22 +72,18 @@ public class L10nString implements java.io.Serializable, Comparable<L10nString>,
         return defaultValue;
     }
 
-    @Override
     public int length() {
         return toString().length();
     }
 
-    @Override
     public char charAt(int index) {
         return toString().charAt(index);
     }
 
-    @Override
     public CharSequence subSequence(int start, int end) {
         return toString().subSequence(start, end);
     }
 
-    @Override
     public int compareTo(L10nString o) {
         return toString().compareTo(o.toString());
     }

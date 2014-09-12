@@ -32,7 +32,6 @@ import java.util.Locale;
 
 public class FullAccessSecurityService implements SecurityService {
 
-    @Override
     public UserIdentity getAdministratorIdentity() {
         Query query = ContextUtil.getEntityFactory().buildQuery(UserIdentity.class);
         query.addCriterion(new Path(UserIdentity.FLD_USERNAME), Condition.EQ, UserIdentity.USER_ADMIN);
@@ -51,32 +50,26 @@ public class FullAccessSecurityService implements SecurityService {
         return userAdmin;
     }
 
-    @Override
     public UserIdentity getUserIdentity(String userName) {
         return null;
     }
 
-    @Override
     public boolean isPasswordValid(UserIdentity userIdentity, String rawPassword) {
         return true;
     }
 
-    @Override
     public <T> T authenticate(String username, String password) {
         return null;
     }
 
-    @Override
     public <T> T authenticate(String username, String password, boolean useIfValid) {
         return null;
     }
 
-    @Override
     public boolean renewPassword(UserIdentity userIdentity, String oldPassword, String newPassword) {
         return false;
     }
 
-    @Override
     public String encodePassword(UserIdentity userIdentity, String value) {
         return value;
     }

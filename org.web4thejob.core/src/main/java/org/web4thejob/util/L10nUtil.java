@@ -120,12 +120,10 @@ public class L10nUtil {
 
         for (Class<?> clazz : classes) {
             ReflectionUtils.doWithFields(clazz, new ReflectionUtils.FieldCallback() {
-                        @Override
                         public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                             strings.add((L10nString) field.get(null));
                         }
                     }, new ReflectionUtils.FieldFilter() {
-                        @Override
                         public boolean matches(Field field) {
                             return ReflectionUtils.isPublicStaticFinal(field) && L10nString.class.equals(field
                                     .getType());

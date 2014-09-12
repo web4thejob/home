@@ -91,33 +91,27 @@ public class DefaultSessionContext extends AbstractRefreshableApplicationContext
         super.setParent(parent);
     }
 
-    @Override
     public void setAttribute(String name, Object value) {
         sessionMap.put(name, value);
     }
 
-    @Override
     public void clarAttribute(String name) {
         sessionMap.remove(name);
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T> T getAttribute(String name) {
         return (T) sessionMap.get(name);
     }
 
-    @Override
     public boolean hasAttribute(String name) {
         return sessionMap.containsKey(name);
     }
 
-    @Override
     public SecurityContext getSecurityContext() {
         return securityContext;
     }
 
-    @Override
     public <T extends Panel> List<T> getPanels(Class<T> requiredType) {
         List<T> panels = new ArrayList<T>();
         for (String beanid : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(this, requiredType)) {
@@ -128,7 +122,6 @@ public class DefaultSessionContext extends AbstractRefreshableApplicationContext
             }
         }
         Collections.sort(panels, new Comparator<Panel>() {
-            @Override
             public int compare(Panel p1, Panel p2) {
                 return p1.toString().compareToIgnoreCase(p2.toString());
             }
@@ -136,7 +129,6 @@ public class DefaultSessionContext extends AbstractRefreshableApplicationContext
         return panels;
     }
 
-    @Override
     public boolean hasPanel(String beanid, Class<? extends Panel> requiredType) {
         if (Arrays.asList(BeanFactoryUtils.beanNamesForTypeIncludingAncestors(this, requiredType)).contains(beanid)) {
             try {
@@ -148,7 +140,6 @@ public class DefaultSessionContext extends AbstractRefreshableApplicationContext
         return false;
     }
 
-    @Override
     public DesktopLayoutPanel getUserDesktop() {
         return getAttribute(Attributes.ATTRIB_DESKTOP);
     }

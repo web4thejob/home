@@ -29,7 +29,7 @@ import org.web4thejob.setting.SettingEnumEditor;
  */
 
 public class CustomEditorRegistrar implements PropertyEditorRegistrar {
-    @Override
+
     public void registerCustomEditors(PropertyEditorRegistry registry) {
         registry.registerCustomEditor(SettingEnum.class, new SettingEnumEditor());
     }

@@ -43,17 +43,14 @@ import java.util.Properties;
 class JobletInstallerImpl implements JobletInstaller {
     private Properties connInfo;
 
-    @Override
     public Properties getConnectionInfo() {
         return connInfo;
     }
 
-    @Override
     public void setConnectionInfo(Properties connInfo) {
         this.connInfo = connInfo;
     }
 
-    @Override
     public boolean canConnect() {
         try {
             Class.forName(connInfo.getProperty(DatasourceProperties.DRIVER));
@@ -75,7 +72,6 @@ class JobletInstallerImpl implements JobletInstaller {
         }
     }
 
-    @Override
     public <E extends Exception> List<E> installAll() {
         List<Joblet> joblets = new ArrayList<Joblet>();
         joblets.add(ContextUtil.getSystemJoblet());
@@ -83,7 +79,6 @@ class JobletInstallerImpl implements JobletInstaller {
         return install(joblets);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Exception> List<E> install(List<Joblet> joblets) {
         List<E> exceptions = new ArrayList<E>();

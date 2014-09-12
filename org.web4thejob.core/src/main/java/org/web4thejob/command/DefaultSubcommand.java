@@ -31,14 +31,19 @@ import org.web4thejob.security.SecuredResource;
 public class DefaultSubcommand extends AbstractCommand implements Subcommand {
 // ------------------------------ FIELDS ------------------------------
 
-    private final Command parent;
-    private final CommandListener alternateListener;
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
     protected DefaultSubcommand(CommandEnum id, Command parent) {
         this(id, parent, null);
     }
+
+    protected DefaultSubcommand(CommandEnum id, Command parent, CommandListener alternateListener) {
+        super(id, parent.getOwner());
+        this.parent = parent;
+        this.alternateListener = alternateListener;
+    }
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private final Command parent;
+    private final CommandListener alternateListener;
 
     @Override
     public void process() throws CommandProcessingException {
@@ -51,15 +56,8 @@ public class DefaultSubcommand extends AbstractCommand implements Subcommand {
         }
     }
 
-    protected DefaultSubcommand(CommandEnum id, Command parent, CommandListener alternateListener) {
-        super(id, parent.getOwner());
-        this.parent = parent;
-        this.alternateListener = alternateListener;
-    }
-
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public Command getParent() {
         return parent;
     }

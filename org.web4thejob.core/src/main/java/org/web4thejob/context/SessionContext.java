@@ -55,7 +55,6 @@ public interface SessionContext extends ConfigurableApplicationContext {
             ".target).append(#requiredType).append(#beanid).toHashCode()")
     public boolean hasPanel(String beanid, Class<? extends Panel> requiredType);
 
-    @Override
     @CacheEvict(value = "session-cache", allEntries = true)
     public void refresh() throws BeansException, IllegalStateException;
 

@@ -61,64 +61,62 @@ public class Detail extends AbstractHibernateEntity {
         return fclass;
     }
 
-    public Date getFdate() {
-        return fdate;
-    }
-
-    public double getFdouble() {
-        return fdouble;
-    }
-
-    public int getFint() {
-        return fint;
-    }
-
-    public String getFstring() {
-        return fstring;
-    }
-
-    public Timestamp getFtimestamp() {
-        return ftimestamp;
-    }
-
-    public DetailId getId() {
-        return id;
-    }
-
     public void setFclass(Class<?> fclass) {
         this.fclass = fclass;
+    }
+
+    public Date getFdate() {
+        return fdate;
     }
 
     public void setFdate(Date fdate) {
         this.fdate = fdate;
     }
 
+    public double getFdouble() {
+        return fdouble;
+    }
+
     public void setFdouble(double fdouble) {
         this.fdouble = fdouble;
+    }
+
+    public int getFint() {
+        return fint;
     }
 
     public void setFint(int fint) {
         this.fint = fint;
     }
 
+    public String getFstring() {
+        return fstring;
+    }
+
     public void setFstring(String fstring) {
         this.fstring = fstring;
+    }
+
+    public Timestamp getFtimestamp() {
+        return ftimestamp;
     }
 
     public void setFtimestamp(Timestamp ftimestamp) {
         this.ftimestamp = ftimestamp;
     }
 
+    public DetailId getId() {
+        return id;
+    }
+
     public void setId(DetailId id) {
         this.id = id;
     }
 
-    @Override
     public Serializable getIdentifierValue() {
         return getId();
     }
 
-    @Override
     public void setAsNew() {
         id = null;
     }

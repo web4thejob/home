@@ -47,7 +47,6 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
 
     private Entity masterEntity;
 
-    @Override
     public boolean canBind(Entity entity) {
         if (entity == null) {
             return false;
@@ -70,7 +69,6 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
         return false;
     }
 
-    @Override
     public boolean isBoundOn(Entity entity) {
         if (hasMasterType() && getMasterType().isInstance(entity) && hasMasterEntity())
             return getMasterEntity().equals(entity);
@@ -80,7 +78,6 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
         return false;
     }
 
-    @Override
     public void setTargetEntity(Entity targetEntity) {
         Entity currentEntity = getTargetEntity();
         if (currentEntity == null && targetEntity == null && hasMasterEntity()) {
@@ -91,21 +88,14 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
 
     }
 
-    @Override
     public boolean hasMasterEntity() {
         return getMasterEntity() != null;
     }
 
-    @Override
     public Entity getMasterEntity() {
         return masterEntity;
     }
 
-    protected abstract void arrangeForMasterEntity();
-
-    protected abstract void arrangeForTargetEntity(Entity targetEntity);
-
-    @Override
     public void setMasterEntity(Entity masterEntity) {
         if (this.masterEntity == null && masterEntity == null) {
             if (isMasterDetail()) {
@@ -128,6 +118,10 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
             arrangeForMasterEntity();
         }
     }
+
+    protected abstract void arrangeForMasterEntity();
+
+    protected abstract void arrangeForTargetEntity(Entity targetEntity);
 
     protected void arrangeForNullMasterType() {
         setMasterEntity(null);
@@ -241,13 +235,11 @@ public abstract class AbstractBindablePanel extends AbstractMasterDetailTypeAwar
         return null;
     }
 
-    @Override
     public Map<String, String> getDropdownItems() {
         if (!hasTargetType()) return Collections.emptyMap();
         return CoreUtil.getRelatedPanelsMap(getTargetType(), MutableEntityViewPanel.class);
     }
 
-    @Override
     public void onItemClicked(String key) {
         if (hasTargetEntity()) {
             Panel entityPanel = CoreUtil.getEntityViewPanel(getTargetEntity(), key);

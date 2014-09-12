@@ -33,17 +33,15 @@ import java.util.List;
 
 @Component
 public class MyJoblet extends AbstractJoblet {
-    @Override
+
     public boolean isInstalled() {
         return true;
     }
 
-    @Override
     public String[] getSchemas() {
         return new String[]{"myjob"};
     }
 
-    @Override
     public List<Resource> getResources() {
         List<Resource> resources = new ArrayList<Resource>();
 
@@ -60,12 +58,10 @@ public class MyJoblet extends AbstractJoblet {
         return resources;
     }
 
-    @Override
     public String getBasePackage() {
         return "my.joblet";
     }
 
-    @Override
     public int getOrdinal() {
         return 99;
     }

@@ -36,22 +36,21 @@ import java.util.UUID;
  */
 
 public abstract class AbstractPanel implements Panel {
+    protected AbstractPanel() {
+        base = initBaseComponent();
+    }
+
     protected static final String BEANS_NAMESPACE = "http://www.springframework.org/schema/beans";
     protected final Object base;
     private ParentCapable parent;
     private String beanId;
     private boolean beanInitialized;
 
-    protected AbstractPanel() {
-        base = initBaseComponent();
-    }
-
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(getClass()).append(base).toHashCode();
     }
 
-    @Override
     public String getSid() {
         if (isPersisted()) {
             return getBeanName();
@@ -72,43 +71,25 @@ public abstract class AbstractPanel implements Panel {
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T> T getAttribute(String name, T defaultWhenNull) {
         final T value = (T) getAttribute(name);
         return value != null ? value : defaultWhenNull;
     }
 
-    @Override
     public String getBeanName() {
         return beanId;
     }
 
-    @Override
-    public ParentCapable getParent() {
-        return parent;
-    }
-
-    protected abstract Object initBaseComponent();
-
-    @Override
-    public void render() {
-        if (!beanInitialized) {
-            throw new IllegalStateException("cannot call prior bean initialization");
-        }
-    }
-
-    protected void reset() {
-
-    }
-
-    @Override
     public void setBeanName(String name) {
         if (StringUtils.hasText(beanId)) throw new IllegalStateException("bean name cannot be set again");
 
         beanId = name;
     }
 
-    @Override
+    public ParentCapable getParent() {
+        return parent;
+    }
+
     public void setParent(ParentCapable parent) {
         if (parent == null) {
             if (this.parent != null) {
@@ -131,7 +112,18 @@ public abstract class AbstractPanel implements Panel {
         }
     }
 
-    @Override
+    protected abstract Object initBaseComponent();
+
+    public void render() {
+        if (!beanInitialized) {
+            throw new IllegalStateException("cannot call prior bean initialization");
+        }
+    }
+
+    protected void reset() {
+
+    }
+
     public String toSpringXml() {
 
         beforePersistencePhase();
@@ -149,7 +141,6 @@ public abstract class AbstractPanel implements Panel {
         return bean.toXML();
     }
 
-    @Override
     public String getImage() {
         if (isPersisted()) {
             PanelDefinition panelDefinition = ORMUtil.getPanelDefinition(beanId);
@@ -166,7 +157,6 @@ public abstract class AbstractPanel implements Panel {
         // override
     }
 
-    @Override
     public void afterPropertiesSet() throws Exception {
         if (beanInitialized) {
             throw new IllegalStateException("Illegal to call more than once");

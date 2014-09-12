@@ -49,44 +49,42 @@ public class Master1 extends AbstractHibernateEntity {
         return details;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public void setDetails(Set<Detail> details) {
         this.details = details;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getName() {
+        return name;
     }
 
-    public void setReference1(Reference1 reference1) {
-        this.reference1 = reference1;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Reference1 getReference1() {
         return reference1;
     }
 
+    public void setReference1(Reference1 reference1) {
+        this.reference1 = reference1;
+    }
+
     public int getVersion() {
         return version;
     }
 
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }

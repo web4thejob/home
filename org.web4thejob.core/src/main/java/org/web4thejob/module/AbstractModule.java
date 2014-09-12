@@ -28,8 +28,6 @@ import java.util.Properties;
  */
 public abstract class AbstractModule implements Module {
 
-    protected Properties properties;
-
     protected AbstractModule() {
         properties = new Properties();
         try {
@@ -40,51 +38,44 @@ public abstract class AbstractModule implements Module {
         }
     }
 
+    protected Properties properties;
+
     protected String getPropertiesName() {
         return getClass().getSimpleName() + ".properties";
     }
 
-    @Override
     public String getVersion() {
         return properties.getProperty("application.version");
     }
 
-    @Override
     public String getFileName() {
         return properties.getProperty("application.fileName");
     }
 
-    @Override
     public String getOrganizationName() {
         return properties.getProperty("application.organization.name");
     }
 
-    @Override
     public String getOrganizationUrl() {
         return properties.getProperty("application.organization.url");
     }
 
-    @Override
     public String getLicenseName() {
         return properties.getProperty("application.license.name");
     }
 
-    @Override
     public String getLicenseUrl() {
         return properties.getProperty("application.license.url");
     }
 
-    @Override
     public String getName() {
         return properties.getProperty("application.name");
     }
 
-    @Override
     public String getProjectUrl() {
         return properties.getProperty("application.url");
     }
 
-    @Override
     public ModuleType getType() {
         return ModuleType.valueOf(properties.getProperty("application.type").trim().toUpperCase());
     }
@@ -94,7 +85,6 @@ public abstract class AbstractModule implements Module {
         return getFileName();
     }
 
-    @Override
     public int compareTo(Module o) {
         return Integer.valueOf(getOrdinal()).compareTo(o.getOrdinal());
     }

@@ -45,15 +45,15 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
         InitializingBean {
 // ------------------------------ FIELDS ------------------------------
 
-    private final Map<SettingEnum, Setting<?>> settings = new HashMap<SettingEnum, Setting<?>>();
-    private int index;
-    private boolean unsavedSettings;
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
     protected AbstractSettingAwarePanel() {
         registerSettings();
     }
+
+    private final Map<SettingEnum, Setting<?>> settings = new HashMap<SettingEnum, Setting<?>>();
+    private int index;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private boolean unsavedSettings;
 
     protected void registerSettings() {
         registerSetting(SettingEnum.PANEL_NAME, null);
@@ -64,7 +64,6 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
         settings.put(id, ContextUtil.getSetting(id, value));
     }
 
-    @Override
     public void hideSetting(SettingEnum id, boolean hide) {
         Setting<?> setting = settings.get(id);
         if (setting != null) {
@@ -72,19 +71,16 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
         }
     }
 
-    @Override
     public boolean hasUnsavedSettings() {
         return unsavedSettings;
     }
 
-    @Override
     public void setUnsavedSettings(boolean unsavedSettings) {
         this.unsavedSettings = unsavedSettings;
     }
 
 // ------------------------ CANONICAL METHODS ------------------------
 
-    @Override
     public Set<Setting<?>> getSettings() {
         return Collections.unmodifiableSet(new HashSet<Setting<?>>(settings.values()));
     }
@@ -94,22 +90,29 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
 
 // --------------------- Interface Panel ---------------------
 
+    public void setSettings(Set<Setting<?>> settings) {
+        for (final Setting<?> setting : new TreeSet<Setting<?>>(settings)) {
+            if (this.settings.containsKey(setting.getId())) {
+                setSettingValue(setting.getId(), setting.getValue());
+            }
+        }
+        afterSettingsSet();
+    }
 
-    @Override
     public int getIndex() {
         return index;
     }
 
-    @Override
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     public boolean isPersisted() {
         return getBeanName() != null && getBeanName().startsWith(getClass().getCanonicalName()) && getBeanName()
                 .contains("-panel_");
     }
 
-    @Override
-    public void setIndex(int index) {
-        this.index = index;
-    }
+// --------------------- Interface SettingAware ---------------------
 
     @Override
     public String toSpringXml() {
@@ -155,15 +158,11 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
         }
     }
 
-// --------------------- Interface SettingAware ---------------------
-
-
     protected Setting<?> getSetting(SettingEnum id) {
         return settings.get(id);
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T extends Serializable> T getSettingValue(SettingEnum id, T defaultValue) {
         final Setting<T> setting = (Setting<T>) settings.get(id);
         if (setting != null) {
@@ -174,19 +173,8 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
         return defaultValue;
     }
 
-    @Override
     public boolean hasSetting(SettingEnum id) {
         return settings.containsKey(id);
-    }
-
-    @Override
-    public void setSettings(Set<Setting<?>> settings) {
-        for (final Setting<?> setting : new TreeSet<Setting<?>>(settings)) {
-            if (this.settings.containsKey(setting.getId())) {
-                setSettingValue(setting.getId(), setting.getValue());
-            }
-        }
-        afterSettingsSet();
     }
 
     @Override
@@ -201,7 +189,6 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
 
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T extends Serializable> void setSettingValue(SettingEnum id, T value) {
         if (settings.containsKey(id)) {
             final Setting<T> setting = (Setting<T>) settings.get(id);

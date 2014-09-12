@@ -53,25 +53,24 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         DesignModeAware, I18nAware {
 // ------------------------------ FIELDS ------------------------------
 
+    protected AbstractCommandAwarePanel() {
+        registerCommands();
+    }
+
+    protected static final CommandsSorter COMMANDS_SORTER = new CommandsSorter();
     public static final L10nString L10N_UNAUTHORIZED_ACCESS = new L10nString(AbstractCommandAwarePanel.class,
             "message_unauthorized_access", "Unauthorized access error");
     public static final L10nString L10N_UNEXPECTED_ERROR = new L10nString(AbstractCommandAwarePanel.class,
             "message_unexpected_error", "Unexpected error occured");
-
-    protected static final CommandsSorter COMMANDS_SORTER = new CommandsSorter();
     protected PanelState state = PanelState.UNDEFINED;
     protected PanelState prevState;
     private CommandRenderer commandRenderer;
     private Map<CommandEnum, Command> commands;
     private boolean l10nMode = false;
     private boolean designMode = false;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
     private boolean supressCommands = false;
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
-    protected AbstractCommandAwarePanel() {
-        registerCommands();
-    }
 
     protected void registerCommands() {
         //override
@@ -83,7 +82,6 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         return commandRenderer;
     }
 
-    @Override
     public boolean getL10nMode() {
         return l10nMode;
     }
@@ -95,7 +93,18 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
 
 // --------------------- Interface CommandAware ---------------------
 
-    @Override
+    public void setL10nMode(boolean l10nMode) {
+        if (this.l10nMode != l10nMode) {
+            this.l10nMode = l10nMode;
+            if (l10nMode && !L10nUtil.getLocalizableResources(this.getClass()).isEmpty()) {
+                Command command = registerCommand(ContextUtil.getDefaultCommand(CommandEnum.LOCALIZE, this));
+                command.setActivated(true);
+            } else {
+                unregisterCommand(CommandEnum.LOCALIZE);
+            }
+        }
+    }
+
     public Set<CommandEnum> getSupportedCommands() {
         Set<CommandEnum> supported = new HashSet<CommandEnum>(2);
         supported.add(CommandEnum.LOCALIZE);
@@ -103,14 +112,14 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         return Collections.unmodifiableSet(supported);
     }
 
-    @Override
+// --------------------- Interface CommandListener ---------------------
+
     public boolean isCommandsSupressed() {
         return supressCommands;
     }
 
-// --------------------- Interface CommandListener ---------------------
+// --------------------- Interface DesignModeAware ---------------------
 
-    @Override
     public final void process(Command command) throws CommandProcessingException {
         if (canProcess(command)) {
             try {
@@ -127,29 +136,34 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         }
     }
 
-// --------------------- Interface DesignModeAware ---------------------
+// --------------------- Interface I18nAware ---------------------
 
-    @Override
     public boolean isInDesignMode() {
         return designMode;
     }
 
-// --------------------- Interface I18nAware ---------------------
+// --------------------- Interface InitializingBean ---------------------
 
-    @Override
-    public void setL10nMode(boolean l10nMode) {
-        if (this.l10nMode != l10nMode) {
-            this.l10nMode = l10nMode;
-            if (l10nMode && !L10nUtil.getLocalizableResources(this.getClass()).isEmpty()) {
-                Command command = registerCommand(ContextUtil.getDefaultCommand(CommandEnum.LOCALIZE, this));
-                command.setActivated(true);
+    public void setInDesignMode(boolean designMode) {
+        if (this.designMode != designMode) {
+            this.designMode = designMode;
+
+            if (designMode) {
+                Command command = registerCommand(ContextUtil.getDefaultCommand(CommandEnum.DESIGN, this));
+                unregisterCommand(CommandEnum.PASTE);
+                activateCommand(command.getId(), true, true);
             } else {
-                unregisterCommand(CommandEnum.LOCALIZE);
+                unregisterCommand(CommandEnum.DESIGN);
+                hightlightPanel(false);
+            }
+
+            if (commandRenderer != null) {
+                commandRenderer.render();
             }
         }
     }
 
-// --------------------- Interface InitializingBean ---------------------
+// -------------------------- OTHER METHODS --------------------------
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -157,16 +171,11 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         arrangeForState(PanelState.READY);
     }
 
-// -------------------------- OTHER METHODS --------------------------
-
-
-    @Override
     public void showBusy() {
         prevState = state;
         arrangeForState(PanelState.BUSY);
     }
 
-    @Override
     public boolean isHighlighted() {
         if (hasCommand(CommandEnum.HIGHLIGHT_PANEL)) {
             return (Boolean) getCommand(CommandEnum.HIGHLIGHT_PANEL).getValue();
@@ -174,7 +183,6 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         return false;
     }
 
-    @Override
     public void clearBusy() {
         //if this is not the case don't do anything because
         //the stae has been changed to somethinbg else
@@ -250,7 +258,6 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         }
     }
 
-    @Override
     public SortedSet<Command> getCommands() {
         if (commands != null) {
             SortedSet<Command> sortedSet = new TreeSet<Command>(COMMANDS_SORTER);
@@ -278,8 +285,6 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         }
     }
 
-
-    @Override
     public Command getCommand(CommandEnum id) {
         if (commands != null) {
             return commands.get(id);
@@ -291,7 +296,6 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         return command.isActive() && hasCommand(command.getId()) && equals(command.getOwner());
     }
 
-    @Override
     public boolean hasCommand(CommandEnum id) {
         return commands != null && commands.containsKey(id);
     }
@@ -304,7 +308,6 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         super.onSettingValueChanged(id, oldValue, newValue);
     }
 
-    @Override
     public void supressCommands(boolean supress) {
         if (supressCommands != supress) {
             supressCommands = supress;
@@ -347,26 +350,6 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
     }
 
     @Override
-    public void setInDesignMode(boolean designMode) {
-        if (this.designMode != designMode) {
-            this.designMode = designMode;
-
-            if (designMode) {
-                Command command = registerCommand(ContextUtil.getDefaultCommand(CommandEnum.DESIGN, this));
-                unregisterCommand(CommandEnum.PASTE);
-                activateCommand(command.getId(), true, true);
-            } else {
-                unregisterCommand(CommandEnum.DESIGN);
-                hightlightPanel(false);
-            }
-
-            if (commandRenderer != null) {
-                commandRenderer.render();
-            }
-        }
-    }
-
-    @Override
     public void render() {
         super.render();
         if (commandRenderer != null) {
@@ -403,7 +386,7 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         settings.add(ContextUtil.getSetting(SettingEnum.TARGET_TYPE, PanelDefinition.class));
         EntityPersisterDialog persisterDialog = ContextUtil.getDefaultDialog(EntityPersisterDialog.class,
                 panelDefinition, settings, (panelDefinition.isNewInstance() ? MutableMode.INSERT : MutableMode
-                .UPDATE), false, false, false);
+                        .UPDATE), false, false, false);
         persisterDialog.setDirty(true);
         persisterDialog.show(new PanelDefinitionListener());
     }
@@ -465,7 +448,6 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         return true;
     }
 
-    @Override
     public PanelState getPanelState() {
         return state;
     }
@@ -478,8 +460,18 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
 
 // -------------------------- INNER CLASSES --------------------------
 
+    @Override
+    public void setUnsavedSettings(boolean unsavedSettings) {
+        if (unsavedSettings != hasUnsavedSettings()) {
+            super.setUnsavedSettings(unsavedSettings);
+            Command command = getCommand(CommandEnum.DESIGN);
+            if (command != null) {
+                command.dispatchMessage(ContextUtil.getMessage(MessageEnum.RENDER, this));
+            }
+        }
+    }
+
     private class PanelDefinitionListener implements MessageListener {
-        @Override
         public void processMessage(Message message) {
             if (message.getId() == MessageEnum.ENTITY_INSERTED || message.getId() == MessageEnum.ENTITY_UPDATED) {
                 PanelDefinition panelDefinition = message.getArg(MessageArgEnum.ARG_ITEM, PanelDefinition.class);
@@ -495,17 +487,6 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
                 //do nothing
             } else {
                 throw new IllegalArgumentException();
-            }
-        }
-    }
-
-    @Override
-    public void setUnsavedSettings(boolean unsavedSettings) {
-        if (unsavedSettings != hasUnsavedSettings()) {
-            super.setUnsavedSettings(unsavedSettings);
-            Command command = getCommand(CommandEnum.DESIGN);
-            if (command != null) {
-                command.dispatchMessage(ContextUtil.getMessage(MessageEnum.RENDER, this));
             }
         }
     }

@@ -33,12 +33,10 @@ public class ServerPathValidator implements ConstraintValidator<ServerPath, Stri
 
     private String serverPath;
 
-    @Override
     public void initialize(ServerPath constraintAnnotation) {
         serverPath = constraintAnnotation.value();
     }
 
-    @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (!StringUtils.hasText(value)) return true;
 

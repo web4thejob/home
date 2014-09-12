@@ -32,19 +32,17 @@ import java.util.Set;
  */
 
 public abstract class AbstractCommandDecorator implements CommandDecorator {
-    private final Set<MessageAware> listeners = new LinkedHashSet<MessageAware>();
-    protected final Command command;
-
     protected AbstractCommandDecorator(Command command) {
         this.command = command;
     }
 
-    @Override
+    private final Set<MessageAware> listeners = new LinkedHashSet<MessageAware>();
+    protected final Command command;
+
     public boolean addMessageListener(MessageAware messageAware) {
         return listeners.add(messageAware);
     }
 
-    @Override
     public void dispatchMessage(Message message) {
         if (MessageEnum.ACTIVATED == message.getId() || MessageEnum.DEACTIVATED == message.getId() || MessageEnum
                 .RENDER == message.getId()) {
@@ -61,17 +59,14 @@ public abstract class AbstractCommandDecorator implements CommandDecorator {
     }
 
 
-    @Override
     public boolean removeMessageListener(MessageAware messageAware) {
         return listeners.remove(messageAware);
     }
 
-    @Override
     public Command getCommand() {
         return command;
     }
 
-    @Override
     public void processMessage(Message message) {
         switch (message.getId()) {
             case AFTER_REMOVE:
@@ -92,7 +87,6 @@ public abstract class AbstractCommandDecorator implements CommandDecorator {
 
     }
 
-    @Override
     public Set<MessageAware> getListeners() {
         return Collections.unmodifiableSet(listeners);
     }

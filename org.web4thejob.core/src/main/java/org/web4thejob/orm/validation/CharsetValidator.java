@@ -31,12 +31,10 @@ public class CharsetValidator implements ConstraintValidator<Charset, String> {
 
     private java.nio.charset.Charset charset;
 
-    @Override
     public void initialize(Charset constraintAnnotation) {
         charset = java.nio.charset.Charset.forName(constraintAnnotation.value());
     }
 
-    @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (!StringUtils.hasText(value)) return true;
 

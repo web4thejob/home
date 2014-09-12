@@ -37,12 +37,10 @@ public class DummyEntity extends AbstractHibernateEntity {
         this.id = id;
     }
 
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }

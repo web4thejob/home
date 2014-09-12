@@ -37,10 +37,6 @@ import java.util.Map;
 @Scope("prototype")
 public class DefaultMessage implements Message {
 
-    final private MessageEnum id;
-    final private Object sender;
-    final private Map<MessageArgEnum, Object> args = new HashMap<MessageArgEnum, Object>(0);
-
     protected DefaultMessage(MessageEnum id, Object sender) {
         this.id = id;
         this.sender = sender;
@@ -58,6 +54,10 @@ public class DefaultMessage implements Message {
         args.put(key, value);
     }
 
+    final private MessageEnum id;
+    final private Object sender;
+    final private Map<MessageArgEnum, Object> args = new HashMap<MessageArgEnum, Object>(0);
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -67,7 +67,6 @@ public class DefaultMessage implements Message {
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T> T getArg(MessageArgEnum key, Class<T> clazz) {
         return (T) args.get(key);
     }
@@ -77,17 +76,14 @@ public class DefaultMessage implements Message {
         return id.name() + "|" + sender.toString();
     }
 
-    @Override
     public Map<MessageArgEnum, Object> getArgs() {
         return Collections.unmodifiableMap(args);
     }
 
-    @Override
     public MessageEnum getId() {
         return id;
     }
 
-    @Override
     public Object getSender() {
         return sender;
     }

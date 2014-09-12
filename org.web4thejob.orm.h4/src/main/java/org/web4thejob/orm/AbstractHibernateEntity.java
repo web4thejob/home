@@ -53,7 +53,6 @@ public abstract class AbstractHibernateEntity implements Entity {
         }
     }
 
-    @Override
     public void addDirtyListener(DirtyListener dirtyListener) {
         this.dirtyListener = dirtyListener;
     }
@@ -66,7 +65,7 @@ public abstract class AbstractHibernateEntity implements Entity {
             clone.addDirtyListener(dirtyListener);
 
             ReflectionUtils.doWithFields(getClass(), new ReflectionUtils.FieldCallback() {
-                @Override
+
                 public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                     ReflectionUtils.makeAccessible(field);
                     if (!Collection.class.isAssignableFrom(field.getType())) {
@@ -83,10 +82,10 @@ public abstract class AbstractHibernateEntity implements Entity {
         }
     }
 
-    @Override
+
     public void merge(final Entity source) {
         ReflectionUtils.doWithFields(getClass(), new ReflectionUtils.FieldCallback() {
-            @Override
+
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                 ReflectionUtils.makeAccessible(field);
                 if (!Collection.class.isAssignableFrom(field.getType())) {
@@ -97,7 +96,6 @@ public abstract class AbstractHibernateEntity implements Entity {
         }, ReflectionUtils.COPYABLE_FIELDS);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public Class<? extends Entity> getEntityType() {
         final Class<? extends Entity> entityType = entityNameResolver.resolveEntityType(this);
@@ -112,18 +110,15 @@ public abstract class AbstractHibernateEntity implements Entity {
         }
     }
 
-    @Override
     public boolean isNewInstance() {
         final Serializable id = getIdentifierValue();
         return id == null || id.toString().equals("0") || id.toString().equals("");
     }
 
-    @Override
     public String toRichString() {
         return toString();
     }
 
-    @Override
     public Set<ConstraintViolation<Entity>> validate() {
         calculate();
 
@@ -143,7 +138,6 @@ public abstract class AbstractHibernateEntity implements Entity {
         return violations;
     }
 
-    @Override
     public <T> void setAttribute(String key, T value) {
         if (attributes == null) {
             attributes = new HashMap<String, Object>(1);
@@ -151,7 +145,6 @@ public abstract class AbstractHibernateEntity implements Entity {
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String key) {
         if (attributes != null) {
@@ -160,21 +153,18 @@ public abstract class AbstractHibernateEntity implements Entity {
         return null;
     }
 
-    @Override
     public void removeAttribute(String key) {
         if (attributes != null) {
             attributes.remove(key);
         }
     }
 
-    @Override
-    public boolean hasAttribute(String key) {
-        return attributes != null && attributes.containsKey(key);
-    }
-
-    @Override
     public void calculate() {
         //override
+    }
+
+    public boolean hasAttribute(String key) {
+        return attributes != null && attributes.containsKey(key);
     }
 
     @Override

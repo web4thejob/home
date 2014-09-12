@@ -31,7 +31,6 @@ public class StringToClassConverter implements Converter<String, Class<?>> {
 
     // --------------------- Interface Converter ---------------------
 
-    @Override
     public Class<?> convert(String source) {
         try {
             if (StringUtils.hasText(source)) {

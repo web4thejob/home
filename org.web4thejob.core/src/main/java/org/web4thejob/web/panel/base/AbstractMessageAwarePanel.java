@@ -40,12 +40,10 @@ public abstract class AbstractMessageAwarePanel extends AbstractPanel implements
     private final Set<MessageAware> listeners = new LinkedHashSet<MessageAware>();
     private boolean bindingSuspended;
 
-    @Override
     public boolean addMessageListener(MessageAware messageAware) {
         return listeners.add(messageAware);
     }
 
-    @Override
     public void dispatchMessage(Message message) {
         for (final MessageAware messageDispatcher : listeners) {
             messageDispatcher.dispatchMessage(message);
@@ -56,7 +54,6 @@ public abstract class AbstractMessageAwarePanel extends AbstractPanel implements
         }
     }
 
-    @Override
     public void processMessage(Message message) {
         // override
     }
@@ -67,22 +64,18 @@ public abstract class AbstractMessageAwarePanel extends AbstractPanel implements
         processMessage(ContextUtil.getMessage(MessageEnum.PARENT_CHANGED, this, MessageArgEnum.ARG_ITEM, parent));
     }
 
-    @Override
     public boolean removeMessageListener(MessageAware messageAware) {
         return listeners.remove(messageAware);
     }
 
-    @Override
     public Set<MessageAware> getListeners() {
         return Collections.unmodifiableSet(listeners);
     }
 
-    @Override
     public boolean isBindingSuspended() {
         return bindingSuspended;
     }
 
-    @Override
     public void bindingSuspended(boolean suspend) {
         bindingSuspended = suspend;
     }
