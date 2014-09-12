@@ -261,7 +261,6 @@ public abstract class ZkUtil {
                 return locale.getDisplayName(CoreUtil.getUserLocale());
             }
 
-            @Override
             public int compare(Locale o1, Locale o2) {
                 return getDisplayName(o1).compareTo(getDisplayName(o2));
             }

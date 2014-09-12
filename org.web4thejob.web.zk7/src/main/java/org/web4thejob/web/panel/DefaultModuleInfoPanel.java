@@ -35,18 +35,6 @@ import org.zkoss.zul.*;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultModuleInfoPanel extends AbstractZkContentPanel implements ModuleInfoPanel {
-    private final Grid grid = new Grid();
-
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        super.afterPropertiesSet();
-
-        for (Component column : grid.getColumns().getChildren()) {
-            ((Column) column).setSort("auto(" + column.getAttribute("field").toString() + ")");
-        }
-    }
-
     public DefaultModuleInfoPanel() {
         ZkUtil.setParentOfChild((Component) base, grid);
 //        grid.setWidth("100%");
@@ -98,7 +86,6 @@ public class DefaultModuleInfoPanel extends AbstractZkContentPanel implements Mo
         grid.setModel(new ListModelList<Module>(ContextUtil.getModules()));
 
         grid.setRowRenderer(new RowRenderer<Module>() {
-            @Override
             public void render(Row row, Module data, int index) throws Exception {
                 A a;
 
@@ -138,6 +125,17 @@ public class DefaultModuleInfoPanel extends AbstractZkContentPanel implements Mo
                 new Label(Integer.valueOf(data.getOrdinal()).toString()).setParent(row);
             }
         });
+    }
+
+    private final Grid grid = new Grid();
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        for (Component column : grid.getColumns().getChildren()) {
+            ((Column) column).setSort("auto(" + column.getAttribute("field").toString() + ")");
+        }
     }
 
 

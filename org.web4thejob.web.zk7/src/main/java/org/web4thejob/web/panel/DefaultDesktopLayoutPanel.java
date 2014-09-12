@@ -130,7 +130,6 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
             Messagebox.show(L10N_QUESTION_LOGOUT.toString(), L10nMessages.L10N_MSGBOX_TITLE_QUESTION.toString(),
                     new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL}, Messagebox.QUESTION,
                     new EventListener<Messagebox.ClickEvent>() {
-                        @Override
                         public void onEvent(Messagebox.ClickEvent event) throws Exception {
                             if (event.getButton() == Messagebox.Button.OK) {
                                 Executions.sendRedirect("j_spring_security_logout");
@@ -186,7 +185,6 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
                 ContextUtil.getSessionContext().getSecurityContext().getUserIdentity(), true);
         passwordDialog.setL10nMode(getL10nMode());
         passwordDialog.show(new MessageListener() {
-            @Override
             public void processMessage(Message message) {
                 if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId()) {
                     String newPassword = message.getArg(MessageArgEnum.ARG_ITEM, String.class);
@@ -258,14 +256,12 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
         }
     }
 
-    @Override
     public <T extends Panel> List<T> getActiveInstances(Class<T> panelType) {
         List<T> list = new ArrayList<T>();
         ZkUtil.appendPanelsOfType((Component) base, panelType, list);
         return list;
     }
 
-    @Override
     public boolean addTab(Panel child) {
         Panel center = getCenter();
         if (center instanceof ParentCapable) {
@@ -279,7 +275,6 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
 // -------------------------- INNER CLASSES --------------------------
 
     private class SelectPanelResponse implements MessageListener {
-        @Override
         public void processMessage(Message message) {
             if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId()) {
                 org.web4thejob.web.panel.Panel panel = ContextUtil.getPanel(message.getArgs().get(MessageArgEnum

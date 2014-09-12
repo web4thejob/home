@@ -97,22 +97,18 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
     private Class<? extends MutablePanel> mutableType = MutableEntityViewPanel.class;
     private boolean dirty;
 
-    @Override
     public MutableMode getMutableMode() {
         return mutableMode;
     }
 
-    @Override
     public void setMutableType(Class<? extends MutablePanel> mutableType) {
         this.mutableType = mutableType;
     }
 
-    @Override
     public boolean isDirty() {
         return dirty;
     }
 
-    @Override
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
@@ -282,7 +278,7 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
                             MessageArgEnum.ARG_ITEM, mutablePanel.getTargetEntity()));
                 } else if (mutableMode == MutableMode.UPDATE || isSaveAs) {
                     listener.processMessage(ContextUtil.getMessage(isSaveAs ? MessageEnum.ENTITY_INSERTED :
-                            MessageEnum.ENTITY_UPDATED, this,
+                                    MessageEnum.ENTITY_UPDATED, this,
                             MessageArgEnum.ARG_ITEM, mutablePanel.getTargetEntity()));
                 }
             }
@@ -303,7 +299,6 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
         return false;
     }
 
-    @Override
     public void onDirty(boolean dirty) {
         this.dirty = dirty;
         btnOK.setDisabled(!dirty);
@@ -326,15 +321,14 @@ public class DefaultEntityPersisterDialog extends AbstractDialog implements Enti
     protected void doCancel() {
         if (mutablePanel.isDirty()) {
             Messagebox.show(L10N_MESSAGE_IGNORE_CHANGES.toString(), L10nMessages.L10N_MSGBOX_TITLE_QUESTION.toString
-                    (), new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL}, null,
+                            (), new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL}, null,
                     Messagebox.QUESTION, Messagebox.Button.CANCEL, new EventListener<Messagebox.ClickEvent>() {
-                @Override
-                public void onEvent(Messagebox.ClickEvent event) throws Exception {
-                    if (Messagebox.Button.OK == event.getButton()) {
-                        DefaultEntityPersisterDialog.super.doCancel();
-                    }
-                }
-            });
+                        public void onEvent(Messagebox.ClickEvent event) throws Exception {
+                            if (Messagebox.Button.OK == event.getButton()) {
+                                DefaultEntityPersisterDialog.super.doCancel();
+                            }
+                        }
+                    });
         } else {
             super.doCancel();
         }

@@ -72,23 +72,6 @@ import java.util.*;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultListViewPanel extends AbstractZkBindablePanel implements ListViewPanel, EventListener<Event> {
-    // ------------------------------ FIELDS ------------------------------
-    public static final L10nString L10N_MSG_NO_ROWS_TO_DISPLAY = new L10nString(DefaultListViewPanel.class,
-            "message_no_rows_to_display", "No data was found matching the criteria you set");
-    public static final L10nString L10N_MSG_NO_QUERY_YET = new L10nString(DefaultListViewPanel.class,
-            "message_no_query_yet", "No query has been executed yet");
-
-    private static final String ON_DOUBLE_CLICK_ECHO = Events.ON_DOUBLE_CLICK + "Echo";
-    private final Listbox listbox = new Listbox();
-    private final DialogListener dialogListener = new DialogListener();
-    private QueryDialog queryDialog;
-    private Query activeQuery;
-    private boolean inMemoryMode;
-    private Entity targetEntity;
-    private boolean refreshOnEverySave;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     public DefaultListViewPanel() {
         ZkUtil.setParentOfChild((Component) base, listbox);
         //listbox.setHflex("1");
@@ -103,26 +86,47 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         //listbox.addEventListener(Events.ON_, this);
     }
 
+    private static final String ON_DOUBLE_CLICK_ECHO = Events.ON_DOUBLE_CLICK + "Echo";
+    // ------------------------------ FIELDS ------------------------------
+    public static final L10nString L10N_MSG_NO_ROWS_TO_DISPLAY = new L10nString(DefaultListViewPanel.class,
+            "message_no_rows_to_display", "No data was found matching the criteria you set");
+    public static final L10nString L10N_MSG_NO_QUERY_YET = new L10nString(DefaultListViewPanel.class,
+            "message_no_query_yet", "No query has been executed yet");
+    private final Listbox listbox = new Listbox();
+    private final DialogListener dialogListener = new DialogListener();
+    private QueryDialog queryDialog;
+    private Query activeQuery;
+    private boolean inMemoryMode;
+    private Entity targetEntity;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private boolean refreshOnEverySave;
+
     // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
+    private static void resetSortingDirection(Listbox listbox) {
+        if (listbox.getListhead() != null) {
+            for (Component item : listbox.getListhead().getChildren()) {
+                ((Listheader) item).setSortDirection("natural");
+            }
+        }
+    }
+
     public boolean getInMemoryMode() {
         return inMemoryMode;
     }
 
-    @Override
     public void setInMemoryMode(boolean inMemoryMode) {
         this.inMemoryMode = inMemoryMode;
-    }
-
-    @Override
-    public Entity getTargetEntity() {
-        return targetEntity;
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
 
     // --------------------- Interface CommandAware ---------------------
+
+    public Entity getTargetEntity() {
+        return targetEntity;
+    }
 
     @Override
     public Set<CommandEnum> getSupportedCommands() {
@@ -138,15 +142,14 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         return Collections.unmodifiableSet(supported);
     }
 
+    // --------------------- Interface EventListener ---------------------
+
     @Override
     protected void arrangeForState(PanelState newState) {
         super.arrangeForState(newState);
         activateCommand(CommandEnum.REFRESH, activeQuery != null);
     }
 
-    // --------------------- Interface EventListener ---------------------
-
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_SELECT.equals(event.getName())) {
             setTargetEntity((Entity) listbox.getModel().getElementAt(listbox.getSelectedIndex()));
@@ -173,6 +176,8 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         }
     }
 
+
+    // --------------------- Interface ListViewPanel ---------------------
 
     @SuppressWarnings("rawtypes")
     protected void handleEntityDrop(DropEvent event) {
@@ -221,10 +226,6 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         }
     }
 
-
-    // --------------------- Interface ListViewPanel ---------------------
-
-    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public <E extends Entity> boolean add(E entity) {
         if (hasTargetType() && getTargetType().isInstance(entity)) {
@@ -239,7 +240,6 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
     }
 
     @SuppressWarnings("rawtypes")
-    @Override
     public boolean removeSelected() {
         int index = listbox.getSelectedIndex();
         if (index >= 0) {
@@ -250,7 +250,6 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    @Override
     public boolean moveDownSelected() {
         int index = listbox.getSelectedIndex();
         if (index < listbox.getModel().getSize() - 1) {
@@ -264,7 +263,6 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    @Override
     public boolean moveUpSelected() {
         int index = listbox.getSelectedIndex();
         if (index > 0) {
@@ -277,16 +275,15 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         return false;
     }
 
+    // --------------------- Interface MessageListener ---------------------
+
     @SuppressWarnings({"unchecked", "rawtypes"})
-    @Override
     public List<? extends Entity> getList() {
         if (listbox.getModel() != null) {
             return (ListModelList) listbox.getModel();
         }
         return null;
     }
-
-    // --------------------- Interface MessageListener ---------------------
 
     @Override
     public void render() {
@@ -303,6 +300,8 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         }
 
     }
+
+    // -------------------------- OTHER METHODS --------------------------
 
     @Override
     public void processMessage(Message message) {
@@ -328,8 +327,6 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         }
     }
 
-    // -------------------------- OTHER METHODS --------------------------
-
     @Override
     protected void arrangeForMasterEntity() {
         if (getMasterEntity() == null) {
@@ -340,7 +337,6 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
     }
 
     @SuppressWarnings({"rawtypes"})
-    @Override
     public void clear() {
         listbox.setModel(new ListModelList());
         listbox.setDroppable("false");
@@ -400,14 +396,6 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
             }
         }
         return null;
-    }
-
-    private static void resetSortingDirection(Listbox listbox) {
-        if (listbox.getListhead() != null) {
-            for (Component item : listbox.getListhead().getChildren()) {
-                ((Listheader) item).setSortDirection("natural");
-            }
-        }
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -693,7 +681,6 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
         }
     }
 
-    @Override
     public boolean hasTargetEntity() {
         return getTargetEntity() != null;
     }
@@ -724,8 +711,13 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
 
     // -------------------------- INNER CLASSES --------------------------
 
+    private void monitorPagingEvents() {
+        if (listbox.getPaginal() != null) {
+            listbox.getPaginal().addEventListener(ZulEvents.ON_PAGING, this);
+        }
+    }
+
     private class DialogListener implements MessageListener {
-        @Override
         public void processMessage(Message message) {
             switch (message.getId()) {
                 case AFFIRMATIVE_RESPONSE:
@@ -739,7 +731,7 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
                         if (command != null) {
                             command.dispatchMessage(ContextUtil.getMessage(MessageEnum.MARK_DIRTY, command,
                                     MessageArgEnum.ARG_ITEM, query.hasAttribute(CommandDecorator
-                                    .ATTRIB_MODIFIED)));
+                                            .ATTRIB_MODIFIED)));
                         }
 
                     } else if (EntityPersisterDialog.class.isInstance(message.getSender())) {
@@ -777,7 +769,7 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
                         if (command != null) {
                             command.dispatchMessage(ContextUtil.getMessage(MessageEnum.MARK_DIRTY, command,
                                     MessageArgEnum.ARG_ITEM, renderScheme.hasAttribute(CommandDecorator
-                                    .ATTRIB_MODIFIED)));
+                                            .ATTRIB_MODIFIED)));
                         }
 
                     }
@@ -798,12 +790,6 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
                     }
                     break;
             }
-        }
-    }
-
-    private void monitorPagingEvents() {
-        if (listbox.getPaginal() != null) {
-            listbox.getPaginal().addEventListener(ZulEvents.ON_PAGING, this);
         }
     }
 

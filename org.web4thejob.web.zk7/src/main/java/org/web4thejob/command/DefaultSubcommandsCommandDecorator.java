@@ -38,8 +38,6 @@ import org.zkoss.zul.Menuseparator;
 
 public class DefaultSubcommandsCommandDecorator extends AbstractCommandDecorator implements
         SubcommandsCommandDecorator, EventListener<Event> {
-    protected final Combobutton combobutton = new Combobutton();
-
     public DefaultSubcommandsCommandDecorator(Command command) {
         super(command);
 
@@ -77,19 +75,18 @@ public class DefaultSubcommandsCommandDecorator extends AbstractCommandDecorator
         }
     }
 
-    @Override
+    protected final Combobutton combobutton = new Combobutton();
+
     public void attach(Object container) {
         combobutton.setParent((Component) container);
         command.addMessageListener(this);
     }
 
-    @Override
     public void dettach() {
         combobutton.detach();
         command.removeMessageListener(this);
     }
 
-    @Override
     public boolean isAttached() {
         return combobutton.getPage() != null;
     }
@@ -136,7 +133,6 @@ public class DefaultSubcommandsCommandDecorator extends AbstractCommandDecorator
         }
     }
 
-    @Override
     public void render() {
         Menupopup menupopup = new Menupopup();
         if (combobutton.getDropdown() != null) {
@@ -167,27 +163,22 @@ public class DefaultSubcommandsCommandDecorator extends AbstractCommandDecorator
         separator.setParent(menupopup);
     }
 
-    @Override
     public boolean isDisabled() {
         return combobutton.isDisabled();
     }
 
-    @Override
     public void setDisabled(boolean disabled) {
         combobutton.setDisabled(disabled);
     }
 
-    @Override
     public String getName() {
         return combobutton.getLabel();
     }
 
-    @Override
     public void setName(String name) {
         combobutton.setLabel(name);
     }
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_CLICK.equals(event.getName())) {
             if (combobutton.getDropdown() != null) {

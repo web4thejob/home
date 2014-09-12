@@ -47,19 +47,18 @@ import java.util.*;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultValueListDialog extends AbstractDialog implements ValueListDialog, MessageListener {
-    public static final L10nString L10N_DIALOG_TITLE = new L10nString(DefaultValueListDialog.class, "dialog_title",
-            "Values selection");
-
-    private final List<Object> values = new ArrayList<Object>();
-    private final PathMetadata pathMetadata;
-    private final Listbox listbox = new Listbox();
-
     public DefaultValueListDialog(PathMetadata pathMetadata, List<?> values) {
         this.pathMetadata = pathMetadata;
         if (values != null) {
             this.values.addAll(values);
         }
     }
+
+    public static final L10nString L10N_DIALOG_TITLE = new L10nString(DefaultValueListDialog.class, "dialog_title",
+            "Values selection");
+    private final List<Object> values = new ArrayList<Object>();
+    private final PathMetadata pathMetadata;
+    private final Listbox listbox = new Listbox();
 
     @Override
     public Set<CommandEnum> getSupportedCommands() {
@@ -177,7 +176,6 @@ public class DefaultValueListDialog extends AbstractDialog implements ValueListD
         return listbox.getItemCount() > 0;
     }
 
-    @Override
     public void processMessage(Message message) {
         if (message.getId() == MessageEnum.AFFIRMATIVE_RESPONSE) {
             if (message.getArgs().containsKey(MessageArgEnum.ARG_NEW_ITEM)) {

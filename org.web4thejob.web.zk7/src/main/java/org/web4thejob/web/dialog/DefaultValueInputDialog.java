@@ -39,14 +39,6 @@ import org.zkoss.zul.Textbox;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultValueInputDialog extends AbstractDialog implements ValueInputDialog {
-    public static final L10nString L10N_TITLE_INPUT = new L10nString(DefaultValueInputDialog.class, "dialog_title",
-            "User input");
-
-    private final HtmlBasedComponent component;
-    private final DataBinder dataBinder = new DataBinder();
-    private final ValueWrapper valueWrapper;
-    private final boolean editing;
-
     protected DefaultValueInputDialog() {
         super();
         editing = false;
@@ -75,6 +67,13 @@ public class DefaultValueInputDialog extends AbstractDialog implements ValueInpu
         component = (HtmlBasedComponent) ZkUtil.getEditableComponentForPropertyType(pathMetadata);
         valueWrapper = new ValueWrapper(value);
     }
+
+    public static final L10nString L10N_TITLE_INPUT = new L10nString(DefaultValueInputDialog.class, "dialog_title",
+            "User input");
+    private final HtmlBasedComponent component;
+    private final DataBinder dataBinder = new DataBinder();
+    private final ValueWrapper valueWrapper;
+    private final boolean editing;
 
     @Override
     protected String prepareTitle() {
@@ -112,7 +111,6 @@ public class DefaultValueInputDialog extends AbstractDialog implements ValueInpu
                 valueWrapper.getRawValue());
     }
 
-    @Override
     public boolean isEditing() {
         return editing;
     }

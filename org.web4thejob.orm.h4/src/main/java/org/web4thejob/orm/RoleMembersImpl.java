@@ -41,7 +41,6 @@ import java.io.Serializable;
     private int version;
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public long getId() {
         return id;
     }
@@ -50,22 +49,18 @@ import java.io.Serializable;
         this.id = id;
     }
 
-    @Override
     public RoleIdentity getRole() {
         return role;
     }
 
-    @Override
     public void setRole(RoleIdentity role) {
         this.role = role;
     }
 
-    @Override
     public UserIdentity getUser() {
         return user;
     }
 
-    @Override
     public void setUser(UserIdentity user) {
         this.user = user;
     }
@@ -75,12 +70,10 @@ import java.io.Serializable;
 
 // --------------------- Interface Entity ---------------------
 
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }

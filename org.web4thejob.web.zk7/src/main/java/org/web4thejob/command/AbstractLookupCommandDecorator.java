@@ -91,6 +91,7 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
         }
         arrangeForState(PanelState.READY);
     }
+
     public static final L10nString L10N_COMBOBUTTON_LOOKUP = new L10nString(AbstractLookupCommandDecorator.class,
             "combobutton_lookup", "Lookup");
     private final Div div = new Div();
@@ -146,7 +147,6 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
 
     // --------------------- Interface CommandDecorator ---------------------
 
-    @Override
     public void attach(Object container) {
         if (!Component.class.isInstance(container))
             throw new IllegalArgumentException("container is not an instance of " + Component.class.getName());
@@ -154,18 +154,15 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
         command.addMessageListener(this);
     }
 
-    @Override
     public void dettach() {
         div.detach();
         command.removeMessageListener(this);
     }
 
-    @Override
     public boolean isAttached() {
         return div.getPage() != null;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public void render() {
         if (combobox.getModel() == null) {
@@ -174,23 +171,19 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
         setLookupSelection((E) command.getValue());
     }
 
-    @Override
     public boolean isDisabled() {
         return combobox.isDisabled();
     }
 
-    @Override
     public void setDisabled(boolean disabled) {
         combobox.setDisabled(disabled);
         combobutton.setDisabled(disabled);
     }
 
-    @Override
     public String getName() {
         return command.getName();
     }
 
-    @Override
     public void setName(String name) {
         // do nothing
     }
@@ -198,7 +191,6 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
     // --------------------- Interface EventListener ---------------------
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_SELECT.equals(event.getName())) {
             if (getLookupSelection() != null) {
@@ -278,7 +270,6 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
     protected abstract E newInstance();
 
     @SuppressWarnings("unchecked")
-    @Override
     public boolean setLookupSelection(E entity) {
         if (combobox.getModel() == null) {
             refresh();
@@ -304,12 +295,10 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
         return false;
     }
 
-    @Override
     public boolean isModified() {
         return modified;
     }
 
-    @Override
     public void setModified(boolean modified) {
         Entity selection = getLookupSelection();
         if (selection != null && this.modified != modified) {
@@ -371,7 +360,6 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    @Override
     public E getLookupSelection() {
         E selection = null;
         if (combobox.getModel() != null && !((ListModelList) combobox.getModel()).getSelection().isEmpty()) {
@@ -399,27 +387,22 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
             }
         }
 
-        @Override
         public Set<CommandEnum> getSupportedCommands() {
             return Collections.unmodifiableSet(commands.keySet());
         }
 
-        @Override
         public Command getCommand(CommandEnum id) {
             return commands.get(id);
         }
 
-        @Override
         public SortedSet<Command> getCommands() {
             return Collections.unmodifiableSortedSet(new TreeSet<Command>(commands.values()));
         }
 
-        @Override
         public boolean hasCommand(CommandEnum id) {
             return commands.containsKey(id);
         }
 
-        @Override
         public void process(Command command) throws CommandProcessingException {
             if (CommandEnum.REFRESH.equals(command.getId())) {
                 refresh();
@@ -433,15 +416,14 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
             } else if (CommandEnum.DELETE.equals(command.getId())) {
                 Messagebox.show(AbstractZkBindablePanel.L10N_MSG_DELETE_CONFIRMATION.toString(),
                         L10nMessages.L10N_MSGBOX_TITLE_QUESTION.toString(), new Messagebox.Button[]{Messagebox
-                        .Button.OK, Messagebox.Button.CANCEL}, null, Messagebox.QUESTION,
+                                .Button.OK, Messagebox.Button.CANCEL}, null, Messagebox.QUESTION,
                         Messagebox.Button.CANCEL, new EventListener<Messagebox.ClickEvent>() {
-                    @Override
-                    public void onEvent(Messagebox.ClickEvent event) throws Exception {
-                        if (Messagebox.Button.OK == event.getButton()) {
-                            delete();
-                        }
-                    }
-                });
+                            public void onEvent(Messagebox.ClickEvent event) throws Exception {
+                                if (Messagebox.Button.OK == event.getButton()) {
+                                    delete();
+                                }
+                            }
+                        });
                 setModified(false);
             } else {
                 throw new UnsupportedOperationException("command " + command.getId().name() + " was not expected"
@@ -449,22 +431,18 @@ public abstract class AbstractLookupCommandDecorator<E extends Entity> extends A
             }
         }
 
-        @Override
         public void supressCommands(boolean supress) {
             throw new UnsupportedOperationException();
         }
 
-        @Override
         public boolean isCommandsSupressed() {
             throw new UnsupportedOperationException();
         }
 
-        @Override
         public boolean unregisterCommand(CommandEnum id) {
             throw new UnsupportedOperationException();
         }
 
-        @Override
         public PanelState getPanelState() {
             throw new UnsupportedOperationException();
         }

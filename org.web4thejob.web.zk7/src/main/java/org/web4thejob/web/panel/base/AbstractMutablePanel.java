@@ -508,7 +508,7 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
                         final Component comp = binding.getComponent();
                         if (comp instanceof HtmlBasedComponent) {
                             ZkUtil.setInactive((HtmlBasedComponent) comp,
-                                    statusHolderProp.getValue(targetEntity).equals(statusHolderProp.getAnnotation
+                                    statusHolderProp.<Object, Entity>getValue(targetEntity).equals(statusHolderProp.getAnnotation
                                             (StatusHolder.class).InactiveWhen()));
                         }
                     }

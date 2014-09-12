@@ -33,14 +33,14 @@ import org.web4thejob.web.panel.I18nAware;
  * @since 1.0.0
  */
 public class PasswordEditor extends AbstractBox<String> implements MessageListener, I18nAware {
+    public PasswordEditor() {
+        marshallEmptyValue();
+    }
+
     private static final long serialVersionUID = 1L;
     private UserIdentity userIdentity;
     private String password;
     private boolean l10nMode;
-
-    public PasswordEditor() {
-        marshallEmptyValue();
-    }
 
     @Override
     protected void onEdit() {
@@ -66,7 +66,6 @@ public class PasswordEditor extends AbstractBox<String> implements MessageListen
         return password;
     }
 
-    @Override
     public void processMessage(Message message) {
         if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId()) {
             String encPassword = ContextUtil.getBean(SecurityService.class).encodePassword(userIdentity,
@@ -75,22 +74,20 @@ public class PasswordEditor extends AbstractBox<String> implements MessageListen
         }
     }
 
-    public void setUserIdentity(UserIdentity userIdentity) {
-        this.userIdentity = userIdentity;
-    }
-
     public UserIdentity getUserIdentity() {
         return this.userIdentity;
     }
 
-    @Override
-    public void setL10nMode(boolean l10nMode) {
-        this.l10nMode = l10nMode;
+    public void setUserIdentity(UserIdentity userIdentity) {
+        this.userIdentity = userIdentity;
     }
 
-    @Override
     public boolean getL10nMode() {
         return l10nMode;
+    }
+
+    public void setL10nMode(boolean l10nMode) {
+        this.l10nMode = l10nMode;
     }
 
     protected boolean isEmpty() {

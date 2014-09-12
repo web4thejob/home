@@ -45,7 +45,6 @@ public class SpringSecurityService implements SecurityService {
 
 // --------------------- Interface SecurityService ---------------------
 
-    @Override
     public String encodePassword(UserIdentity userIdentity, String value) {
         PasswordEncoder passwordEncoder;
 
@@ -58,7 +57,6 @@ public class SpringSecurityService implements SecurityService {
         return passwordEncoder.encode(value);
     }
 
-    @Override
     public UserIdentity getAdministratorIdentity() {
         Query query = ContextUtil.getEntityFactory().buildQuery(UserIdentity.class);
         query.addCriterion(new Path(UserIdentity.FLD_USERNAME), Condition.EQ, UserIdentity.USER_ADMIN);
@@ -83,14 +81,12 @@ public class SpringSecurityService implements SecurityService {
         return userAdmin;
     }
 
-    @Override
     public UserIdentity getUserIdentity(String userName) {
         Query query = ContextUtil.getEntityFactory().buildQuery(UserIdentity.class);
         query.addCriterion(new Path(UserIdentity.FLD_USERNAME), Condition.EQ, userName);
         return ContextUtil.getDRS().findUniqueByQuery(query);
     }
 
-    @Override
     public boolean isPasswordValid(UserIdentity userIdentity, String rawPassword) {
         PasswordEncoder passwordEncoder;
 
@@ -103,7 +99,6 @@ public class SpringSecurityService implements SecurityService {
         return passwordEncoder.matches(rawPassword, userIdentity.getPassword());
     }
 
-    @Override
     public boolean renewPassword(UserIdentity userIdentity, String oldPassword, String newPassword) {
         if (isPasswordValid(userIdentity, oldPassword)) {
             ContextUtil.getDRS().refresh(userIdentity);
@@ -121,7 +116,6 @@ public class SpringSecurityService implements SecurityService {
         return false;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T authenticate(String username, String password, boolean useIfValid) {
         Authentication authentication = authenticate(username, password);
@@ -131,7 +125,6 @@ public class SpringSecurityService implements SecurityService {
         return (T) authentication;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T authenticate(String username, String password) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);

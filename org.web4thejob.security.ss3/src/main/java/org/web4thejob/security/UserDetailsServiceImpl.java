@@ -34,7 +34,6 @@ import org.web4thejob.orm.query.Query;
 
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
         Query query = ContextUtil.getEntityFactory().buildQuery(UserIdentity.class);
         query.addCriterion(new Path(UserIdentity.FLD_USERNAME), Condition.EQ, username);

@@ -33,11 +33,6 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
  */
 
 public class HtmlEditor extends AbstractBox<String> implements MessageListener {
-    private static final long serialVersionUID = 1L;
-    private final PathMetadata pathMetadata;
-    private String htmlContent;
-
-
     public HtmlEditor(PathMetadata pathMetadata) {
         this.pathMetadata = pathMetadata;
         marshallEmptyValue();
@@ -46,6 +41,10 @@ public class HtmlEditor extends AbstractBox<String> implements MessageListener {
     public HtmlEditor() {
         this(null);
     }
+
+    private static final long serialVersionUID = 1L;
+    private final PathMetadata pathMetadata;
+    private String htmlContent;
 
     @Override
     protected void onEdit() {
@@ -75,7 +74,6 @@ public class HtmlEditor extends AbstractBox<String> implements MessageListener {
         return htmlContent;
     }
 
-    @Override
     public void processMessage(Message message) {
         if (message.getId() == MessageEnum.AFFIRMATIVE_RESPONSE) {
             setRawValue(message.getArg(MessageArgEnum.ARG_ITEM, String.class));

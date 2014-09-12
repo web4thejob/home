@@ -41,12 +41,6 @@ import java.util.Set;
  * @since 3.5.2
  */
 public class EntityHierarchyTreeBox extends AbstractBox<EntityHierarchyItem> implements MessageAware {
-    private static final long serialVersionUID = 1L;
-    private final RenderElement renderElement;
-    private Popup popup;
-    private EntityHierarchyItem entityHierarchyItem;
-    private EntityHierarchyPanel entityHierarchyPanel;
-
     public EntityHierarchyTreeBox(PathMetadata pathMetadata) {
         super();
         renderElement = ContextUtil.getMRS().newInstance(RenderElement.class);
@@ -62,6 +56,12 @@ public class EntityHierarchyTreeBox extends AbstractBox<EntityHierarchyItem> imp
         marshallEmptyValue();
         addEventListener(Events.ON_CANCEL, this);
     }
+
+    private static final long serialVersionUID = 1L;
+    private final RenderElement renderElement;
+    private Popup popup;
+    private EntityHierarchyItem entityHierarchyItem;
+    private EntityHierarchyPanel entityHierarchyPanel;
 
     @Override
     protected void onEdit() {
@@ -102,27 +102,22 @@ public class EntityHierarchyTreeBox extends AbstractBox<EntityHierarchyItem> imp
         popup.open(this, "after_start");
     }
 
-    @Override
     public boolean addMessageListener(MessageAware messageAware) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void dispatchMessage(Message message) {
         processMessage(message);
     }
 
-    @Override
     public boolean removeMessageListener(MessageAware messageAware) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public Set<MessageAware> getListeners() {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void processMessage(Message message) {
         if (message.getId() == MessageEnum.ENTITY_ACCEPTED && message.getSender().equals(entityHierarchyPanel)) {
             setRawValue(message.getArg(MessageArgEnum.ARG_ITEM, EntityHierarchyItem.class));

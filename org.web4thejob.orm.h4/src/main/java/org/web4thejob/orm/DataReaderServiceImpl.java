@@ -52,13 +52,11 @@ import java.util.Map;
 
     // --------------------- Interface DataReaderService ---------------------
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Entity> E findById(Class<E> entityType, Serializable id) {
         return (E) sessionFactory.getCurrentSession().get(entityType, id);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Entity> List<E> findByQuery(Query query) {
         Criteria criteria = toDetachedCriteria(query).getExecutableCriteria(sessionFactory.getCurrentSession())
@@ -73,7 +71,6 @@ import java.util.Map;
         return criteria.list();
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Entity> E findFirstByQuery(Query query) {
         Criteria criteria = toDetachedCriteria(query).getExecutableCriteria(sessionFactory.getCurrentSession())
@@ -92,7 +89,6 @@ import java.util.Map;
         return null;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Entity> E findUniqueByQuery(Query query) {
         Criteria criteria = toDetachedCriteria(query).getExecutableCriteria(sessionFactory.getCurrentSession())
@@ -114,32 +110,27 @@ import java.util.Map;
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Entity> E get(Class<E> entityType, Serializable id) {
         return (E) sessionFactory.getCurrentSession().get(entityType, id);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Entity> List<E> getAll(Class<E> entityType) {
         return DetachedCriteria.forClass(entityType).getExecutableCriteria(sessionFactory.getCurrentSession())
                 .setFlushMode(FlushMode.MANUAL).list(); //Issue #21
     }
 
-    @Override
     public <E extends Entity> E getOne(Class<E> entityType) {
-        return findFirstByQuery(ContextUtil.getBean(EntityFactory.class).buildQuery(entityType));
+        return (E) findFirstByQuery(ContextUtil.getBean(EntityFactory.class).buildQuery(entityType));
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Entity> E refresh(E entity) {
         sessionFactory.getCurrentSession().refresh(entity);
         return entity;
     }
 
-    @Override
     public void evictCache() {
         if (sessionFactory.getCache() != null) {
             sessionFactory.getCache().evictCollectionRegions();

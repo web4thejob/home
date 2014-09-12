@@ -29,12 +29,10 @@ import org.springframework.test.context.ContextLoader;
 
 public class TestWebContextLoader implements ContextLoader {
 
-    @Override
     public ApplicationContext loadContext(String... locations) throws Exception {
         return new ClassPathXmlApplicationContext(locations);
     }
 
-    @Override
     public String[] processLocations(Class<?> clazz, String... locations) {
         return locations;
     }

@@ -62,14 +62,6 @@ public class DefaultMutableEntityViewPanel extends AbstractMutablePanel implemen
         MutablePanel {
 // ------------------------------ FIELDS ------------------------------
 
-    private final Grid grid;
-    private RenderScheme renderScheme;
-
-// -------------------------- STATIC METHODS --------------------------
-
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
     public DefaultMutableEntityViewPanel() {
         this(MutableMode.READONLY);
     }
@@ -79,6 +71,13 @@ public class DefaultMutableEntityViewPanel extends AbstractMutablePanel implemen
         grid = buildGrid();
         ZkUtil.setParentOfChild((Component) base, grid);
     }
+
+// -------------------------- STATIC METHODS --------------------------
+
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private final Grid grid;
+    private RenderScheme renderScheme;
 
 // ------------------------ INTERFACE METHODS ------------------------
 
@@ -191,32 +190,6 @@ public class DefaultMutableEntityViewPanel extends AbstractMutablePanel implemen
 
 // -------------------------- INNER CLASSES --------------------------
 
-    private class RenderSchemeDialogListener implements MessageListener {
-        @Override
-        public void processMessage(Message message) {
-            switch (message.getId()) {
-                case AFFIRMATIVE_RESPONSE:
-                    if (RenderSchemeDialog.class.isInstance(message.getSender())) {
-                        renderScheme = message.getArg(MessageArgEnum.ARG_ITEM, RenderScheme.class);
-                        setSettingValue(SettingEnum.RENDER_SCHEME_FOR_VIEW, renderScheme.getName());
-                        arrangeForRenderScheme();
-                        if (hasTargetEntity()) {
-                            bind(getTargetEntity());
-                        }
-
-                        Command command = getCommand(CommandEnum.CONFIGURE_HEADERS);
-                        if (command != null) {
-                            command.dispatchMessage(ContextUtil.getMessage(MessageEnum.MARK_DIRTY, command,
-                                    MessageArgEnum.ARG_ITEM, renderScheme.hasAttribute(CommandDecorator
-                                    .ATTRIB_MODIFIED)));
-                        }
-
-                    }
-                    break;
-            }
-        }
-    }
-
     private Query getFinalQuery() {
         if (activeQuery == null) {
             activeQuery = getPersistedQuery();
@@ -257,5 +230,30 @@ public class DefaultMutableEntityViewPanel extends AbstractMutablePanel implemen
             renderScheme = null;
         }
         super.onSettingValueChanged(id, oldValue, newValue);
+    }
+
+    private class RenderSchemeDialogListener implements MessageListener {
+        public void processMessage(Message message) {
+            switch (message.getId()) {
+                case AFFIRMATIVE_RESPONSE:
+                    if (RenderSchemeDialog.class.isInstance(message.getSender())) {
+                        renderScheme = message.getArg(MessageArgEnum.ARG_ITEM, RenderScheme.class);
+                        setSettingValue(SettingEnum.RENDER_SCHEME_FOR_VIEW, renderScheme.getName());
+                        arrangeForRenderScheme();
+                        if (hasTargetEntity()) {
+                            bind(getTargetEntity());
+                        }
+
+                        Command command = getCommand(CommandEnum.CONFIGURE_HEADERS);
+                        if (command != null) {
+                            command.dispatchMessage(ContextUtil.getMessage(MessageEnum.MARK_DIRTY, command,
+                                    MessageArgEnum.ARG_ITEM, renderScheme.hasAttribute(CommandDecorator
+                                            .ATTRIB_MODIFIED)));
+                        }
+
+                    }
+                    break;
+            }
+        }
     }
 }

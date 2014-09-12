@@ -42,21 +42,24 @@ import org.zkoss.zul.Toolbarbutton;
 public abstract class AbstractBox<T> extends HtmlMacroComponent implements RawValueBox<T>, EventListener<Event> {
     // ------------------------------ FIELDS ------------------------------
 
+    protected AbstractBox() {
+        compose();
+    }
+
+    private static final long serialVersionUID = 1L;
+    private static final String NOVALUE_STYLE = "font-style: italic; color: #0099cc;";
     public static final L10nString L10N_BUTTON_CLICK_FOR_VALUE = new L10nString(AbstractBox.class,
             "link_click_to_set_value", "Click to set value");
     public static final L10nString L10N_BUTTON_EDIT = new L10nString(AbstractBox.class, "link_edit_value", "Edit");
     public static final L10nString L10N_BUTTON_CLEAR = new L10nString(AbstractBox.class, "link_clear_value", "Clear");
-
-    private static final long serialVersionUID = 1L;
-    private static final String NOVALUE_STYLE = "font-style: italic; color: #0099cc;";
     protected Toolbarbutton _clearLink;
     protected Component _valueBox;
     protected Toolbarbutton _novalueLink;
     protected Toolbarbutton _editLink;
-    private int tooltipLimit = PropertyBox.TOOLTIP_LIMIT;
-    private boolean hideClearLink;
     @Wire
     protected Hbox hbox;
+    private int tooltipLimit = PropertyBox.TOOLTIP_LIMIT;
+    private boolean hideClearLink;
 
     public void setHideClearLink(boolean hideClearLink) {
         this.hideClearLink = hideClearLink;
@@ -66,18 +69,14 @@ public abstract class AbstractBox<T> extends HtmlMacroComponent implements RawVa
         return tooltipLimit;
     }
 
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+
     public void setTooltipLimit(int tooltipLimit) {
         this.tooltipLimit = tooltipLimit;
         if (_valueBox instanceof PropertyBox) {
             ((PropertyBox) _valueBox).setTooltipLimit(tooltipLimit);
         }
-    }
-
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
-    protected AbstractBox() {
-        compose();
     }
 
     @Override
@@ -91,7 +90,6 @@ public abstract class AbstractBox<T> extends HtmlMacroComponent implements RawVa
 
     // --------------------- Interface EventListener ---------------------
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (event.getName().equals(Events.ON_CLICK) && (event.getTarget().hasAttribute("edit") || event.getTarget()
                 .hasAttribute("novalue"))) {
@@ -107,7 +105,6 @@ public abstract class AbstractBox<T> extends HtmlMacroComponent implements RawVa
 
     // --------------------- Interface RawValueBox ---------------------
 
-    @Override
     public T getRawValue() {
         if (!isEmpty()) {
             return unmarshallToRawValue();
@@ -117,6 +114,18 @@ public abstract class AbstractBox<T> extends HtmlMacroComponent implements RawVa
     }
 
     // -------------------------- OTHER METHODS --------------------------
+
+    public void setRawValue(T value) {
+        if (!Objects.equals(value, getRawValue())) {
+            if (value != null) {
+                marshallToString(value);
+            } else {
+                marshallEmptyValue();
+            }
+
+            Events.sendEvent(Events.ON_CHANGE, this, null);
+        }
+    }
 
     protected boolean isEmpty() {
         return _valueBox == null || _valueBox.getParent() == null;
@@ -156,7 +165,6 @@ public abstract class AbstractBox<T> extends HtmlMacroComponent implements RawVa
         return propertyBox;
     }
 
-
     protected Toolbarbutton getEditLink() {
         Toolbarbutton editLink = new Toolbarbutton();
         editLink.setParent(this);
@@ -191,7 +199,6 @@ public abstract class AbstractBox<T> extends HtmlMacroComponent implements RawVa
         return clearLink;
     }
 
-
     protected void marshallToString(T value) {
         if (_novalueLink != null) {
             _novalueLink.detach();
@@ -215,27 +222,7 @@ public abstract class AbstractBox<T> extends HtmlMacroComponent implements RawVa
         setRawValue(null);
     }
 
-    @Override
-    public void setRawValue(T value) {
-        if (!Objects.equals(value, getRawValue())) {
-            if (value != null) {
-                marshallToString(value);
-            } else {
-                marshallEmptyValue();
-            }
-
-            Events.sendEvent(Events.ON_CHANGE, this, null);
-        }
-    }
-
     abstract protected void onEdit();
-
-    @Override
-    public void setStyle(String style) {
-        if (_valueBox instanceof HtmlBasedComponent) {
-            ((HtmlBasedComponent) _valueBox).setStyle(style);
-        }
-    }
 
     @Override
     public String getStyle() {
@@ -243,6 +230,13 @@ public abstract class AbstractBox<T> extends HtmlMacroComponent implements RawVa
             return ((HtmlBasedComponent) _valueBox).getStyle();
         }
         return null;
+    }
+
+    @Override
+    public void setStyle(String style) {
+        if (_valueBox instanceof HtmlBasedComponent) {
+            ((HtmlBasedComponent) _valueBox).setStyle(style);
+        }
     }
 
     @SuppressWarnings("unchecked")

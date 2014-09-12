@@ -30,7 +30,6 @@ import org.springframework.util.CollectionUtils;
 
 @Component
 public class ORMLauncher implements ApplicationListener<ContextRefreshedEvent> {
-    @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (event.getApplicationContext().getParent() == null) {
             if (ContextUtil.getSystemJoblet().isInstalled()) {

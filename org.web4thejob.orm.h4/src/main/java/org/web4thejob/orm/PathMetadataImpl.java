@@ -31,9 +31,6 @@ import java.util.List;
 
 /*package*/ class PathMetadataImpl implements PathMetadata {
 
-    final private List<PropertyMetadata> steps;
-    final private String path;
-
     public PathMetadataImpl(Class<? extends Entity> entityType, Path nodes) {
         this(entityType, StringUtils.delimitedListToStringArray(nodes.toString(), Path.DELIMITER));
     }
@@ -62,6 +59,9 @@ import java.util.List;
 
     }
 
+    final private List<PropertyMetadata> steps;
+    final private String path;
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -74,32 +74,26 @@ import java.util.List;
         }
     }
 
-    @Override
     public PropertyMetadata getFirstStep() {
         return steps.get(0);
     }
 
-    @Override
     public PropertyMetadata getLastStep() {
         return steps.get(steps.size() - 1);
     }
 
-    @Override
     public String getPath() {
         return path;
     }
 
-    @Override
     public EntityMetadata getRoot() {
         return getFirstStep().getEntityMetadata();
     }
 
-    @Override
     public List<PropertyMetadata> getSteps() {
         return steps;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T, E extends Entity> T getValue(E rootEntity) {
         Object value = rootEntity;
@@ -130,12 +124,10 @@ import java.util.List;
         return result;
     }
 
-    @Override
     public boolean isMultiStep() {
         return steps.size() > 1;
     }
 
-    @Override
     public boolean hasOneToManySteps() {
         for (final PropertyMetadata step : steps) {
             if (step.isOneToManyType()) {
@@ -145,7 +137,6 @@ import java.util.List;
         return false;
     }
 
-    @Override
     public String getFriendlyName() {
         StringBuilder sb = new StringBuilder();
         for (final PropertyMetadata step : steps) {

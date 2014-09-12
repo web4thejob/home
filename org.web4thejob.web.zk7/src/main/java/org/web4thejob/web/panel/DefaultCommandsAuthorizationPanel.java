@@ -78,7 +78,6 @@ public class DefaultCommandsAuthorizationPanel extends AbstractSecuredResourceAu
         }
 
         Collections.sort(commands, new Comparator<Command>() {
-            @Override
             public int compare(Command o1, Command o2) {
                 return o1.toString().compareToIgnoreCase(o2.toString());
             }
@@ -92,7 +91,6 @@ public class DefaultCommandsAuthorizationPanel extends AbstractSecuredResourceAu
         return this;
     }
 
-    @Override
     public void render(Listitem item, Command data, int index) throws Exception {
         item.setImage(CoreUtil.getCommandImage(data.getId(), Command.DEFAULT_COMMAND_IMAGE));
         item.setLabel(data.toString());

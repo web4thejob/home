@@ -38,15 +38,15 @@ import java.io.Serializable;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultFramePanel extends AbstractZkBindablePanel implements FramePanel {
-    protected final Iframe iframe = new Iframe();
-    protected Entity targetEntity;
-
     public DefaultFramePanel() {
         ZkUtil.setParentOfChild((Component) base, iframe);
         iframe.setVflex("true");
         iframe.setWidth("100%");
         iframe.setStyle("background-color:transparent");
     }
+
+    protected final Iframe iframe = new Iframe();
+    protected Entity targetEntity;
 
     @Override
     protected void registerSettings() {
@@ -94,12 +94,10 @@ public class DefaultFramePanel extends AbstractZkBindablePanel implements FrameP
         iframe.setSrc(null);
     }
 
-    @Override
     public String getUrl() {
         return iframe.getSrc();
     }
 
-    @Override
     public void setUrl(String url) {
         iframe.setSrc(url);
     }
@@ -161,12 +159,10 @@ public class DefaultFramePanel extends AbstractZkBindablePanel implements FrameP
         return false;
     }
 
-    @Override
     public boolean hasTargetEntity() {
         return targetEntity != null;
     }
 
-    @Override
     public Entity getTargetEntity() {
         return targetEntity;
     }

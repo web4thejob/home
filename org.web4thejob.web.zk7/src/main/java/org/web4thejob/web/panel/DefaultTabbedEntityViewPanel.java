@@ -58,11 +58,6 @@ import java.util.*;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultTabbedEntityViewPanel extends AbstractMutablePanel implements TabbedEntityViewPanel {
-    private static final String BEAN_ID = "beanid";
-    private Tabbox tabbox = new Tabbox();
-    private List<RenderElement> oneToOneElements = new ArrayList<RenderElement>();
-    private List<RenderScheme> renderSchemes = new ArrayList<RenderScheme>(2);
-
     protected DefaultTabbedEntityViewPanel() {
         this(MutableMode.READONLY);
     }
@@ -76,6 +71,11 @@ public class DefaultTabbedEntityViewPanel extends AbstractMutablePanel implement
         new Tabs().setParent(tabbox);
         new Tabpanels().setParent(tabbox);
     }
+
+    private static final String BEAN_ID = "beanid";
+    private Tabbox tabbox = new Tabbox();
+    private List<RenderElement> oneToOneElements = new ArrayList<RenderElement>();
+    private List<RenderScheme> renderSchemes = new ArrayList<RenderScheme>(2);
 
     @Override
     protected void registerSettings() {
@@ -334,8 +334,12 @@ public class DefaultTabbedEntityViewPanel extends AbstractMutablePanel implement
         }
     }
 
+    @Override
+    protected Class<? extends MutablePanel> getMutableType() {
+        return TabbedEntityViewPanel.class;
+    }
+
     private class RenderSchemeDialogListener implements MessageListener {
-        @Override
         public void processMessage(Message message) {
             switch (message.getId()) {
                 case AFFIRMATIVE_RESPONSE:
@@ -363,10 +367,5 @@ public class DefaultTabbedEntityViewPanel extends AbstractMutablePanel implement
                     break;
             }
         }
-    }
-
-    @Override
-    protected Class<? extends MutablePanel> getMutableType() {
-        return TabbedEntityViewPanel.class;
     }
 }

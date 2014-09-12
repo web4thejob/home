@@ -30,17 +30,14 @@ import org.web4thejob.context.ContextUtil;
  * @since 3.2.1
  */
 public class CurrentUserConverter implements Converter {
-    @Override
     public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         return ContextUtil.getSessionContext().getSecurityContext().getUserIdentity();
     }
 
-    @Override
     public boolean canConvert(Class type) {
         return CurrentUser.class.isAssignableFrom(type);
     }

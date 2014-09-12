@@ -99,7 +99,6 @@ public class DefaultBorderedLayoutPanel extends AbstractBorderLayoutPanel implem
 // --------------------- Interface TargetType ---------------------
 
 
-    @Override
     public Class<? extends Entity> getTargetType() {
         for (Panel panel : subpanels) {
             if (panel instanceof TargetType && ((TargetType) panel).hasTargetType()) {
@@ -109,7 +108,6 @@ public class DefaultBorderedLayoutPanel extends AbstractBorderLayoutPanel implem
         return null;
     }
 
-    @Override
     public boolean hasTargetType() {
         return getTargetType() != null;
     }

@@ -33,15 +33,14 @@ import java.util.List;
  * @since 1.0.0
  */
 public class ValueListBox extends AbstractBox<List<?>> implements MessageListener {
-    private static final long serialVersionUID = 1L;
-    private final PathMetadata pathMetadata;
-    private List<?> values;
-
     public ValueListBox(PathMetadata pathMetadata) {
         this.pathMetadata = pathMetadata;
         marshallEmptyValue();
     }
 
+    private static final long serialVersionUID = 1L;
+    private final PathMetadata pathMetadata;
+    private List<?> values;
 
     @Override
     protected void marshallEmptyValue() {
@@ -67,7 +66,6 @@ public class ValueListBox extends AbstractBox<List<?>> implements MessageListene
         dialog.show(this);
     }
 
-    @Override
     public void processMessage(Message message) {
         if (message.getId() == MessageEnum.AFFIRMATIVE_RESPONSE) {
             setRawValue(message.getArg(MessageArgEnum.ARG_ITEM, List.class));

@@ -184,12 +184,10 @@ import java.util.List;
         return classMetadata;
     }
 
-    @Override
     public Class<? extends Entity> getEntityType() {
         return entityType;
     }
 
-    @Override
     public String getIdentifierName() {
         return identifier;
     }
@@ -202,7 +200,6 @@ import java.util.List;
         return persistentClass;
     }
 
-    @Override
     public boolean isVersioned() {
         return versioned;
     }
@@ -211,7 +208,6 @@ import java.util.List;
 
     // --------------------- Interface EntityMetadata ---------------------
 
-    @Override
     public String getSchema() {
         if (StringUtils.hasText(persistentClass.getTable().getSchema())) {
             return persistentClass.getTable().getSchema();
@@ -221,27 +217,22 @@ import java.util.List;
         }
     }
 
-    @Override
     public String getName() {
         return classMetadata.getEntityName();
     }
 
-    @Override
     public String getFriendlyName() {
         return friendlyName;
     }
 
-    @Override
     public <E extends Entity> Integer getVersion(E entity) {
         return (Integer) classMetadata.getVersion(entity, EntityMode.POJO);
     }
 
-    @Override
     public SortedSet<PropertyMetadata> getPropertiesMetadata() {
         return propertySet;
     }
 
-    @Override
     public PropertyMetadata getPropertyMetadata(String property) {
         PropertyMetadata propertyMetadata = propertyMap.get(property);
 
@@ -259,18 +250,15 @@ import java.util.List;
         return propertyMetadata;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public Class<? extends Entity> getMappedClass() {
         return classMetadata.getMappedClass(EntityMode.POJO);
     }
 
-    @Override
     public boolean isReadOnly() {
         return !persistentClass.isMutable();
     }
 
-    @Override
     public <A extends Annotation> PropertyMetadata getAnnotatedProperty(Class<A> annotation) {
         for (PropertyMetadata propertyMetadata : getPropertiesMetadata()) {
             if (propertyMetadata.getAnnotation(annotation) != null) {
@@ -280,7 +268,6 @@ import java.util.List;
         return null;
     }
 
-    @Override
     public List<UniqueKeyConstraint> getUniqueConstraints() {
         return uniqueKeyConstraints;
     }
@@ -299,17 +286,14 @@ import java.util.List;
         }
     }
 
-    @Override
     public boolean isCached() {
         return cached || persistentClass.getCacheConcurrencyStrategy() != null;
     }
 
-    @Override
     public boolean isTableSubset() {
         return tableSubset;
     }
 
-    @Override
     public boolean isAbstract() {
         return Modifier.isAbstract(classMetadata.getMappedClass(EntityMode.POJO).getModifiers());
     }
@@ -319,22 +303,18 @@ import java.util.List;
         return entityType.toString();
     }
 
-    @Override
     public boolean isDenyAddNew() {
         return denyAddNew;
     }
 
-    @Override
     public boolean isDenyDelete() {
         return denyDelete;
     }
 
-    @Override
     public boolean isDenyUpdate() {
         return denyUpdate;
     }
 
-    @Override
     public Object getVersionValue(Entity entity) {
         if (entity == null) return null;
         if (!versioned) return null;
@@ -343,7 +323,6 @@ import java.util.List;
         return classMetadata.getPropertyValue(entity, persistentClass.getVersion().getName(), EntityMode.POJO);
     }
 
-    @Override
     public void setVersionValue(Entity entity, Object value) {
         if (entity == null) return;
         if (!versioned) return;
@@ -352,7 +331,6 @@ import java.util.List;
         classMetadata.setPropertyValue(entity, persistentClass.getVersion().getName(), value, EntityMode.POJO);
     }
 
-    @Override
     public List<Class<? extends Entity>> getSubclasses() {
         return subclasses;
     }
@@ -388,7 +366,6 @@ import java.util.List;
 
     }
 
-    @Override
     public String getFullFriendlyName() {
         return new StringBuilder().append("[").append(getSchema()).append("] ").append(getFriendlyName()).toString();
     }

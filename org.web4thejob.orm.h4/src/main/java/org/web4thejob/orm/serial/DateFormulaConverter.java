@@ -33,12 +33,10 @@ import java.util.Date;
  */
 public class DateFormulaConverter implements Converter {
 
-    @Override
     public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         String value = reader.getValue();
         //supports @date OR @date+#days OR @date-#days OR @date00
@@ -76,7 +74,6 @@ public class DateFormulaConverter implements Converter {
         return null;
     }
 
-    @Override
     @SuppressWarnings("rawtypes")
     public boolean canConvert(Class type) {
         return DateFormula.class.isAssignableFrom(type);

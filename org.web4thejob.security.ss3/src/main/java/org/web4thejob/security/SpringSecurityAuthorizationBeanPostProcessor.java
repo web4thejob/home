@@ -30,7 +30,6 @@ import org.web4thejob.context.ContextUtil;
 @Component
 public class SpringSecurityAuthorizationBeanPostProcessor implements AuthorizationBeanPostProcessor {
 
-    @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 
         if (bean instanceof SecuredResource) {
@@ -43,7 +42,6 @@ public class SpringSecurityAuthorizationBeanPostProcessor implements Authorizati
         return bean;
     }
 
-    @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         return bean;
     }

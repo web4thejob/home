@@ -39,12 +39,10 @@ public class EditablePanelHolderController<E extends EntityTypeViewParameter, B 
         C extends PanelDropDownBox> extends AbstractComponentController<E, B, C> {
 
 
-    @Override
     public boolean supportsEntity(Class<? extends Entity> entityType) {
         return EntityTypeViewParameter.class.isAssignableFrom(entityType);
     }
 
-    @Override
     public boolean supportsComponent(Class<?> componentType) {
         return PanelDropDownBox.class.isAssignableFrom(componentType);
     }

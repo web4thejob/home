@@ -43,11 +43,6 @@ import java.util.Map;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultHtmlDialog extends AbstractDialog implements HtmlDialog {
-    public static final L10nString L10N_DIALOG_TITLE = new L10nString(DefaultHtmlDialog.class, "dialog_title",
-            "HTML Editor");
-
-    private CKeditorBox editor;
-
     protected DefaultHtmlDialog() {
         this(null);
     }
@@ -57,6 +52,10 @@ public class DefaultHtmlDialog extends AbstractDialog implements HtmlDialog {
         editor.addEventListener(Events.ON_CHANGE, this);
         dialogContent.getPanelchildren().setStyle("overflow: auto");
     }
+
+    public static final L10nString L10N_DIALOG_TITLE = new L10nString(DefaultHtmlDialog.class, "dialog_title",
+            "HTML Editor");
+    private CKeditorBox editor;
 
     private String getValue() {
         return editor.getValue();
@@ -93,7 +92,6 @@ public class DefaultHtmlDialog extends AbstractDialog implements HtmlDialog {
                             (), new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL}, null,
                     Messagebox.QUESTION, Messagebox.Button.CANCEL,
                     new EventListener<Messagebox.ClickEvent>() {
-                        @Override
                         public void onEvent(Messagebox.ClickEvent event) throws Exception {
                             if (Messagebox.Button.OK == event.getButton()) {
                                 DefaultHtmlDialog.super.doCancel();

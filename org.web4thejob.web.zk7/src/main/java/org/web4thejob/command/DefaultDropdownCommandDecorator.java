@@ -29,14 +29,13 @@ import java.util.Set;
  */
 public class DefaultDropdownCommandDecorator extends DefaultSubcommandsCommandDecorator implements
         DropdownCommandDecorator {
-    private final Set<Command> commands = new LinkedHashSet<Command>(3);
-
     public DefaultDropdownCommandDecorator(Command command) {
         super(command);
         commands.add(command);
     }
 
-    @Override
+    private final Set<Command> commands = new LinkedHashSet<Command>(3);
+
     public void add(Command command) {
         commands.add(command);
     }

@@ -50,18 +50,18 @@ import org.zkoss.zul.Image;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultMediaViewPanel extends AbstractMutablePanel implements MediaViewPanel {
-    // ------------------------------ FIELDS ------------------------------
-    private Component comp;
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
     public DefaultMediaViewPanel() {
         this(MutableMode.READONLY);
     }
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     public DefaultMediaViewPanel(MutableMode mutableMode) {
         super(mutableMode);
     }
+
+    // ------------------------------ FIELDS ------------------------------
+    private Component comp;
 
     @Override
     protected void registerSettings() {
@@ -159,7 +159,6 @@ public class DefaultMediaViewPanel extends AbstractMutablePanel implements Media
 
     private class DialogListener implements MessageListener {
 
-        @Override
         public void processMessage(Message message) {
             if (message.getId() == MessageEnum.AFFIRMATIVE_RESPONSE && message.getSender() instanceof
                     ValueInputDialog) {

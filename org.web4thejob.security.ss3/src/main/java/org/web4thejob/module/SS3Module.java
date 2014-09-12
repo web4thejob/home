@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SS3Module extends AbstractModule {
-    @Override
     public int getOrdinal() {
         return 4;
     }

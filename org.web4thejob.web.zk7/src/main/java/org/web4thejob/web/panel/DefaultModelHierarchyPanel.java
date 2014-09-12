@@ -56,17 +56,6 @@ public class DefaultModelHierarchyPanel extends AbstractZkTargetTypeAwarePanel i
         EventListener<Event> {
     // ------------------------------ FIELDS ------------------------------
 
-    private static final String ATTRIB_PROPERTY_METADATA = PropertyMetadata.class.getName();
-    private static final String ON_OPEN_ECHO = Events.ON_OPEN + "Echo";
-    private final Tree tree = new Tree();
-    private boolean allowOneToMany = true;
-    private boolean allowOneToOne = true;
-    private boolean allowOneToOneSubset = true;
-    private boolean allowBlobs = true;
-    private boolean associationsExpanded = true;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     public DefaultModelHierarchyPanel() {
         ZkUtil.setParentOfChild((Component) base, tree);
         tree.setVflex("true");
@@ -75,11 +64,21 @@ public class DefaultModelHierarchyPanel extends AbstractZkTargetTypeAwarePanel i
         new Treechildren().setParent(tree);
     }
 
+    private static final String ATTRIB_PROPERTY_METADATA = PropertyMetadata.class.getName();
+    private static final String ON_OPEN_ECHO = Events.ON_OPEN + "Echo";
+    private final Tree tree = new Tree();
+    private boolean allowOneToMany = true;
+    private boolean allowOneToOne = true;
+    private boolean allowOneToOneSubset = true;
+    private boolean allowBlobs = true;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private boolean associationsExpanded = true;
+
     // ------------------------ INTERFACE METHODS ------------------------
 
     // --------------------- Interface EventListener ---------------------
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_SELECT.equals(event.getName())) {
             arrangeForState(PanelState.FOCUSED);
@@ -100,32 +99,26 @@ public class DefaultModelHierarchyPanel extends AbstractZkTargetTypeAwarePanel i
 
     // --------------------- Interface ModelHierarchyPanel ---------------------
 
-    @Override
     public void allowOneToMany(boolean allow) {
         allowOneToMany = allow;
     }
 
-    @Override
     public boolean isOneToManyAllowed() {
         return allowOneToMany;
     }
 
-    @Override
     public void allowOneToOne(boolean allow) {
         allowOneToOne = allow;
     }
 
-    @Override
     public boolean isOneToOneAllowed() {
         return allowOneToOne;
     }
 
-    @Override
     public void allowOneToOneSubset(boolean allow) {
         allowOneToOneSubset = allow;
     }
 
-    @Override
     public boolean isOneToOneSubsetAllowed() {
         return allowOneToOneSubset;
     }
@@ -311,29 +304,24 @@ public class DefaultModelHierarchyPanel extends AbstractZkTargetTypeAwarePanel i
         registerSetting(SettingEnum.BIND_PROPERTY, "");
     }
 
-    @Override
     public boolean isAssociationsExpanded() {
         return associationsExpanded;
     }
 
-    @Override
     public void associationsExpanded(boolean expandAssociations) {
         this.associationsExpanded = expandAssociations;
     }
 
-    @Override
     public void refresh() {
         if (hasTargetType()) {
             renderRootItem();
         }
     }
 
-    @Override
     public boolean isBlobAllowed() {
         return allowBlobs;
     }
 
-    @Override
     public void allowBlobs(boolean allowBlobs) {
         this.allowBlobs = allowBlobs;
     }

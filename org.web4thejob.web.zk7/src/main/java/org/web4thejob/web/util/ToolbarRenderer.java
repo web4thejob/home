@@ -52,17 +52,14 @@ public class ToolbarRenderer implements CommandRenderer {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public String getAlign() {
         return align;
     }
 
-    @Override
     public void setAlign(String align) {
         this.align = align;
     }
 
-    @Override
     public boolean isSupressed() {
         return supressed;
     }
@@ -72,7 +69,6 @@ public class ToolbarRenderer implements CommandRenderer {
 
 // --------------------- Interface CommandRenderer ---------------------
 
-    @Override
     public void render() {
         final boolean isEmpty = isEmpty();
         if (toolbar != null && isEmpty) {
@@ -149,7 +145,6 @@ public class ToolbarRenderer implements CommandRenderer {
     }
 
 
-    @Override
     public void reset() {
         if (toolbar != null) {
             List<CommandDecorator> decorators = new ArrayList<CommandDecorator>();
@@ -170,7 +165,6 @@ public class ToolbarRenderer implements CommandRenderer {
         }
     }
 
-    @Override
     public void setContainer(Object container) {
         if (this.container != null) throw new IllegalStateException("container can only be set once");
 
@@ -180,7 +174,6 @@ public class ToolbarRenderer implements CommandRenderer {
         this.container = (Component) container;
     }
 
-    @Override
     public void supress(boolean supress) {
         if (supressed != supress) {
             supressed = supress;
@@ -188,17 +181,14 @@ public class ToolbarRenderer implements CommandRenderer {
         }
     }
 
-    @Override
     public void addCommandOwner(CommandAware commandAware) {
         commandOwners.add(commandAware);
     }
 
-    @Override
     public void removeCommandOwner(CommandAware commandAware) {
         commandOwners.remove(commandAware);
     }
 
-    @Override
     public Set<CommandAware> getCommandOwners() {
         return Collections.unmodifiableSet(commandOwners);
     }
@@ -206,22 +196,18 @@ public class ToolbarRenderer implements CommandRenderer {
 // --------------------- Interface MessageAware ---------------------
 
 
-    @Override
     public boolean addMessageListener(MessageAware messageAware) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void dispatchMessage(Message message) {
         processMessage(message);
     }
 
-    @Override
     public boolean removeMessageListener(MessageAware messageAware) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public Set<MessageAware> getListeners() {
         throw new UnsupportedOperationException();
     }
@@ -229,7 +215,6 @@ public class ToolbarRenderer implements CommandRenderer {
     // --------------------- Interface MessageListener ---------------------
 
 
-    @Override
     public void processMessage(Message message) {
         switch (message.getId()) {
             case AFTER_ADD:
@@ -284,7 +269,6 @@ public class ToolbarRenderer implements CommandRenderer {
         return true;
     }
 
-    @Override
     public CommandAware getPrimaryOwner() {
         if (!commandOwners.isEmpty()) {
             return commandOwners.iterator().next();
@@ -375,7 +359,6 @@ public class ToolbarRenderer implements CommandRenderer {
 
     private static class CommandsSorter implements Comparator<CommandEnum> {
 
-        @Override
         public int compare(CommandEnum o1, CommandEnum o2) {
             Integer i1 = (o1.getSubcommands().isEmpty() ? 10000 : 0) + o1.ordinal();
             Integer i2 = (o2.getSubcommands().isEmpty() ? 10000 : 0) + o2.ordinal();

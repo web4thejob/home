@@ -58,24 +58,6 @@ import java.util.*;
 public class DefaultSettingsDialog extends AbstractDialog implements SettingsDialog {
     // ------------------------------ FIELDS ------------------------------
 
-    public static final L10nString L10N_LIST_HEADER_SETTING = new L10nString(DefaultSettingsDialog.class,
-            "list_header_setting", "Setting");
-    public static final L10nString L10N_LIST_HEADER_VALUE = new L10nString(DefaultSettingsDialog.class,
-            "list_header_value", "Value");
-
-    private final String ATTRIB_DATABINDER = DataBinder.class.getName();
-    private final List<Listbox> listboxes = new ArrayList<Listbox>();
-    private final SortedMap<SettingEnum, Setting<?>> settings = new TreeMap<SettingEnum,
-            Setting<?>>(new SettingComparator());
-    private final String ownerClassName;
-    private Combobox bindProperty;
-    private Combobox htmlProperty;
-    private Combobox urlProperty;
-    private Combobox mediaProperty;
-
-    private Textbox panelName;
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected DefaultSettingsDialog(SettingAware settingsAware) {
         super();
@@ -135,6 +117,22 @@ public class DefaultSettingsDialog extends AbstractDialog implements SettingsDia
         }
     }
 
+    public static final L10nString L10N_LIST_HEADER_SETTING = new L10nString(DefaultSettingsDialog.class,
+            "list_header_setting", "Setting");
+    public static final L10nString L10N_LIST_HEADER_VALUE = new L10nString(DefaultSettingsDialog.class,
+            "list_header_value", "Value");
+    private final String ATTRIB_DATABINDER = DataBinder.class.getName();
+    private final List<Listbox> listboxes = new ArrayList<Listbox>();
+    private final SortedMap<SettingEnum, Setting<?>> settings = new TreeMap<SettingEnum,
+            Setting<?>>(new SettingComparator());
+    private final String ownerClassName;
+    private Combobox bindProperty;
+    private Combobox htmlProperty;
+    private Combobox urlProperty;
+    private Combobox mediaProperty;
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private Textbox panelName;
+
     // -------------------------- OTHER METHODS --------------------------
 
     @Override
@@ -157,115 +155,6 @@ public class DefaultSettingsDialog extends AbstractDialog implements SettingsDia
     }
 
     // -------------------------- INNER CLASSES --------------------------
-
-    private class SettingComparator implements Comparator<SettingEnum> {
-        @Override
-        public int compare(SettingEnum o1, SettingEnum o2) {
-            String s1 = o1.getCategory().getKey() + "-" + MessageFormat.format("{0,number,0000}", o1.ordinal());
-            String s2 = o2.getCategory().getKey() + "-" + MessageFormat.format("{0,number,0000}", o2.ordinal());
-            return s1.compareTo(s2);
-        }
-    }
-
-    private class ListboxRenderer implements ListitemRenderer<Setting<?>>, RendererCtrl {
-        private final Listbox listbox;
-
-        private ListboxRenderer(Listbox listbox) {
-            this.listbox = listbox;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public void render(Listitem item, Setting<?> setting, int index) throws Exception {
-            final String beanid = "setting_" + setting.getId().name();
-            new Listcell(L10nUtil.getMessage(setting.getId().getClass(), setting.getId().name(),
-                    setting.getId().name())).setParent(item);
-
-            DataBinder dataBinder = (DataBinder) item.getListbox().getAttribute(ATTRIB_DATABINDER);
-            dataBinder.bindBean(beanid, setting);
-
-            Listcell listcell = new Listcell();
-            listcell.setParent(item);
-            Component comp;
-            if (setting.getId() == SettingEnum.BIND_PROPERTY) {
-                bindProperty = new Combobox();
-                bindProperty.setWidth("60%");
-                bindProperty.setReadonly(true);
-                loadBindProperties();
-                comp = bindProperty;
-                ZkUtil.addBinding(dataBinder, comp, beanid, "value", ComboItemConverter.class);
-            } else if (setting.getId() == SettingEnum.HTML_PROPERTY) {
-                htmlProperty = new Combobox();
-                htmlProperty.setWidth("60%");
-                htmlProperty.setReadonly(true);
-                loadAnnotatedProperties(htmlProperty, HtmlHolder.class);
-                comp = htmlProperty;
-                ZkUtil.addBinding(dataBinder, comp, beanid, "value", ComboItemConverter.class);
-            } else if (setting.getId() == SettingEnum.URL_PROPERTY) {
-                urlProperty = new Combobox();
-                urlProperty.setWidth("60%");
-                urlProperty.setReadonly(true);
-                loadAnnotatedProperties(urlProperty, UrlHolder.class);
-                comp = urlProperty;
-                ZkUtil.addBinding(dataBinder, comp, beanid, "value", ComboItemConverter.class);
-            } else if (setting.getId() == SettingEnum.MEDIA_PROPERTY) {
-                mediaProperty = new Combobox();
-                mediaProperty.setWidth("60%");
-                mediaProperty.setReadonly(true);
-                loadAnnotatedProperties(mediaProperty, MediaHolder.class);
-                loadAnnotatedProperties(mediaProperty, ImageHolder.class, true);
-                comp = mediaProperty;
-                ZkUtil.addBinding(dataBinder, comp, beanid, "value", ComboItemConverter.class);
-            } else {
-                comp = ZkUtil.getEditableComponentForJavaType(setting.getType(), setting.getSubType());
-                ZkUtil.addBinding(dataBinder, comp, beanid, "value");
-            }
-
-
-            if (setting.getId() == SettingEnum.PANEL_NAME) {
-                panelName = (Textbox) comp;
-            } else if (setting.getId() == SettingEnum.TARGET_TYPE) {
-                comp.addEventListener(Events.ON_CHANGE, new org.zkoss.zk.ui.event.EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        if (panelName != null) {
-                            panelName.setText(((Combobox) event.getTarget()).getText());
-                        }
-                        loadBindProperties();
-                        loadAnnotatedProperties(htmlProperty, HtmlHolder.class);
-                        loadAnnotatedProperties(urlProperty, UrlHolder.class);
-                        loadAnnotatedProperties(mediaProperty, MediaHolder.class);
-                        loadAnnotatedProperties(mediaProperty, ImageHolder.class, true);
-                    }
-                });
-            } else if (setting.getId() == SettingEnum.MASTER_TYPE) {
-                comp.addEventListener(Events.ON_CHANGE, new org.zkoss.zk.ui.event.EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        loadBindProperties();
-                    }
-                });
-            }
-
-            comp.setParent(listcell);
-
-        }
-
-        @Override
-        public void doTry() {
-            listbox.setAttribute(ATTRIB_DATABINDER, new DataBinder());
-        }
-
-        @Override
-        public void doCatch(Throwable ex) throws Throwable {
-            // nothing to do
-        }
-
-        @Override
-        public void doFinally() {
-            ((DataBinder) listbox.getAttribute(ATTRIB_DATABINDER)).loadAll();
-        }
-    }
 
     @SuppressWarnings("unchecked")
     private void loadBindProperties() throws Exception {
@@ -318,6 +207,108 @@ public class DefaultSettingsDialog extends AbstractDialog implements SettingsDia
                     comboitem.setParent(combobox);
                 }
             }
+        }
+    }
+
+    private class SettingComparator implements Comparator<SettingEnum> {
+        public int compare(SettingEnum o1, SettingEnum o2) {
+            String s1 = o1.getCategory().getKey() + "-" + MessageFormat.format("{0,number,0000}", o1.ordinal());
+            String s2 = o2.getCategory().getKey() + "-" + MessageFormat.format("{0,number,0000}", o2.ordinal());
+            return s1.compareTo(s2);
+        }
+    }
+
+    private class ListboxRenderer implements ListitemRenderer<Setting<?>>, RendererCtrl {
+        private ListboxRenderer(Listbox listbox) {
+            this.listbox = listbox;
+        }
+
+        private final Listbox listbox;
+
+        @SuppressWarnings("unchecked")
+        public void render(Listitem item, Setting<?> setting, int index) throws Exception {
+            final String beanid = "setting_" + setting.getId().name();
+            new Listcell(L10nUtil.getMessage(setting.getId().getClass(), setting.getId().name(),
+                    setting.getId().name())).setParent(item);
+
+            DataBinder dataBinder = (DataBinder) item.getListbox().getAttribute(ATTRIB_DATABINDER);
+            dataBinder.bindBean(beanid, setting);
+
+            Listcell listcell = new Listcell();
+            listcell.setParent(item);
+            Component comp;
+            if (setting.getId() == SettingEnum.BIND_PROPERTY) {
+                bindProperty = new Combobox();
+                bindProperty.setWidth("60%");
+                bindProperty.setReadonly(true);
+                loadBindProperties();
+                comp = bindProperty;
+                ZkUtil.addBinding(dataBinder, comp, beanid, "value", ComboItemConverter.class);
+            } else if (setting.getId() == SettingEnum.HTML_PROPERTY) {
+                htmlProperty = new Combobox();
+                htmlProperty.setWidth("60%");
+                htmlProperty.setReadonly(true);
+                loadAnnotatedProperties(htmlProperty, HtmlHolder.class);
+                comp = htmlProperty;
+                ZkUtil.addBinding(dataBinder, comp, beanid, "value", ComboItemConverter.class);
+            } else if (setting.getId() == SettingEnum.URL_PROPERTY) {
+                urlProperty = new Combobox();
+                urlProperty.setWidth("60%");
+                urlProperty.setReadonly(true);
+                loadAnnotatedProperties(urlProperty, UrlHolder.class);
+                comp = urlProperty;
+                ZkUtil.addBinding(dataBinder, comp, beanid, "value", ComboItemConverter.class);
+            } else if (setting.getId() == SettingEnum.MEDIA_PROPERTY) {
+                mediaProperty = new Combobox();
+                mediaProperty.setWidth("60%");
+                mediaProperty.setReadonly(true);
+                loadAnnotatedProperties(mediaProperty, MediaHolder.class);
+                loadAnnotatedProperties(mediaProperty, ImageHolder.class, true);
+                comp = mediaProperty;
+                ZkUtil.addBinding(dataBinder, comp, beanid, "value", ComboItemConverter.class);
+            } else {
+                comp = ZkUtil.getEditableComponentForJavaType(setting.getType(), setting.getSubType());
+                ZkUtil.addBinding(dataBinder, comp, beanid, "value");
+            }
+
+
+            if (setting.getId() == SettingEnum.PANEL_NAME) {
+                panelName = (Textbox) comp;
+            } else if (setting.getId() == SettingEnum.TARGET_TYPE) {
+                comp.addEventListener(Events.ON_CHANGE, new org.zkoss.zk.ui.event.EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        if (panelName != null) {
+                            panelName.setText(((Combobox) event.getTarget()).getText());
+                        }
+                        loadBindProperties();
+                        loadAnnotatedProperties(htmlProperty, HtmlHolder.class);
+                        loadAnnotatedProperties(urlProperty, UrlHolder.class);
+                        loadAnnotatedProperties(mediaProperty, MediaHolder.class);
+                        loadAnnotatedProperties(mediaProperty, ImageHolder.class, true);
+                    }
+                });
+            } else if (setting.getId() == SettingEnum.MASTER_TYPE) {
+                comp.addEventListener(Events.ON_CHANGE, new org.zkoss.zk.ui.event.EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        loadBindProperties();
+                    }
+                });
+            }
+
+            comp.setParent(listcell);
+
+        }
+
+        public void doTry() {
+            listbox.setAttribute(ATTRIB_DATABINDER, new DataBinder());
+        }
+
+        public void doCatch(Throwable ex) throws Throwable {
+            // nothing to do
+        }
+
+        public void doFinally() {
+            ((DataBinder) listbox.getAttribute(ATTRIB_DATABINDER)).loadAll();
         }
     }
 

@@ -40,12 +40,6 @@ public abstract class AbstractClickableCommandDecorator extends AbstractCommandD
         EventListener<Event> {
 // ------------------------------ FIELDS ------------------------------
 
-    private static final String ON_CLICK_ECHO = Events.ON_CLICK + "Echo";
-
-    protected final LabelImageElement clickable;
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
     protected AbstractClickableCommandDecorator(Command command) {
         super(command);
         clickable = getClickable();
@@ -61,6 +55,11 @@ public abstract class AbstractClickableCommandDecorator extends AbstractCommandD
         clickable.addEventListener(ON_CLICK_ECHO, this);
     }
 
+    private static final String ON_CLICK_ECHO = Events.ON_CLICK + "Echo";
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    protected final LabelImageElement clickable;
+
     protected abstract LabelImageElement getClickable();
 
 // ------------------------ INTERFACE METHODS ------------------------
@@ -68,7 +67,6 @@ public abstract class AbstractClickableCommandDecorator extends AbstractCommandD
 
 // --------------------- Interface CommandDecorator ---------------------
 
-    @Override
     public void attach(Object container) {
         if (!Component.class.isInstance(container))
             throw new IllegalArgumentException("container is not an instance of " + Component.class.getName());
@@ -76,18 +74,15 @@ public abstract class AbstractClickableCommandDecorator extends AbstractCommandD
         command.addMessageListener(this);
     }
 
-    @Override
     public void dettach() {
         clickable.detach();
         command.removeMessageListener(this);
     }
 
-    @Override
     public boolean isAttached() {
         return clickable.getPage() != null;
     }
 
-    @Override
     public void render() {
         if (command.isActive() && isDisabled()) {
             setDisabled(false);
@@ -96,12 +91,10 @@ public abstract class AbstractClickableCommandDecorator extends AbstractCommandD
         }
     }
 
-    @Override
     public String getName() {
         return clickable.getLabel();
     }
 
-    @Override
     public void setName(String name) {
         clickable.setLabel(name);
     }
@@ -109,7 +102,6 @@ public abstract class AbstractClickableCommandDecorator extends AbstractCommandD
 // --------------------- Interface EventListener ---------------------
 
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_CLICK.equals(event.getName())) {
             Clients.showBusy(null);

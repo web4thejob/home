@@ -54,12 +54,10 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
 
 // --------------------- Interface SecurityContext ---------------------
 
-    @Override
     public void clearContext() {
         SecurityContextHolder.clearContext();
     }
 
-    @Override
     public UserIdentity getUserIdentity() {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetailsEx) {
             return ((UserDetailsEx) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
@@ -68,7 +66,6 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
         return null;
     }
 
-    @Override
     public boolean hasRole(String role) {
         role = "ROLE_" + role;
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -82,7 +79,6 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
         return false;
     }
 
-    @Override
     public boolean isAccessible(String securityId) {
         if (isAdministrator()) {
             return true;
@@ -120,7 +116,6 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
         return true;
     }
 
-    @Override
     public boolean isPasswordValid(String rawPassword) {
         UserIdentity userIdentity = getUserIdentity();
         if (userIdentity == null) {
@@ -129,7 +124,6 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
         return ContextUtil.getSecurityService().isPasswordValid(userIdentity, rawPassword);
     }
 
-    @Override
     public boolean isAdministrator() {
         if (administrator == null) {
             administrator = hasRole(RoleIdentity.ROLE_ADMINISTRATOR);
@@ -137,7 +131,6 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
         return administrator;
     }
 
-    @Override
     public boolean renewPassword(String oldPassword, String newPassword) {
         if (isPasswordValid(oldPassword)) {
             return ContextUtil.getSecurityService().renewPassword(getUserIdentity(), oldPassword, newPassword);
@@ -145,7 +138,6 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
         return false;
     }
 
-    @Override
     public String getAuthorizationMenu() {
         Element userMenu = new Element("uid_" + getUserIdentity().getId());
 
@@ -167,7 +159,6 @@ public class SpringSecurityContext implements SecurityContext, InitializingBean 
 
 // -------------------------- OTHER METHODS --------------------------
 
-    @Override
     public void afterPropertiesSet() throws Exception {
         List<Element> elements = getAuthorizationElements();
         for (Element element : elements) {

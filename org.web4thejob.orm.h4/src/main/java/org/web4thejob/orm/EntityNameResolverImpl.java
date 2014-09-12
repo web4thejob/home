@@ -45,7 +45,6 @@ public class EntityNameResolverImpl implements EntityNameResolver {
         return getClass().hashCode();
     }
 
-    @Override
     public String resolveEntityName(Object entity) {
 
         final Class<? extends Entity> entityType = resolveEntityType((Entity) entity);

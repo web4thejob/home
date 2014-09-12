@@ -48,13 +48,11 @@ public class DefaultListboxRenderer implements ListboxRenderer {
 
     // --------------------- Interface ListboxRenderer ---------------------
 
-    @Override
     public void arrangeForRenderScheme(Listbox listbox, RenderScheme renderScheme) {
         arrangeForRenderScheme(listbox, renderScheme, null);
     }
 
     @SuppressWarnings("rawtypes")
-    @Override
     public void arrangeForRenderScheme(Listbox listbox, RenderScheme renderScheme,
                                        ItemRendererCallback itemRendererCallback) {
         listbox.removeAttribute(ATTRIB_STATUS_HOLDER);
@@ -140,12 +138,11 @@ public class DefaultListboxRenderer implements ListboxRenderer {
 
     // --------------------- Interface ListitemRenderer ---------------------
 
-    @Override
     public void render(Listitem item, Entity data, int index) throws Exception {
         boolean inactive = false;
         PropertyMetadata statusHolderProp = (PropertyMetadata) item.getListbox().getAttribute(ATTRIB_STATUS_HOLDER);
         if (statusHolderProp != null) {
-            inactive = statusHolderProp.getValue(data).equals(statusHolderProp.getAnnotation(StatusHolder
+            inactive = statusHolderProp.<Object, Entity>getValue(data).equals(statusHolderProp.getAnnotation(StatusHolder
                     .class).InactiveWhen());
         }
 
@@ -174,16 +171,15 @@ public class DefaultListboxRenderer implements ListboxRenderer {
     // -------------------------- INNER CLASSES --------------------------
 
     private class FieldComparator implements Comparator<Entity> {
-        private final PathMetadata pathMetadata;
-        private final boolean ascending;
-
         public FieldComparator(PathMetadata pathMetadata, boolean ascending) {
             this.pathMetadata = pathMetadata;
             this.ascending = ascending;
         }
 
+        private final PathMetadata pathMetadata;
+        private final boolean ascending;
+
         @SuppressWarnings({"rawtypes", "unchecked"})
-        @Override
         public int compare(Entity e1, Entity e2) {
             int result = 0;
             Object o1 = pathMetadata.getValue(e1);
@@ -206,7 +202,6 @@ public class DefaultListboxRenderer implements ListboxRenderer {
     }
 
     private class SortHandler implements EventListener<Event> {
-        @Override
         public void onEvent(Event event) throws Exception {
             if (Events.ON_SORT.equals(event.getName())) {
                 Clients.showBusy(null);

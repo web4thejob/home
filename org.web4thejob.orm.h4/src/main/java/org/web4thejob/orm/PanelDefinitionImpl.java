@@ -50,101 +50,82 @@ import java.io.Serializable;
     @SuppressWarnings("unused")
     private int version;
 
-    @Override
     public String getBeanId() {
         return beanId;
     }
 
-    @Override
-    public String getDefinition() {
-        return definition;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
     public void setBeanId(String beanId) {
         this.beanId = beanId;
     }
 
-    @Override
+    public String getDefinition() {
+        return definition;
+    }
+
     public void setDefinition(String definition) {
         this.definition = definition;
     }
 
-    @Override
+    public String getDescription() {
+        return description;
+    }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    @Override
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }
 
-    @Override
     public String getType() {
         return type;
     }
 
-    @Override
     public void setType(String type) {
         this.type = type;
     }
 
-    @Override
     public Identity getOwner() {
         return owner;
     }
 
-    @Override
     public void setOwner(Identity owner) {
         this.owner = owner;
     }
 
-    @Override
     public String getTags() {
         return tags;
     }
 
-    @Override
     public void setTags(String tags) {
         this.tags = tags;
     }
 
-    @Override
     public String getImage() {
         return image;
     }
 
-    @Override
     public void setImage(String image) {
         this.image = image;
     }

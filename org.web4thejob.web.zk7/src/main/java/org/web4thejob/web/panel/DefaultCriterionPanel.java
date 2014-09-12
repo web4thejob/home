@@ -66,30 +66,6 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
         EventListener<Event> {
     // ------------------------------ FIELDS ------------------------------
 
-    public static final L10nString L10N_LIST_HEADER_FIXED = new L10nString(DefaultCriterionPanel.class,
-            "list_header_fixed", "Fixed");
-    public static final L10nString L10N_LIST_HEADER_PROPERTY = new L10nString(DefaultCriterionPanel.class,
-            "list_header_property", "Property");
-    public static final L10nString L10N_LIST_HEADER_CONDITION = new L10nString(DefaultCriterionPanel.class,
-            "list_header_condition", "Condition");
-    public static final L10nString L10N_LIST_HEADER_VALUE = new L10nString(DefaultCriterionPanel.class,
-            "list_header_value", "Value");
-    public static final L10nString L10N_BUTTON_CLEAR = new L10nString(DefaultCriterionPanel.class, "button_clear",
-            "clear");
-    public static final L10nString L10N_BUTTON_REMOVE = new L10nString(DefaultCriterionPanel.class, "button_remove",
-            "remove");
-    public static final String ATTRIB_HEADER_FIXED = "fixed";
-    private static final String ATTRIB_CONDITION = "condition";
-    private static final String ATTRIB_CLEAR = "clear";
-    private static final String ATTRIB_REMOVE = "remove";
-    private static final String ATTRIB_VALUEBOX = "valuebox";
-    private static final String ATTRIB_CRITERION = "criterion";
-    private static final String ATTRIB_BEANID = "beanid";
-    private final Listbox listbox = new Listbox();
-    //private DataBinder dataBinder;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     public DefaultCriterionPanel() {
         ZkUtil.setParentOfChild((Component) base, listbox);
 //        listbox.setWidth("100%");
@@ -124,6 +100,30 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
         listbox.setItemRenderer(new MutableListRenderer());
     }
 
+    private static final String ATTRIB_CONDITION = "condition";
+    private static final String ATTRIB_CLEAR = "clear";
+    private static final String ATTRIB_REMOVE = "remove";
+    private static final String ATTRIB_VALUEBOX = "valuebox";
+    private static final String ATTRIB_CRITERION = "criterion";
+    private static final String ATTRIB_BEANID = "beanid";
+    public static final L10nString L10N_LIST_HEADER_FIXED = new L10nString(DefaultCriterionPanel.class,
+            "list_header_fixed", "Fixed");
+    public static final L10nString L10N_LIST_HEADER_PROPERTY = new L10nString(DefaultCriterionPanel.class,
+            "list_header_property", "Property");
+    public static final L10nString L10N_LIST_HEADER_CONDITION = new L10nString(DefaultCriterionPanel.class,
+            "list_header_condition", "Condition");
+    public static final L10nString L10N_LIST_HEADER_VALUE = new L10nString(DefaultCriterionPanel.class,
+            "list_header_value", "Value");
+    public static final L10nString L10N_BUTTON_CLEAR = new L10nString(DefaultCriterionPanel.class, "button_clear",
+            "clear");
+    public static final L10nString L10N_BUTTON_REMOVE = new L10nString(DefaultCriterionPanel.class, "button_remove",
+            "remove");
+    public static final String ATTRIB_HEADER_FIXED = "fixed";
+    //private DataBinder dataBinder;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private final Listbox listbox = new Listbox();
+
     // ------------------------ INTERFACE METHODS ------------------------
 
     // --------------------- Interface CriterionPanel ---------------------
@@ -136,7 +136,6 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public List<Criterion> getCriteria() {
         saveAll();
@@ -144,12 +143,10 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    @Override
     public void addCriterion(Criterion criterion) {
         ((ListModelList) listbox.getModel()).add(criterion);
     }
 
-    @Override
     public void clearAll() {
         listbox.setModel(new ListModelList<Criterion>());
     }
@@ -157,7 +154,6 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
     // --------------------- Interface EventListener ---------------------
 
     @SuppressWarnings("rawtypes")
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_SELECT.equals(event.getName())) {
             arrangeForState(PanelState.FOCUSED);
@@ -299,7 +295,6 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
         dispatchMessage(ContextUtil.getMessage(MessageEnum.VALUE_CHANGED, this));
     }
 
-    @Override
     public void clear() {
         @SuppressWarnings({"rawtypes", "unchecked"}) ListModelList<Criterion> oldList = (ListModelList) listbox
                 .getModel();
@@ -330,7 +325,6 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
     private class MutableListRenderer implements ListitemRenderer<Criterion>, EventListener<Event> {
         final private static int tooltipLimit = 30;
 
-        @Override
         @SuppressWarnings("unchecked")
         public void render(Listitem item, Criterion criterion, int index) throws Exception {
             final boolean enforceFixed = getFixedHeader() == null;
@@ -535,7 +529,6 @@ public class DefaultCriterionPanel extends AbstractZkTargetTypeAwarePanel implem
 
         }
 
-        @Override
         public void onEvent(Event event) throws Exception {
             if (Events.ON_CHANGE.equals(event.getName()) && event.getTarget().hasAttribute(ATTRIB_CONDITION)) {
                 arrangeValueBoxForCondition(null, (Combobox) event.getTarget());

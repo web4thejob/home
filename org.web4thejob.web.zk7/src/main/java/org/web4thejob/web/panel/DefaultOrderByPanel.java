@@ -59,15 +59,6 @@ import java.util.Set;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultOrderByPanel extends AbstractZkTargetTypeAwarePanel implements OrderByPanel, EventListener<Event> {
-    public static final L10nString L10N_BUTTON_REMOVE = new L10nString(DefaultCriterionPanel.class, "button_remove",
-            "remove");
-    public static final L10nString L10N_LIST_HEADER_DESCENDING = new L10nString(DefaultOrderByPanel.class,
-            "list_header_descending", "Descending");
-    private static final String ATTRIB_REMOVE = "remove";
-
-
-    private final Listbox listbox = new Listbox();
-
     public DefaultOrderByPanel() {
         ZkUtil.setParentOfChild((Component) base, listbox);
 //        listbox.setWidth("100%");
@@ -99,6 +90,13 @@ public class DefaultOrderByPanel extends AbstractZkTargetTypeAwarePanel implemen
 
 
     }
+
+    private static final String ATTRIB_REMOVE = "remove";
+    public static final L10nString L10N_BUTTON_REMOVE = new L10nString(DefaultCriterionPanel.class, "button_remove",
+            "remove");
+    public static final L10nString L10N_LIST_HEADER_DESCENDING = new L10nString(DefaultOrderByPanel.class,
+            "list_header_descending", "Descending");
+    private final Listbox listbox = new Listbox();
 
     private void appendFixedHeader() {
         saveAll();
@@ -242,7 +240,6 @@ public class DefaultOrderByPanel extends AbstractZkTargetTypeAwarePanel implemen
         listbox.setModel(listModel);
     }
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_SELECT.equals(event.getName())) {
             arrangeForState(PanelState.FOCUSED);
@@ -250,20 +247,17 @@ public class DefaultOrderByPanel extends AbstractZkTargetTypeAwarePanel implemen
     }
 
 
-    @Override
     @SuppressWarnings("unchecked")
     public List<OrderBy> getOrderings() {
         saveAll();
         return (List<OrderBy>) listbox.getModel();
     }
 
-    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void addOrderBy(OrderBy orderBy) {
         ((ListModelList) listbox.getModel()).add(orderBy);
     }
 
-    @Override
     public void clear() {
         @SuppressWarnings({"rawtypes", "unchecked"}) ListModelList<OrderBy> oldList = (ListModelList) listbox
                 .getModel();
@@ -281,7 +275,6 @@ public class DefaultOrderByPanel extends AbstractZkTargetTypeAwarePanel implemen
         dispatchMessage(ContextUtil.getMessage(MessageEnum.VALUE_CHANGED, this));
     }
 
-    @Override
     public void clearAll() {
         listbox.setModel(new ListModelList<OrderBy>());
     }
@@ -297,7 +290,6 @@ public class DefaultOrderByPanel extends AbstractZkTargetTypeAwarePanel implemen
 
     private class MutableListRenderer implements ListitemRenderer<OrderBy>, EventListener<Event> {
 
-        @Override
         public void render(Listitem item, OrderBy orderBy, int index) throws Exception {
             final boolean enforceFixed = getFixedHeader() == null;
             Listcell listcell;
@@ -358,7 +350,6 @@ public class DefaultOrderByPanel extends AbstractZkTargetTypeAwarePanel implemen
             dataBinder.loadAll();
         }
 
-        @Override
         public void onEvent(Event event) throws Exception {
             if (event.getTarget().hasAttribute(ATTRIB_REMOVE)) {
                 Listitem item = (Listitem) event.getTarget().getAttribute(ATTRIB_REMOVE);

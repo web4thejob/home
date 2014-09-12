@@ -35,14 +35,13 @@ import java.util.Set;
  */
 
 public class SettingsDialogListener implements MessageListener {
-    private final SettingAware settingAware;
-
     public SettingsDialogListener(SettingAware settingAware) {
         this.settingAware = settingAware;
     }
 
+    private final SettingAware settingAware;
+
     @SuppressWarnings("unchecked")
-    @Override
     public void processMessage(Message message) {
         if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId()) {
             Set<Setting<?>> settings = (Set<Setting<?>>) message.getArgs().get(MessageArgEnum.ARG_ITEM);

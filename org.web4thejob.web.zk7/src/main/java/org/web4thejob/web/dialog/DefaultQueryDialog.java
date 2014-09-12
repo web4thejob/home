@@ -46,27 +46,23 @@ import java.util.Set;
 @Component
 @Scope("prototype")
 public class DefaultQueryDialog extends AbstractDialog implements QueryDialog {
-    // ------------------------------ FIELDS ------------------------------
-    public static final L10nString L10N_TITLE_QUERY_FOR = new L10nString(DefaultQueryDialog.class, "title_query_for",
-            "Query > {0}");
-    public static final L10nString L10N_MSG_SELECT_ENTITY_TO_CONTINUE = new L10nString(DefaultQueryDialog.class,
-            "msg_select_entity_to_continue",
-            "No entity is selected. You need to select an entity in order to continue, or hit Esc to cancel.");
-
-
-    private final Set<Setting<?>> settings;
-    private final QueryResultMode queryResultMode;
-    private QueryPanel queryPanel;
-
-    private List<Subquery> subqueryConstraints;
-// --------------------------- CONSTRUCTORS ---------------------------
-
     public DefaultQueryDialog(Set<Setting<?>> settings, QueryResultMode queryResultMode) {
         super();
         this.settings = settings;
         this.queryResultMode = queryResultMode;
     }
 
+    // ------------------------------ FIELDS ------------------------------
+    public static final L10nString L10N_TITLE_QUERY_FOR = new L10nString(DefaultQueryDialog.class, "title_query_for",
+            "Query > {0}");
+    public static final L10nString L10N_MSG_SELECT_ENTITY_TO_CONTINUE = new L10nString(DefaultQueryDialog.class,
+            "msg_select_entity_to_continue",
+            "No entity is selected. You need to select an entity in order to continue, or hit Esc to cancel.");
+    private final Set<Setting<?>> settings;
+    private final QueryResultMode queryResultMode;
+    private QueryPanel queryPanel;
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private List<Subquery> subqueryConstraints;
 
     @Override
     protected String prepareTitle() {
@@ -144,27 +140,22 @@ public class DefaultQueryDialog extends AbstractDialog implements QueryDialog {
 
         if (queryPanel.getListViewPanel() != null) {
             queryPanel.addMessageListener(new MessageAware() {
-                @Override
                 public boolean addMessageListener(MessageAware messageAware) {
                     throw new UnsupportedOperationException();
                 }
 
-                @Override
                 public void dispatchMessage(Message message) {
                     processMessage(message);
                 }
 
-                @Override
                 public boolean removeMessageListener(MessageAware messageAware) {
                     throw new UnsupportedOperationException();
                 }
 
-                @Override
                 public Set<MessageAware> getListeners() {
                     throw new UnsupportedOperationException();
                 }
 
-                @Override
                 public void processMessage(Message message) {
                     if (MessageEnum.ENTITY_ACCEPTED == message.getId()) {
                         if (isOKReady()) {
@@ -194,7 +185,6 @@ public class DefaultQueryDialog extends AbstractDialog implements QueryDialog {
         return null;
     }
 
-    @Override
     public void setSubqueryConstraints(List<Subquery> subquery) {
         this.subqueryConstraints = subquery;
     }
@@ -208,7 +198,6 @@ public class DefaultQueryDialog extends AbstractDialog implements QueryDialog {
         }
     }
 
-    @Override
     public Query getQuery() {
         if (queryPanel != null) {
             return queryPanel.getQuery();

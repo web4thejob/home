@@ -37,12 +37,6 @@ import java.util.Collection;
 public class UserDetailsExImpl implements UserDetailsEx {
     // ------------------------------ FIELDS ------------------------------
 
-    private static final long serialVersionUID = 1L;
-    private final UserIdentity userIdentity;
-    private final Collection<GrantedAuthority> authorities;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     public UserDetailsExImpl(UserIdentity userIdentity) {
         if (userIdentity == null) {
             throw new IllegalArgumentException();
@@ -51,6 +45,11 @@ public class UserDetailsExImpl implements UserDetailsEx {
         this.authorities = new ArrayList<GrantedAuthority>(1);
         loadAuthorities();
     }
+    private static final long serialVersionUID = 1L;
+    private final UserIdentity userIdentity;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private final Collection<GrantedAuthority> authorities;
 
     private void loadAuthorities() {
         if (userIdentity.isNewInstance()) {
@@ -75,42 +74,34 @@ public class UserDetailsExImpl implements UserDetailsEx {
 
     // --------------------- Interface UserDetails ---------------------
 
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
 
-    @Override
     public String getPassword() {
         return userIdentity.getPassword();
     }
 
-    @Override
     public String getUsername() {
         return userIdentity.getCode();
     }
 
-    @Override
     public boolean isAccountNonExpired() {
         return userIdentity.isAccountNonExpired();
     }
 
-    @Override
     public boolean isAccountNonLocked() {
         return userIdentity.isAccountNonLocked();
     }
 
-    @Override
     public boolean isCredentialsNonExpired() {
         return userIdentity.isCredentialsNonExpired();
     }
 
-    @Override
     public boolean isEnabled() {
         return userIdentity.isEnabled();
     }
 
-    @Override
     public UserIdentity getUserIdentity() {
         return userIdentity;
     }

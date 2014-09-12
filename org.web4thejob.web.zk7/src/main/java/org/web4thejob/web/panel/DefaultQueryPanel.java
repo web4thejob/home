@@ -50,20 +50,6 @@ import java.util.Set;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultQueryPanel extends AbstractBorderLayoutPanel implements QueryPanel {
-    // ------------------------------ FIELDS ------------------------------
-    public static final L10nString L10N_TAB_TITLE_CRITERIA = new L10nString(DefaultQueryPanel.class,
-            "tab_title_criteria", "Criteria");
-    public static final L10nString L10N_TAB_TITLE_ORDERING = new L10nString(DefaultQueryPanel.class,
-            "tab_title_ordering", "Ordering");
-
-    private final QueryResultMode queryResultMode;
-    private ModelCriteriaPanel modelCriteriaPanel;
-    private ModelOrderingsPanel modelOrderByPanel;
-    private ListViewPanel listViewPanel;
-    private List<Subquery> subqueryConstraints;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     public DefaultQueryPanel() {
         this(QueryResultMode.RETURN_ONE);
     }
@@ -72,14 +58,25 @@ public class DefaultQueryPanel extends AbstractBorderLayoutPanel implements Quer
         this.queryResultMode = queryResultMode;
     }
 
+    // ------------------------------ FIELDS ------------------------------
+    public static final L10nString L10N_TAB_TITLE_CRITERIA = new L10nString(DefaultQueryPanel.class,
+            "tab_title_criteria", "Criteria");
+    public static final L10nString L10N_TAB_TITLE_ORDERING = new L10nString(DefaultQueryPanel.class,
+            "tab_title_ordering", "Ordering");
+    private final QueryResultMode queryResultMode;
+    private ModelCriteriaPanel modelCriteriaPanel;
+    private ModelOrderingsPanel modelOrderByPanel;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private ListViewPanel listViewPanel;
+    private List<Subquery> subqueryConstraints;
+
     // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public ListViewPanel getListViewPanel() {
         return listViewPanel;
     }
 
-    @Override
     public Query getQuery() {
         if (!hasTargetType() || modelCriteriaPanel == null) {
             return null;
@@ -111,26 +108,29 @@ public class DefaultQueryPanel extends AbstractBorderLayoutPanel implements Quer
         return query;
     }
 
-    @Override
     public boolean hasTargetType() {
         return getTargetType() != null;
     }
 
-    @Override
     public Class<? extends Entity> getTargetType() {
         final Class<? extends Entity> entityType = getSettingValue(SettingEnum.TARGET_TYPE, null);
         if (entityType == null) return null;
         return ContextUtil.getBean(EntityFactory.class).toEntityType(entityType.getName());
     }
 
-    @Override
-    public QueryResultMode getQueryResultMode() {
-        return queryResultMode;
+    public void setTargetType(Class<? extends Entity> targetType) {
+        setSettingValue(SettingEnum.TARGET_TYPE, targetType);
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
 
     // --------------------- Interface CommandAware ---------------------
+
+    public QueryResultMode getQueryResultMode() {
+        return queryResultMode;
+    }
+
+    // --------------------- Interface LookupCommandOwner ---------------------
 
     @Override
     public Set<CommandEnum> getSupportedCommands() {
@@ -140,9 +140,8 @@ public class DefaultQueryPanel extends AbstractBorderLayoutPanel implements Quer
         return Collections.unmodifiableSet(supported);
     }
 
-    // --------------------- Interface LookupCommandOwner ---------------------
+    // --------------------- Interface TargetTypeAware ---------------------
 
-    @Override
     public void assignLookupDetails(Query query) {
         query.getCriteria().clear();
         query.getOrderings().clear();
@@ -165,13 +164,6 @@ public class DefaultQueryPanel extends AbstractBorderLayoutPanel implements Quer
             }
         }
 
-    }
-
-    // --------------------- Interface TargetTypeAware ---------------------
-
-    @Override
-    public void setTargetType(Class<? extends Entity> targetType) {
-        setSettingValue(SettingEnum.TARGET_TYPE, targetType);
     }
 
     // -------------------------- OTHER METHODS --------------------------
@@ -258,7 +250,6 @@ public class DefaultQueryPanel extends AbstractBorderLayoutPanel implements Quer
         }
     }
 
-    @Override
     public void renderAfterLookupChange(Query query) {
         if (query == null || !hasTargetType() || !getTargetType().equals(query.getTargetType())) {
             return;
@@ -402,7 +393,6 @@ public class DefaultQueryPanel extends AbstractBorderLayoutPanel implements Quer
         unregisterSetting(SettingEnum.EAST_CHILD_INDEX);
     }
 
-    @Override
     public void setSubqueryConstraints(List<Subquery> subquery) {
         this.subqueryConstraints = subquery;
     }

@@ -55,21 +55,6 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         EventListener<Event> {
     // ------------------------------ FIELDS ------------------------------
 
-    public static final L10nString L10N_HEADER_PANELS = new L10nString(DefaultMenuAuthorizationPanel.class,
-            "list_header_panels", "Panels");
-    public static final L10nString L10N_TREE_ITEM_ROOT = new L10nString(DefaultMenuAuthorizationPanel.class,
-            "tree_item_root", "Start Menu");
-    public static final L10nString L10N_COLUMN_ITEMS = new L10nString(DefaultMenuAuthorizationPanel.class,
-            "tree_col_menu_items", "Menu items");
-
-    private static final String ITEM_ROOT = "root";
-    private final Treeitem rootItem;
-    private final Tree tree;
-    private final Listbox listbox;
-    private final boolean readOnly;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     public DefaultMenuAuthorizationPanel() {
         this(true);
     }
@@ -136,6 +121,20 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         arrangeForState(PanelState.READY);
     }
 
+    private static final String ITEM_ROOT = "root";
+    public static final L10nString L10N_HEADER_PANELS = new L10nString(DefaultMenuAuthorizationPanel.class,
+            "list_header_panels", "Panels");
+    public static final L10nString L10N_TREE_ITEM_ROOT = new L10nString(DefaultMenuAuthorizationPanel.class,
+            "tree_item_root", "Start Menu");
+    public static final L10nString L10N_COLUMN_ITEMS = new L10nString(DefaultMenuAuthorizationPanel.class,
+            "tree_col_menu_items", "Menu items");
+    private final Treeitem rootItem;
+    private final Tree tree;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private final Listbox listbox;
+    private final boolean readOnly;
+
     protected void arrangeForReadOnly() {
         if (!readOnly) {
             super.registerCommands();
@@ -176,7 +175,6 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
 
     // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public boolean isReadOnly() {
         return readOnly;
     }
@@ -199,7 +197,6 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
 
     // --------------------- Interface EventListener ---------------------
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_SELECT.equals(event.getName())) {
             arrangeForState(PanelState.FOCUSED);
@@ -245,7 +242,6 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
             }
             listbox.setModel(panels);
             listbox.setItemRenderer(new ListitemRenderer<org.web4thejob.web.panel.Panel>() {
-                @Override
                 public void render(Listitem item, org.web4thejob.web.panel.Panel data, int index) throws Exception {
                     Listcell cell = new Listcell();
                     cell.setStyle("white-space:nowrap;");
@@ -263,7 +259,6 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
     }
 
 
-    @Override
     public String getDefinition() {
         final Element userMenu = new Element(ROOT_ELEMENT);
         appendXMLNode(userMenu, rootItem);
@@ -271,7 +266,6 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         return xml;
     }
 
-    @Override
     public void setDefinition(String xml) {
         if (rootItem.getTreechildren() != null) {
             rootItem.getTreechildren().detach();
@@ -314,7 +308,6 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         }
     }
 
-    @Override
     public Treeitem renderAddedMenu(Treeitem parent, String name) {
         Treeitem item = getNewTreeitem(name, "img/FOLDER.png");
         if (parent.getTreechildren() == null) {
@@ -337,7 +330,6 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         return panel;
     }
 
-    @Override
     public Treeitem renderAddedPanel(Treeitem parent, org.web4thejob.web.panel.Panel panel) {
         Treeitem item = getNewTreeitem(panel.toString(), panel.getImage());
         if (parent.getTreechildren() == null) {
@@ -432,7 +424,6 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         }
     }
 
-    @Override
     public Treeitem getRootItem() {
         return rootItem;
     }

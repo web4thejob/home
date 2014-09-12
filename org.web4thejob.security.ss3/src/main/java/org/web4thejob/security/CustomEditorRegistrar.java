@@ -28,7 +28,6 @@ import org.springframework.security.web.util.RequestMatcher;
  */
 
 public class CustomEditorRegistrar implements PropertyEditorRegistrar {
-    @Override
     public void registerCustomEditors(PropertyEditorRegistry registry) {
         registry.registerCustomEditor(RequestMatcher.class, new CustomRequestMatcherEditor());
     }

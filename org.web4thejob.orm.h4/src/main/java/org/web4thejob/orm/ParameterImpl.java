@@ -50,43 +50,35 @@ class ParameterImpl extends AbstractHibernateEntity implements Parameter {
         this.id = id;
     }
 
-    @Override
     public Identity getOwner() {
         return owner;
     }
 
-    @Override
     public void setOwner(Identity owner) {
         this.owner = owner;
     }
 
-    @Override
     public Category getCategory() {
         return category;
     }
 
 
-    @Override
     public void setCategory(Category category) {
         this.category = category;
     }
 
-    @Override
     public String getKey() {
         return key;
     }
 
-    @Override
     public void setKey(String key) {
         this.key = key;
     }
 
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }

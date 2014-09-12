@@ -27,11 +27,6 @@ import org.springframework.security.core.GrantedAuthority;
 public class GrantedAuthorityImpl implements GrantedAuthority {
     // ------------------------------ FIELDS ------------------------------
 
-    private static final long serialVersionUID = 1L;
-    private final RoleIdentity roleIdentity;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     public GrantedAuthorityImpl(RoleIdentity roleIdentity) {
         if (roleIdentity == null || roleIdentity.isNewInstance()) {
             throw new IllegalArgumentException();
@@ -39,11 +34,15 @@ public class GrantedAuthorityImpl implements GrantedAuthority {
         this.roleIdentity = roleIdentity;
     }
 
+    private static final long serialVersionUID = 1L;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private final RoleIdentity roleIdentity;
+
     // ------------------------ INTERFACE METHODS ------------------------
 
     // --------------------- Interface GrantedAuthority ---------------------
 
-    @Override
     public String getAuthority() {
         return "ROLE_" + roleIdentity.getCode();
     }

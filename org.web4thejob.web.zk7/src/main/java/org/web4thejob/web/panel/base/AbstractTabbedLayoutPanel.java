@@ -51,14 +51,6 @@ import java.util.List;
 public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel implements EventListener<Event> {
     // ------------------------------ FIELDS ------------------------------
 
-    private static final int DEFAULT_CHILDREN_COUNT = 10;
-    private static final String ATTRIB_STARTUP = "startup";
-    private final Tabbox tabbox = new Tabbox();
-    private Tab startupTab;
-    private int indexToReplace = -1;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     protected AbstractTabbedLayoutPanel() {
         ZkUtil.setParentOfChild((Component) base, tabbox);
         tabbox.setWidth("100%");
@@ -69,6 +61,14 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
         //tabbox.setMold("accordion-lite");
         //tabbox.setOrient("vertical");
     }
+
+    private static final int DEFAULT_CHILDREN_COUNT = 10;
+    private static final String ATTRIB_STARTUP = "startup";
+    private final Tabbox tabbox = new Tabbox();
+    private Tab startupTab;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private int indexToReplace = -1;
 
     @Override
     public void dispatchMessage(Message message) {
@@ -89,7 +89,6 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
 
     // --------------------- Interface EventListener ---------------------
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_CLOSE.equals(event.getName())) {
             final Tab tab = (Tab) event.getTarget();
@@ -162,7 +161,6 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
 
     // --------------------- Interface ParentCapable ---------------------
 
-    @Override
     public boolean accepts(Panel panel) {
         return getSettingValue(SettingEnum.CHILDREN_COUNT, DEFAULT_CHILDREN_COUNT) > subpanels.size();
     }
@@ -235,7 +233,6 @@ public abstract class AbstractTabbedLayoutPanel extends AbstractZkLayoutPanel im
             tabpanel.setParent(tabbox.getTabpanels());
             tabpanel.setAttribute(ATTRIB_STARTUP, true);
             startupTab.addEventListener(Events.ON_SELECT, new EventListener<SelectEvent<Tab, Tab>>() {
-                @Override
                 public void onEvent(SelectEvent<Tab, Tab> event) throws Exception {
                     addNewTab();
                 }

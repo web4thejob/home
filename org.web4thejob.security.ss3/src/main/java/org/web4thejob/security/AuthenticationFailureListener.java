@@ -32,7 +32,6 @@ import org.web4thejob.context.ContextUtil;
 @Component
 public class AuthenticationFailureListener implements ApplicationListener<AbstractAuthenticationFailureEvent> {
 
-    @Override
     public void onApplicationEvent(AbstractAuthenticationFailureEvent event) {
 
         if (event instanceof AuthenticationFailureCredentialsExpiredEvent) {

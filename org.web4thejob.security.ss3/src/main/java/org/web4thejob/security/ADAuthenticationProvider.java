@@ -40,22 +40,20 @@ import java.util.Hashtable;
  * @since 1.0.0
  */
 public class ADAuthenticationProvider implements AuthenticationProvider {
-    private String url;
-    private String pattern;
-    private UserDetailsService userDetailsService;
-
     public ADAuthenticationProvider(String url, String pattern, UserDetailsService userDetailsService) {
         this.url = url;
         this.pattern = pattern;
         this.userDetailsService = userDetailsService;
     }
+    private String url;
+    private String pattern;
+    private UserDetailsService userDetailsService;
 
     private String getPrincipal(String uname) {
         MessageFormat mf = new MessageFormat(pattern);
         return mf.format(new String[]{uname});
     }
 
-    @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         if (authentication.getName() == null || (String) authentication.getCredentials() == null) {
@@ -93,7 +91,6 @@ public class ADAuthenticationProvider implements AuthenticationProvider {
         }
     }
 
-    @Override
     public boolean supports(Class<?> authentication) {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }

@@ -29,11 +29,6 @@ import org.zkoss.zul.Hbox;
 public class AuthorizationPolicyViewerBox extends Hbox implements RawValueBox<String> {
     // ------------------------------ FIELDS ------------------------------
 
-    private static final long serialVersionUID = 1L;
-    protected final AuthorizationPolicyPanel authorizationPolicyPanel = new DefaultAuthorizationPolicyPanel();
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     public AuthorizationPolicyViewerBox() {
         super.setHeight("450px");
         super.setWidth("100%");
@@ -41,16 +36,19 @@ public class AuthorizationPolicyViewerBox extends Hbox implements RawValueBox<St
         authorizationPolicyPanel.attach(this);
     }
 
+    private static final long serialVersionUID = 1L;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    protected final AuthorizationPolicyPanel authorizationPolicyPanel = new DefaultAuthorizationPolicyPanel();
+
     // ------------------------ INTERFACE METHODS ------------------------
 
     // --------------------- Interface RawValueBox ---------------------
 
-    @Override
     public String getRawValue() {
         return authorizationPolicyPanel.getDefinition();
     }
 
-    @Override
     public void setRawValue(String rawValue) {
         authorizationPolicyPanel.setDefinition(rawValue);
     }
