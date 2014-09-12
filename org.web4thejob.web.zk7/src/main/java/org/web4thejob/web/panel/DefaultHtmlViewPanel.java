@@ -43,18 +43,18 @@ import org.zkoss.zul.Html;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultHtmlViewPanel extends AbstractMutablePanel implements HtmlViewPanel {
-    // ------------------------------ FIELDS ------------------------------
-    private Component comp;
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
     public DefaultHtmlViewPanel() {
         this(MutableMode.READONLY);
     }
 
+// --------------------------- CONSTRUCTORS ---------------------------
+
     public DefaultHtmlViewPanel(MutableMode mutableMode) {
         super(mutableMode);
     }
+
+    // ------------------------------ FIELDS ------------------------------
+    private Component comp;
 
     @Override
     protected void registerSettings() {
@@ -114,7 +114,6 @@ public class DefaultHtmlViewPanel extends AbstractMutablePanel implements HtmlVi
     private Component getHtmlEditor(PathMetadata pathMetadata) {
         final CKeditorBox editor = getCKeditor(pathMetadata);
         editor.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
-            @Override
             public void onEvent(Event event) throws Exception {
                 editor.focus();
             }

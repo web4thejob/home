@@ -42,27 +42,9 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public abstract class AbstractMultiSelectPanel<S, T> extends AbstractZkTargetTypeAwarePanel implements
         MultiSelectPanel<S, T>, EventListener<Event> {
-    public static final L10nString L10N_BUTTON_UP = new L10nString(AbstractMultiSelectPanel.class, "button_up", "Up");
-    public static final L10nString L10N_BUTTON_DOWN = new L10nString(AbstractMultiSelectPanel.class, "button_down",
-            "Down");
-    public static final L10nString L10N_BUTTON_ADD = new L10nString(AbstractMultiSelectPanel.class, "button_add", ">");
-    public static final L10nString L10N_BUTTON_ADD_ALL = new L10nString(AbstractMultiSelectPanel.class,
-            "button_addAll", ">>");
-    public static final L10nString L10N_BUTTON_REMOVE = new L10nString(AbstractMultiSelectPanel.class,
-            "button_remove", "<");
-    public static final L10nString L10N_BUTTON_REMOVE_ALL = new L10nString(AbstractMultiSelectPanel.class,
-            "button_removeAll", "<<");
-
-    protected final Borderlayout outerBorderlayout = new Borderlayout();
-    protected final Listbox targetBox = new Listbox();
-
     protected AbstractMultiSelectPanel() {
         this(false, false);
     }
-
-    abstract protected void buildSourceBox();
-
-    abstract protected void attachSourceBox(LayoutRegion parent);
 
     protected AbstractMultiSelectPanel(boolean readOnly, boolean excludeUpDown) {
         ZkUtil.setParentOfChild((Component) base, outerBorderlayout);
@@ -84,12 +66,27 @@ public abstract class AbstractMultiSelectPanel<S, T> extends AbstractZkTargetTyp
 
     }
 
+    public static final L10nString L10N_BUTTON_UP = new L10nString(AbstractMultiSelectPanel.class, "button_up", "Up");
+    public static final L10nString L10N_BUTTON_DOWN = new L10nString(AbstractMultiSelectPanel.class, "button_down",
+            "Down");
+    public static final L10nString L10N_BUTTON_ADD = new L10nString(AbstractMultiSelectPanel.class, "button_add", ">");
+    public static final L10nString L10N_BUTTON_ADD_ALL = new L10nString(AbstractMultiSelectPanel.class,
+            "button_addAll", ">>");
+    public static final L10nString L10N_BUTTON_REMOVE = new L10nString(AbstractMultiSelectPanel.class,
+            "button_remove", "<");
+    public static final L10nString L10N_BUTTON_REMOVE_ALL = new L10nString(AbstractMultiSelectPanel.class,
+            "button_removeAll", "<<");
+    protected final Borderlayout outerBorderlayout = new Borderlayout();
+    protected final Listbox targetBox = new Listbox();
+
+    abstract protected void buildSourceBox();
+
+    abstract protected void attachSourceBox(LayoutRegion parent);
 
     abstract protected void arrangeTargetHeaders(Listbox listbox);
 
     abstract protected void deselectFromSourceBox(T target);
 
-    @Override
     public void deselect(T target) {
         deselectFromSourceBox(target);
         ((ListModelList<T>) targetBox.getModel()).remove(target);
@@ -135,7 +132,6 @@ public abstract class AbstractMultiSelectPanel<S, T> extends AbstractZkTargetTyp
 
     abstract protected void adjustSourceList();
 
-    @Override
     public void deselectAll() {
         for (T item : getSelection()) {
             deselect(item);
@@ -143,7 +139,6 @@ public abstract class AbstractMultiSelectPanel<S, T> extends AbstractZkTargetTyp
     }
 
 
-    @Override
     public List<T> getSelection() {
         final List<T> selection = new ArrayList<T>();
         for (final Object item : (ListModelList<T>) targetBox.getModel()) {
@@ -155,7 +150,6 @@ public abstract class AbstractMultiSelectPanel<S, T> extends AbstractZkTargetTyp
 
     abstract protected void removeFromourceBox(S source);
 
-    @Override
     public T select(S source) {
         T target = getTargetFromSource(source);
         ((ListModelList<T>) targetBox.getModel()).add(target);
@@ -163,11 +157,9 @@ public abstract class AbstractMultiSelectPanel<S, T> extends AbstractZkTargetTyp
         return target;
     }
 
-    @Override
     abstract public void selectAll();
 
 
-    @Override
     public void setTargetList(List<T> list) {
         targetBox.setModel(new ListModelList<T>(list, true));
         adjustSourceList();
@@ -177,7 +169,6 @@ public abstract class AbstractMultiSelectPanel<S, T> extends AbstractZkTargetTyp
     abstract protected S getSourceBoxSelectedItem();
 
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (event.getTarget() instanceof Toolbarbutton && event.getName().equals(Events.ON_CLICK)) {
             if (event.getTarget().hasAttribute("add") && getSourceBoxSelectedItem() != null) {

@@ -35,12 +35,10 @@ import org.zkoss.zkplus.databind.DataBinder;
 public class EditableQueryHolderController<E extends EntityTypeQueryParameter, B extends DataBinder,
         C extends QueryDropDownBox> extends AbstractComponentController<E, B, C> {
 
-    @Override
     public boolean supportsEntity(Class<? extends Entity> entityType) {
         return EntityTypeQueryParameter.class.isAssignableFrom(entityType);
     }
 
-    @Override
     public boolean supportsComponent(Class<?> componentType) {
         return QueryDropDownBox.class.isAssignableFrom(componentType);
     }

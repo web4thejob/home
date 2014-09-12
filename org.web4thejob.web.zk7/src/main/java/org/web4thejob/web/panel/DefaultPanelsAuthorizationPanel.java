@@ -69,7 +69,6 @@ public class DefaultPanelsAuthorizationPanel extends AbstractSecuredResourceAuth
         return panels;
     }
 
-    @Override
     public void render(Listitem item, Panel data, int index) throws Exception {
         item.setImage(data.getImage());
         item.setLabel(data.toString());

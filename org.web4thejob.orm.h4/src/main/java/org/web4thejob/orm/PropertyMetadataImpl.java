@@ -186,7 +186,6 @@ import java.util.Set;
         }
     }
 
-    @Override
     public String getName() {
         return property.getName();
     }
@@ -222,54 +221,44 @@ import java.util.Set;
         return null;
     }
 
-    @Override
     public Class<?> getJavaType() {
         return property.getType().getReturnedClass();
     }
 
     // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public String getAlign() {
         return align;
     }
 
-    @Override
     public EntityMetadata getEntityMetadata() {
         return entityMetadata;
     }
 
-    @Override
     public String getFormat() {
         return format;
     }
 
-    @Override
     public String getFriendlyName() {
         return friendlyName;
     }
 
-    @Override
     public int getIndex() {
         return index;
     }
 
-    @Override
     public int getMaxLength() {
         return maxLength;
     }
 
-    @Override
     public String getStyle() {
         return style;
     }
 
-    @Override
     public boolean isIdentifier() {
         return identifier;
     }
 
-    @Override
     public boolean isIdentityIdentifier() {
         return identityIdentifier;
     }
@@ -287,7 +276,6 @@ import java.util.Set;
 
     // --------------------- Interface Comparable ---------------------
 
-    @Override
     public int compareTo(PropertyMetadata other) {
         final Integer i1 = getIndex();
         final Integer i2 = other.getIndex();
@@ -302,14 +290,12 @@ import java.util.Set;
 
     // --------------------- Interface PropertyMetadata ---------------------
 
-    @Override
     public <E extends Entity> void deproxyValue(E entity) {
         if (isProxyValue(entity)) {
             setValue(entity, getValue(entity));
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
         if (isAnnotatedWith(annotationType)) {
@@ -318,7 +304,6 @@ import java.util.Set;
         return null;
     }
 
-    @Override
     public EntityMetadata getAssociatedEntityMetadata() {
         if (associatedEntityName != null) {
             return ContextUtil.getMRS().getEntityMetadata(associatedEntityName);
@@ -326,7 +311,6 @@ import java.util.Set;
         return null;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T, E extends Entity> T getValue(E entity) {
         if (isOneToManyType()) {
@@ -351,7 +335,6 @@ import java.util.Set;
         return value;
     }
 
-    @Override
     public boolean hasColumn(String name) {
         for (final Iterator<?> iter = property.getColumnIterator(); iter.hasNext(); ) {
             final Object item = iter.next();
@@ -365,17 +348,14 @@ import java.util.Set;
         return false;
     }
 
-    @Override
     public boolean hasColumns() {
         return property.getColumnSpan() > 0;
     }
 
-    @Override
     public <A extends Annotation> boolean isAnnotatedWith(Class<A> annotationType) {
         return annotations.containsKey(annotationType.getName());
     }
 
-    @Override
     public boolean isAssociatedWith(PropertyMetadata propertyMetadata) {
         if (!(isAssociationType() && propertyMetadata.isAssociationType())) {
             return false;
@@ -405,32 +385,26 @@ import java.util.Set;
         return false;
     }
 
-    @Override
     public boolean isAssociationType() {
         return property.getType() instanceof AssociationType;
     }
 
-    @Override
     public boolean isSubclassType() {
         return false;
     }
 
-    @Override
     public boolean isBlobType() {
         return property.getType() instanceof MaterializedBlobType;
     }
 
-    @Override
     public boolean isClobType() {
         return property.getType() instanceof MaterializedClobType;
     }
 
-    @Override
     public boolean isTextType() {
         return property.getType() instanceof TextType;
     }
 
-    @Override
     public PropertyMetadata castForSubclass(Class<? extends Entity> subclass) {
         if (isAssociationType()) {
             for (Class<? extends Entity> subtype : getAssociatedEntityMetadata().getSubclasses()) {
@@ -442,23 +416,19 @@ import java.util.Set;
         return null;
     }
 
-    @Override
     public boolean isCompositeType() {
         return property.getType() instanceof CompositeType;
     }
 
-    @Override
     public boolean isInsertable() {
         return !entityMetadata.isReadOnly() && property.isInsertable() && !disableUserInsert && !formula &&
                 !isIdentityIdentifier() && (GenerationTime.NEVER == getGenerationTiming());
     }
 
-    @Override
     public boolean isManyToOneType() {
         return property.getType() instanceof ManyToOneType;
     }
 
-    @Override
     public boolean isUniqueKeyWith(String propertyName) {
 
         if (getName().equals(propertyName)) {
@@ -505,7 +475,6 @@ import java.util.Set;
         return false;
     }
 
-    @Override
     public boolean isMemberOfUniqueKey() {
         if (!hasColumns()) {
             return false;
@@ -532,28 +501,23 @@ import java.util.Set;
         return false;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public boolean isOfJavaType(Class<?> type) {
         return property.getType().getReturnedClass().isAssignableFrom(type);
     }
 
-    @Override
     public boolean isOneToManyType() {
         return property.getType() instanceof CollectionType;
     }
 
-    @Override
     public boolean isOneToOneType() {
         return property.getType() instanceof OneToOneType;
     }
 
-    @Override
     public boolean isNumericType() {
         return Number.class.isAssignableFrom(property.getType().getReturnedClass());
     }
 
-    @Override
     public boolean isOptional() {
         return property.isOptional() && !isMandatory();
     }
@@ -582,12 +546,10 @@ import java.util.Set;
         return false;
     }
 
-    @Override
     public boolean isTimestampType() {
         return property.getType() instanceof TimestampType;
     }
 
-    @Override
     public <E extends Entity> boolean isProxyValue(E entity) {
         if (!isIdentifier()) {
             if (entity instanceof HibernateProxy) {
@@ -601,7 +563,6 @@ import java.util.Set;
         }
     }
 
-    @Override
     public boolean isUpdateable() {
         return !entityMetadata.isReadOnly() && property.isUpdateable() && !disableUserUpdate && !formula &&
                 !isIdentityIdentifier() && (GenerationTime.NEVER == getGenerationTiming() ||
@@ -615,7 +576,6 @@ import java.util.Set;
         return GenerationTime.NEVER;
     }
 
-    @Override
     public <E extends Entity> void setValue(E entity, Object value) {
         if (!identifier) {
             entityMetadata.getClassMetadata().setPropertyValue(entity, getName(), value, EntityMode.POJO);
@@ -638,12 +598,10 @@ import java.util.Set;
         }
     }
 
-    @Override
     public String getWidth() {
         return width;
     }
 
-    @Override
     public String getHeight() {
         return height;
     }

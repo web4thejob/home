@@ -39,32 +39,26 @@ import java.util.Set;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public AuthorizationPolicy getAuthorizationPolicy() {
         return authorizationPolicy;
     }
 
-    @Override
     public void setAuthorizationPolicy(AuthorizationPolicy authorizationPolicy) {
         this.authorizationPolicy = authorizationPolicy;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
 
-    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
-    @Override
     public int getIndex() {
         return index;
     }
 
-    @Override
     public void setIndex(int index) {
         this.index = index;
     }

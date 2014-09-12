@@ -89,7 +89,6 @@ public class DefaultPanelCommandsAuthorizationPanel extends
         return this;
     }
 
-    @Override
     public void render(Listitem item, Command data, int index) throws Exception {
         Listcell listcell = new Listcell();
         listcell.setParent(item);

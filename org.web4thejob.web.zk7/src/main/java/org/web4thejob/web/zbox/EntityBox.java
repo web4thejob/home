@@ -54,12 +54,6 @@ import java.util.Set;
 public class EntityBox extends AbstractBox<Entity> implements MessageListener {
     // ------------------------------ FIELDS ------------------------------
 
-    private static final long serialVersionUID = 1L;
-    private final RenderElement renderElement;
-    private Entity entity;
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     public EntityBox(PathMetadata pathMetadata) {
         renderElement = ContextUtil.getMRS().newInstance(RenderElement.class);
         renderElement.setPropertyPath(pathMetadata);
@@ -75,11 +69,16 @@ public class EntityBox extends AbstractBox<Entity> implements MessageListener {
         marshallEmptyValue();
     }
 
+    private static final long serialVersionUID = 1L;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private final RenderElement renderElement;
+    private Entity entity;
+
     // ------------------------ INTERFACE METHODS ------------------------
 
     // --------------------- Interface MessageListener ---------------------
 
-    @Override
     public void processMessage(Message message) {
         if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId()) {
             setRawValue(message.getArg(MessageArgEnum.ARG_ITEM, Entity.class));
@@ -172,7 +171,6 @@ public class EntityBox extends AbstractBox<Entity> implements MessageListener {
 
     private class PopupEventListener implements EventListener<Event> {
 
-        @Override
         @SuppressWarnings("unchecked")
         public void onEvent(Event event) throws Exception {
             if (event.getName().equals(Events.ON_CANCEL)) {

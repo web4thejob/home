@@ -67,7 +67,6 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
 
 // --------------------- Interface BindCapable ---------------------
 
-    @Override
     public final void bind(Entity bindEntity) {
         if (bindEntity != null && ((hasMasterType() && getMasterType().isInstance(bindEntity)) || (hasTargetType() &&
                 getTargetType().isInstance(bindEntity)))) {
@@ -80,41 +79,34 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
 
 // --------------------- Interface Panel ---------------------
 
-    @Override
     public void attach(Object container) {
         if (getParent() != null) throw new IllegalStateException("Cannot attach a child panel.");
 
         ((Component) base).setParent((Component) container);
     }
 
-    @Override
     public void detach() {
         if (getParent() != null) throw new IllegalStateException("Cannot detach a child panel.");
 
         ((Component) base).detach();
     }
 
-    @Override
     public Object getAttribute(String name) {
         return ((Component) base).getAttribute(name);
     }
 
-    @Override
     public boolean hasAttribute(String name) {
         return ((Component) base).hasAttribute(name);
     }
 
-    @Override
     public boolean isAttached() {
         return ((Component) base).getParent() != null;
     }
 
-    @Override
     public Object removeAttribute(String name) {
         return ((Component) base).removeAttribute(name);
     }
 
-    @Override
     public <T> void setAttribute(String name, T value) {
         ((Component) base).setAttribute(name, value);
     }
@@ -133,7 +125,6 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
     protected Object initBaseComponent() {
         Panel panel = ZkUtil.initBaseComponent(this);
         panel.addEventListener(EVENT_BIND_ECHO, new EventListener<Event>() {
-            @Override
             public void onEvent(Event event) throws Exception {
                 clearBusy();
                 if (event.getData() instanceof Entity) {
@@ -164,7 +155,6 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
     }
 
 
-    @Override
     public void hightlightPanel(boolean highlight) {
         ZkUtil.hightlightComponent((HtmlBasedComponent) base, highlight, isPersisted() ? "green" : "rgb(225,79,35)");
         if (hasCommand(CommandEnum.HIGHLIGHT_PANEL)) {
@@ -186,10 +176,9 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
         } else if (CommandEnum.DELETE.equals(command.getId())) {
             if (hasTargetEntity() && !getTargetEntity().isNewInstance()) {
                 Messagebox.show(L10N_MSG_DELETE_CONFIRMATION.toString(), L10nMessages.L10N_MSGBOX_TITLE_QUESTION
-                        .toString(), new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                                .toString(), new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
                         null, Messagebox.QUESTION, Messagebox.Button.CANCEL,
                         new EventListener<Messagebox.ClickEvent>() {
-                            @Override
                             public void onEvent(Messagebox.ClickEvent event) throws Exception {
                                 if (Messagebox.Button.OK == event.getButton()) {
                                     Entity entity = getTargetEntity();
@@ -225,7 +214,6 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
         ZkUtil.displayMessage(message, error, (Component) base);
     }
 
-    @Override
     public String getSclass() {
         if (base instanceof org.zkoss.zul.Panel) {
             return ((org.zkoss.zul.Panel) base).getPanelchildren().getSclass();
@@ -235,7 +223,6 @@ public abstract class AbstractZkBindablePanel extends AbstractBindablePanel {
         return null;
     }
 
-    @Override
     public void setSclass(String sclass) {
         if (base instanceof org.zkoss.zul.Panel && ((org.zkoss.zul.Panel) base).getPanelchildren() != null) {
             ((org.zkoss.zul.Panel) base).getPanelchildren().setSclass(sclass);

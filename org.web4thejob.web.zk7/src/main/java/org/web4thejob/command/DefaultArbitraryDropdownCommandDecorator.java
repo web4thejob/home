@@ -34,19 +34,17 @@ import java.util.Map;
  */
 public class DefaultArbitraryDropdownCommandDecorator extends DefaultSubcommandsCommandDecorator implements
         ArbitraryDropdownCommandDecorator {
-    private static final String ON_CLICK_ECHO = Events.ON_CLICK + "Echo";
-    private boolean dirty = true;
-
     public DefaultArbitraryDropdownCommandDecorator(Command command) {
         super(command);
     }
 
+    private static final String ON_CLICK_ECHO = Events.ON_CLICK + "Echo";
+    private boolean dirty = true;
 
     public static void renderSubCommands(final ArbitraryDropdownItems owner,
                                          Menupopup container) {
 
         EventListener<Event> clickListener = new EventListener<Event>() {
-            @Override
             public void onEvent(Event event) throws Exception {
                 if (Events.ON_CLICK.equals(event.getName())) {
                     Clients.showBusy(null);

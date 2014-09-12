@@ -28,7 +28,6 @@ import org.zkoss.zkplus.databind.TypeConverter;
  * @since 3.3.0
  */
 public class QueryConverter implements TypeConverter {
-    @Override
     public Object coerceToUi(Object val, Component comp) {
         if (val != null) {
             return ContextUtil.getDRS().findById(Query.class, Long.valueOf((String) val));
@@ -36,7 +35,6 @@ public class QueryConverter implements TypeConverter {
         return val;
     }
 
-    @Override
     public Object coerceToBean(Object val, Component comp) {
         if (val != null) {
             return Long.valueOf(((Query) val).getId()).toString();

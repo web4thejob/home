@@ -47,17 +47,14 @@ import java.util.Set;
     private int version;
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public String getDefinition() {
         return definition;
     }
 
-    @Override
     public void setDefinition(String definition) {
         this.definition = definition;
     }
 
-    @Override
     public long getId() {
         return id;
     }
@@ -66,12 +63,10 @@ import java.util.Set;
         this.id = id;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -89,12 +84,10 @@ import java.util.Set;
 
 // --------------------- Interface Entity ---------------------
 
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }

@@ -58,7 +58,6 @@ import java.util.*;
 
     // --------------------- Interface MetaReaderService ---------------------
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Entity> E deproxyEntity(E entity) {
         final E proxy = entity;
@@ -67,7 +66,6 @@ import java.util.*;
             {
                 if (((HibernateProxy) proxy).getHibernateLazyInitializer().isUninitialized()) {
                     final E impl = ContextUtil.getTransactionWrapper().execute(new TransactionCallback<E>() {
-                        @Override
                         public E doInTransaction(TransactionStatus status) {
                             final LazyInitializer lazy = ((HibernateProxy) proxy).getHibernateLazyInitializer();
 
@@ -88,7 +86,6 @@ import java.util.*;
         return entity;
     }
 
-    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public <E extends Entity, A extends Annotation> Collection<AnnotationMetadata<A>>
     getAnnotationMetadata(Class<E> entityType, Class<A> annotationType) {
@@ -106,37 +103,30 @@ import java.util.*;
         return Collections.emptyList();
     }
 
-    @Override
     public EntityMetadata getEntityMetadata(Class<? extends Entity> entityType) {
         return getEntityMetadata(entityType.getName());
     }
 
-    @Override
     public EntityMetadata getEntityMetadata(String entityType) {
         return metaCache.get(entityType);
     }
 
-    @Override
     public PropertyMetadata getPropertyMetadata(Class<? extends Entity> entityType, String property) {
         return getEntityMetadata(entityType).getPropertyMetadata(property);
     }
 
-    @Override
     public PropertyMetadata getPropertyMetadata(String entityType, String property) {
         return getEntityMetadata(entityType).getPropertyMetadata(property);
     }
 
-    @Override
     public PathMetadata getPropertyPath(Class<? extends Entity> entityType, Path path) {
         return new PathMetadataImpl(entityType, path);
     }
 
-    @Override
     public PathMetadata getPropertyPath(Class<? extends Entity> entityType, String[] path) {
         return new PathMetadataImpl(entityType, path);
     }
 
-    @Override
     public PathMetadata getPropertyPath(Class<? extends Entity> entityType, List<PropertyMetadata> path) {
         String[] steps = new String[path.size()];
         int index = 0;
@@ -148,13 +138,11 @@ import java.util.*;
         return new PathMetadataImpl(entityType, steps);
     }
 
-    @Override
     public PathMetadata getPropertyPath(PropertyMetadata propertyMetadata) {
         return new PathMetadataImpl(propertyMetadata.getEntityMetadata().getEntityType(),
                 new Path(propertyMetadata.getName()));
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <E extends Entity> E newInstance(Class<? extends Entity> entityType) {
         try {
@@ -169,7 +157,6 @@ import java.util.*;
         }
     }
 
-    @Override
     public void refreshMetaCache() {
         ((SessionFactoryImpl) sessionFactory).registerEntityNameResolver(EntityNameResolverImpl.INSTANCE, EntityMode.POJO);
 
@@ -199,11 +186,9 @@ import java.util.*;
 
     }
 
-    @Override
     public Collection<EntityMetadata> getEntityMetadatas() {
         List<EntityMetadata> metadatas = new ArrayList<EntityMetadata>(metaCache.values());
         Collections.sort(metadatas, new Comparator<EntityMetadata>() {
-            @Override
             public int compare(EntityMetadata o1, EntityMetadata o2) {
                 return (o1.getSchema() + o1.getFriendlyName()).compareTo(o2.getSchema() + o2.getFriendlyName());
             }
@@ -241,7 +226,6 @@ import java.util.*;
             map.get(annotationType.getName()).put(metadata.getName(), metadata);
         }
 
-        @Override
         public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
             if (field.isAnnotationPresent(InsertTimeHolder.class)) {
                 appendMetadata(InsertTimeHolder.class, new AnnotationMetadataImpl<InsertTimeHolder>(getEntityType

@@ -41,25 +41,23 @@ public abstract class AbstractSecuredResourceAuthorizationPanel<S extends Secure
         T> implements SecuredResourceAuthorizationPanel {
     // ------------------------------ FIELDS ------------------------------
 
-    public static final L10nString L10N_HEADER_GRANTED = new L10nString(AbstractMultiSelectPanel.class,
-            "header_granted", "Granted");
-    public static final L10nString L10N_HEADER_REVOKED = new L10nString(AbstractMultiSelectPanel.class,
-            "header_revoked", "Revoked");
-
-    private final boolean readOnly;
-    private List<S> sourceList = Collections.emptyList();
-
-    // --------------------------- CONSTRUCTORS ---------------------------
-
     protected AbstractSecuredResourceAuthorizationPanel(boolean readOnly) {
         super(readOnly, true);
         this.readOnly = readOnly;
         unregisterSetting(SettingEnum.TARGET_TYPE);
     }
 
+    public static final L10nString L10N_HEADER_GRANTED = new L10nString(AbstractMultiSelectPanel.class,
+            "header_granted", "Granted");
+    public static final L10nString L10N_HEADER_REVOKED = new L10nString(AbstractMultiSelectPanel.class,
+            "header_revoked", "Revoked");
+    private final boolean readOnly;
+
+    // --------------------------- CONSTRUCTORS ---------------------------
+    private List<S> sourceList = Collections.emptyList();
+
     // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public boolean isReadOnly() {
         return readOnly;
     }
@@ -80,7 +78,6 @@ public abstract class AbstractSecuredResourceAuthorizationPanel<S extends Secure
     // --------------------- Interface SecuredResourceAuthorizationPanel
     // ---------------------
 
-    @Override
     public String getDefinition() {
         final Element rootElement = new Element(getRootElementName());
         for (T resource : getSelection()) {
@@ -93,7 +90,6 @@ public abstract class AbstractSecuredResourceAuthorizationPanel<S extends Secure
         return xml;
     }
 
-    @Override
     public void setDefinition(String xml) {
         reset();
         if (!StringUtils.hasText(xml)) return;
@@ -175,7 +171,6 @@ public abstract class AbstractSecuredResourceAuthorizationPanel<S extends Secure
     // -------------------------- INNER CLASSES --------------------------
 
     private class Renderer implements ListitemRenderer<SecuredResource> {
-        @Override
         public void render(Listitem item, SecuredResource data, int index) throws Exception {
             item.setLabel(data.toString());
             item.setValue(data);

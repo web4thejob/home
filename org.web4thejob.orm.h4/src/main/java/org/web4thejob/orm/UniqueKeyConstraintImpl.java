@@ -38,9 +38,6 @@ import java.util.Set;
  */
 
 public class UniqueKeyConstraintImpl implements UniqueKeyConstraint {
-    private final EntityMetadata entityMetadata;
-    private final Set<PropertyMetadata> propertyMetadatas;
-
     public UniqueKeyConstraintImpl(EntityMetadata entityMetadata, UniqueKey uniqueKey) {
         this.entityMetadata = entityMetadata;
 
@@ -56,17 +53,17 @@ public class UniqueKeyConstraintImpl implements UniqueKeyConstraint {
         propertyMetadatas = Collections.unmodifiableSet(temp);
     }
 
-    @Override
+    private final EntityMetadata entityMetadata;
+    private final Set<PropertyMetadata> propertyMetadatas;
+
     public EntityMetadata getEntityMetadata() {
         return entityMetadata;
     }
 
-    @Override
     public Set<PropertyMetadata> getPropertyMetadatas() {
         return propertyMetadatas;
     }
 
-    @Override
     public String getFriendlyName() {
         StringBuilder stringBuffer = new StringBuilder();
         for (PropertyMetadata propertyMetadata : propertyMetadatas) {
@@ -79,7 +76,6 @@ public class UniqueKeyConstraintImpl implements UniqueKeyConstraint {
         return stringBuffer.toString();
     }
 
-    @Override
     public Query getValidationQuery(Entity entity) {
         Query query = ContextUtil.getEntityFactory().buildQuery(entityMetadata.getEntityType());
         for (PropertyMetadata propertyMetadata : getPropertyMetadatas()) {
@@ -88,7 +84,6 @@ public class UniqueKeyConstraintImpl implements UniqueKeyConstraint {
         return query;
     }
 
-    @Override
     public boolean isViolated(Entity entity) {
         boolean notNull = true;
         for (PropertyMetadata propertyMetadata : getPropertyMetadatas()) {

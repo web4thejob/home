@@ -52,42 +52,34 @@ import java.io.Serializable;
     private PathMetadata propertyPath;
     private String propertyViewer;
     private String propertyEditor;
+    private boolean readOnly;
 
-    @Override
     public boolean isReadOnly() {
         return readOnly;
     }
 
-    @Override
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
 
-    private boolean readOnly;
-
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public String getAlign() {
         return align;
     }
 
-    @Override
     public void setAlign(String align) {
         this.align = align;
     }
 
-    @Override
     public int getColSpan() {
         return colSpan;
     }
 
-    @Override
     public void setColSpan(int colSpan) {
         this.colSpan = colSpan;
     }
 
-    @Override
     public String getFlatPropertyPath() {
         if (flatPropertyPath == null && propertyPath != null) {
             flatPropertyPath = propertyPath.getPath();
@@ -95,27 +87,27 @@ import java.io.Serializable;
         return flatPropertyPath;
     }
 
-    @Override
+    public void setFlatPropertyPath(String flatPropertyPath) {
+        this.flatPropertyPath = flatPropertyPath;
+        this.propertyPath = null;
+    }
+
     public String getFormat() {
         return format;
     }
 
-    @Override
     public void setFormat(String format) {
         this.format = format;
     }
 
-    @Override
     public String getFriendlyName() {
         return friendlyName;
     }
 
-    @Override
     public void setFriendlyName(String friendlyName) {
         this.friendlyName = friendlyName;
     }
 
-    @Override
     public long getId() {
         return id;
     }
@@ -124,7 +116,6 @@ import java.io.Serializable;
         this.id = id;
     }
 
-    @Override
     public int getIndex() {
         return index;
     }
@@ -133,7 +124,6 @@ import java.io.Serializable;
         this.index = index;
     }
 
-    @Override
     public PathMetadata getPropertyPath() {
         if (propertyPath == null && flatPropertyPath != null) {
             if (getRenderScheme() == null) {
@@ -146,7 +136,11 @@ import java.io.Serializable;
         return propertyPath;
     }
 
-    @Override
+    public void setPropertyPath(PathMetadata propertyPath) {
+        this.propertyPath = propertyPath;
+        this.flatPropertyPath = null;
+    }
+
     public RenderScheme getRenderScheme() {
         return renderScheme;
     }
@@ -155,41 +149,26 @@ import java.io.Serializable;
         this.renderScheme = renderScheme;
     }
 
-    @Override
     public String getStyle() {
         return style;
     }
 
-    @Override
     public void setStyle(String style) {
         this.style = style;
     }
 
-    @Override
     public String getWidth() {
         return width;
     }
 
-    @Override
     public void setWidth(String width) {
         this.width = width;
     }
 
-    @Override
-    public String getHeight() {
-        return height;
-    }
-
-    @Override
-    public void setHeight(String height) {
-        this.height = height;
-    }
-
 // ------------------------ CANONICAL METHODS ------------------------
 
-    @Override
-    public String toString() {
-        return flatPropertyPath;
+    public String getHeight() {
+        return height;
     }
 
 // ------------------------ INTERFACE METHODS ------------------------
@@ -197,47 +176,39 @@ import java.io.Serializable;
 
 // --------------------- Interface Entity ---------------------
 
-    @Override
-    public Serializable getIdentifierValue() {
-        return id;
+    public void setHeight(String height) {
+        this.height = height;
     }
 
     @Override
-    public void setAsNew() {
-        id = 0;
+    public String toString() {
+        return flatPropertyPath;
     }
 
 // --------------------- Interface RenderElement ---------------------
 
-    @Override
-    public void setPropertyPath(PathMetadata propertyPath) {
-        this.propertyPath = propertyPath;
-        this.flatPropertyPath = null;
+    public Serializable getIdentifierValue() {
+        return id;
     }
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public void setFlatPropertyPath(String flatPropertyPath) {
-        this.flatPropertyPath = flatPropertyPath;
-        this.propertyPath = null;
+    public void setAsNew() {
+        id = 0;
     }
 
-    @Override
     public String getPropertyViewer() {
         return propertyViewer;
     }
 
-    @Override
     public void setPropertyViewer(String propertyViewer) {
         this.propertyViewer = propertyViewer;
     }
 
-    @Override
     public String getPropertyEditor() {
         return propertyEditor;
     }
 
-    @Override
     public void setPropertyEditor(String propertyEditor) {
         this.propertyEditor = propertyEditor;
     }

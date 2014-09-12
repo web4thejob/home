@@ -33,7 +33,6 @@ public class ComboItemConverter implements TypeConverter {
 
     // --------------------- Interface TypeConverter ---------------------
 
-    @Override
     public Object coerceToUi(Object val, Component comp) {
         Combobox combobox = (Combobox) comp;
         boolean found = false;
@@ -71,7 +70,6 @@ public class ComboItemConverter implements TypeConverter {
         return IGNORE;
     }
 
-    @Override
     public Object coerceToBean(Object val, Component comp) {
         Combobox combobox = (Combobox) comp;
         if (combobox.getModel() != null) {

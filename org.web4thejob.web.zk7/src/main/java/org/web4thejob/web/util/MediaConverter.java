@@ -29,7 +29,6 @@ import org.zkoss.zkplus.databind.TypeConverter;
  */
 public class MediaConverter implements TypeConverter {
 
-    @Override
     public Object coerceToUi(Object val, Component comp) {
         if (val == null) return null;
 
@@ -41,7 +40,6 @@ public class MediaConverter implements TypeConverter {
         return media;
     }
 
-    @Override
     public Object coerceToBean(Object val, Component comp) {
         if (val == null) return null;
 

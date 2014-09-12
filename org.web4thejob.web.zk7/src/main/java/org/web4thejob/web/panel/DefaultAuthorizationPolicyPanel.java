@@ -43,22 +43,6 @@ import org.zkoss.zul.*;
 @Scope("prototype")
 public class DefaultAuthorizationPolicyPanel extends AbstractZkCommandAwarePanel implements
         AuthorizationPolicyPanel {
-    public static final L10nString L10N_TAB_MENU = new L10nString(DefaultAuthorizationPolicyPanel.class,
-            "tab_menu", "Start Menu");
-    public static final L10nString L10N_TAB_PANELS = new L10nString(DefaultAuthorizationPolicyPanel.class,
-            "tab_panels", "Panels");
-    public static final L10nString L10N_TAB_COMMANDS = new L10nString(DefaultAuthorizationPolicyPanel.class,
-            "tab_commands", "Commands");
-    public static final L10nString L10N_TAB_PANEL_COMMANDS = new L10nString(DefaultAuthorizationPolicyPanel.class,
-            "tab_panel_commands", "Panel\\Commands");
-
-    @SuppressWarnings("rawtypes")
-    private final MenuAuthorizationPanel menuAuthorizationPanel;
-    private final PanelsAuthorizationPanel panelsAuthorizationPanel;
-    private final CommandsAuthorizationPanel commandsAuthorizationPanel;
-    private final PanelCommandsAuthorizationPanel panelCommandsAuthorizationPanel;
-    private final boolean readOnly;
-
     public DefaultAuthorizationPolicyPanel() {
         this(true);
     }
@@ -122,12 +106,25 @@ public class DefaultAuthorizationPolicyPanel extends AbstractZkCommandAwarePanel
 
     }
 
-    @Override
+    public static final L10nString L10N_TAB_MENU = new L10nString(DefaultAuthorizationPolicyPanel.class,
+            "tab_menu", "Start Menu");
+    public static final L10nString L10N_TAB_PANELS = new L10nString(DefaultAuthorizationPolicyPanel.class,
+            "tab_panels", "Panels");
+    public static final L10nString L10N_TAB_COMMANDS = new L10nString(DefaultAuthorizationPolicyPanel.class,
+            "tab_commands", "Commands");
+    public static final L10nString L10N_TAB_PANEL_COMMANDS = new L10nString(DefaultAuthorizationPolicyPanel.class,
+            "tab_panel_commands", "Panel\\Commands");
+    @SuppressWarnings("rawtypes")
+    private final MenuAuthorizationPanel menuAuthorizationPanel;
+    private final PanelsAuthorizationPanel panelsAuthorizationPanel;
+    private final CommandsAuthorizationPanel commandsAuthorizationPanel;
+    private final PanelCommandsAuthorizationPanel panelCommandsAuthorizationPanel;
+    private final boolean readOnly;
+
     public boolean isReadOnly() {
         return readOnly;
     }
 
-    @Override
     public String getDefinition() {
         Element authorization = new Element(ROOT_ELEMENT);
 
@@ -149,7 +146,6 @@ public class DefaultAuthorizationPolicyPanel extends AbstractZkCommandAwarePanel
     }
 
 
-    @Override
     public void setDefinition(String xml) {
         if (!StringUtils.hasText(xml)) return;
 
@@ -207,7 +203,6 @@ public class DefaultAuthorizationPolicyPanel extends AbstractZkCommandAwarePanel
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public MenuAuthorizationPanel<Treeitem> getMenuAuthorizationPanel() {
         return menuAuthorizationPanel;

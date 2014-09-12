@@ -48,10 +48,6 @@ import org.zkoss.zul.*;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultUserMenuPanel extends AbstractZkContentPanel implements UserMenuPanel, EventListener<Event> {
-    private static final String ON_PANEL_LOAD = "onPanelLoad";
-    private final Tree treeMenu = new Tree();
-    private boolean rendered;
-
     public DefaultUserMenuPanel() {
         ZkUtil.setParentOfChild((Component) base, treeMenu);
         treeMenu.setSclass("w4tj-desktop-menu");
@@ -65,6 +61,10 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
         new Treecol().setParent(treecols);
         new Treechildren().setParent(treeMenu);
     }
+
+    private static final String ON_PANEL_LOAD = "onPanelLoad";
+    private final Tree treeMenu = new Tree();
+    private boolean rendered;
 
     @Override
     public void render() {
@@ -161,7 +161,6 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
         Clients.showBusy(null);
     }
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_CLICK.equals(event.getName()) && event.getTarget().hasAttribute(DefaultMenuAuthorizationPanel
                 .ELEMENT_PANEL)) {
@@ -196,7 +195,6 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
         super.processMessage(message);
     }
 
-    @Override
     public String findNextPanel(String beanid) {
         boolean found = false;
 
@@ -213,7 +211,6 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
         return null;
     }
 
-    @Override
     public String findPreviousPanel(String beanid) {
         String previd = null;
 
@@ -232,7 +229,6 @@ public class DefaultUserMenuPanel extends AbstractZkContentPanel implements User
         return null;
     }
 
-    @Override
     public boolean select(String beanid) {
         for (Component component : treeMenu.getItems()) {
             if (beanid.equals(component.getAttribute(DefaultMenuAuthorizationPanel.ELEMENT_PANEL)) || beanid.equals

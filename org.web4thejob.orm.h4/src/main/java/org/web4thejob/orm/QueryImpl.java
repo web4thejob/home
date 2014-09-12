@@ -37,6 +37,14 @@ import java.util.List;
 /*package*/class QueryImpl extends AbstractHibernateEntity implements Query {
     // ------------------------------ FIELDS ------------------------------
 
+    public QueryImpl() {
+        super();
+    }
+
+    public QueryImpl(Class<? extends Entity> targetType) {
+        this.targetType = targetType;
+    }
+
     private long id;
     @NotBlank
     private String name;
@@ -51,33 +59,20 @@ import java.util.List;
     private boolean cached;
     @UserIdHolder
     private Identity owner;
-
-
-    @Override
-    public String getCacheRegion() {
-        return cacheRegion;
-    }
-
-    @Override
-    public void setCacheRegion(String cacheRegion) {
-        this.cacheRegion = cacheRegion;
-    }
-
     private String cacheRegion;
 
     // --------------------------- CONSTRUCTORS ---------------------------
 
-    public QueryImpl() {
-        super();
+    public String getCacheRegion() {
+        return cacheRegion;
     }
 
-    public QueryImpl(Class<? extends Entity> targetType) {
-        this.targetType = targetType;
+    public void setCacheRegion(String cacheRegion) {
+        this.cacheRegion = cacheRegion;
     }
 
     // --------------------- GETTER / SETTER METHODS ---------------------
 
-    @Override
     public List<Criterion> getCriteria() {
         return criteria;
     }
@@ -86,7 +81,6 @@ import java.util.List;
         this.criteria = criteria;
     }
 
-    @Override
     public String getFlatTargetType() {
         if (flatTargetType == null && targetType != null) {
             flatTargetType = targetType.getName();
@@ -94,7 +88,11 @@ import java.util.List;
         return flatTargetType;
     }
 
-    @Override
+    public void setFlatTargetType(String flatTargetType) {
+        this.flatTargetType = flatTargetType;
+        this.targetType = null;
+    }
+
     public List<Subquery> getSubqueries() {
         if (subqueries == null) {
             return Collections.emptyList();
@@ -102,12 +100,10 @@ import java.util.List;
         return subqueries;
     }
 
-    @Override
     public void setSubqueries(List<Subquery> subqueries) {
         this.subqueries = subqueries;
     }
 
-    @Override
     public boolean hasMasterCriterion() {
         for (Criterion criterion : criteria) {
             if (criterion.isMaster()) {
@@ -117,17 +113,14 @@ import java.util.List;
         return false;
     }
 
-    @Override
     public boolean isCached() {
         return cached;
     }
 
-    @Override
     public void setCached(boolean cached) {
         this.cached = cached;
     }
 
-    @Override
     public long getId() {
         return id;
     }
@@ -136,17 +129,14 @@ import java.util.List;
         this.id = id;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override
     public List<OrderBy> getOrderings() {
         return orderings;
     }
@@ -155,7 +145,8 @@ import java.util.List;
         this.orderings = orderings;
     }
 
-    @Override
+    // ------------------------ CANONICAL METHODS ------------------------
+
     public Class<? extends Entity> getTargetType() {
         if (targetType == null && flatTargetType != null) {
             targetType = ContextUtil.getBean(EntityFactory.class).toEntityType(flatTargetType);
@@ -163,45 +154,42 @@ import java.util.List;
         return targetType;
     }
 
-    // ------------------------ CANONICAL METHODS ------------------------
+    // ------------------------ INTERFACE METHODS ------------------------
+
+    // --------------------- Interface Entity ---------------------
+
+    public void setTargetType(Class<? extends Entity> targetType) {
+        this.targetType = targetType;
+        this.flatTargetType = null;
+    }
 
     @Override
     public String toString() {
         return name;
     }
 
-    // ------------------------ INTERFACE METHODS ------------------------
+    // --------------------- Interface Query ---------------------
 
-    // --------------------- Interface Entity ---------------------
-
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }
 
-    // --------------------- Interface Query ---------------------
-
-    @Override
     public Criterion addCriterion(Path property, Condition condition) {
         return addCriterion(property, condition, null, false, false);
     }
 
-    @Override
     public Criterion addCriterion(Path property, Condition condition, Object value) {
         return addCriterion(property, condition, value, false, false);
     }
 
-    @Override
     public Criterion addCriterion(Path property, Condition condition, Object value, boolean isFixed) {
         return addCriterion(property, condition, value, isFixed, false);
     }
 
-    @Override
     public Criterion addCriterion(Path property, Condition condition, Object value, boolean isFixed,
                                   boolean isMaster) {
         final CriterionImpl criterion = new CriterionImpl(isMaster);
@@ -215,7 +203,6 @@ import java.util.List;
         return criterion;
     }
 
-    @Override
     public Criterion addCriterion(Criterion criterion) {
         final CriterionImpl criterionImpl = (CriterionImpl) criterion.clone();
         criterionImpl.setQuery(this);
@@ -223,17 +210,16 @@ import java.util.List;
         return criterionImpl;
     }
 
-    @Override
     public OrderBy addOrderBy(Path property) {
         return addOrderBy(property, false, false);
     }
 
-    @Override
     public OrderBy addOrderBy(Path property, boolean descending) {
         return addOrderBy(property, descending, false);
     }
 
-    @Override
+    // -------------------------- OTHER METHODS --------------------------
+
     public OrderBy addOrderBy(Path property, boolean descending, boolean isFixed) {
         final OrderByImpl orderBy = new OrderByImpl();
         orderBy.setQuery(this);
@@ -244,7 +230,6 @@ import java.util.List;
         return orderBy;
     }
 
-    @Override
     public OrderBy addOrderBy(OrderBy orderBy) {
         final OrderByImpl orderByImpl = (OrderByImpl) orderBy.clone();
         orderByImpl.setQuery(this);
@@ -252,24 +237,10 @@ import java.util.List;
         return orderByImpl;
     }
 
-    // -------------------------- OTHER METHODS --------------------------
-
-    public void setFlatTargetType(String flatTargetType) {
-        this.flatTargetType = flatTargetType;
-        this.targetType = null;
-    }
-
-    public void setTargetType(Class<? extends Entity> targetType) {
-        this.targetType = targetType;
-        this.flatTargetType = null;
-    }
-
-    @Override
     public Identity getOwner() {
         return owner;
     }
 
-    @Override
     public void setOwner(Identity owner) {
         this.owner = owner;
     }

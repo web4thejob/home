@@ -41,7 +41,6 @@ public class DefaultModelCriteriaPanel extends AbstractBorderLayoutPanel impleme
 
 // --------------------- Interface TargetType ---------------------
 
-    @Override
     public Class<? extends Entity> getTargetType() {
         if (getCriterionPanel() != null) {
             return getCriterionPanel().getTargetType();
@@ -52,13 +51,24 @@ public class DefaultModelCriteriaPanel extends AbstractBorderLayoutPanel impleme
         return null;
     }
 
-    @Override
+    public void setTargetType(Class<? extends Entity> targetType) {
+        if (getCriterionPanel() != null) {
+            getCriterionPanel().setTargetType(targetType);
+        }
+        if (getModelHierarchyPanel() != null) {
+            getModelHierarchyPanel().setTargetType(targetType);
+            getModelHierarchyPanel().refresh();
+        }
+    }
+
     public boolean hasTargetType() {
         if (getCriterionPanel() != null) {
             return getCriterionPanel().hasTargetType();
         }
         return getModelHierarchyPanel() != null && getModelHierarchyPanel().hasTargetType();
     }
+
+    // --------------------- Interface TargetTypeAware ---------------------
 
     @Override
     public void dispatchMessage(Message message) {
@@ -68,19 +78,6 @@ public class DefaultModelCriteriaPanel extends AbstractBorderLayoutPanel impleme
             }
         } else {
             super.dispatchMessage(message);
-        }
-    }
-
-    // --------------------- Interface TargetTypeAware ---------------------
-
-    @Override
-    public void setTargetType(Class<? extends Entity> targetType) {
-        if (getCriterionPanel() != null) {
-            getCriterionPanel().setTargetType(targetType);
-        }
-        if (getModelHierarchyPanel() != null) {
-            getModelHierarchyPanel().setTargetType(targetType);
-            getModelHierarchyPanel().refresh();
         }
     }
 
@@ -124,17 +121,14 @@ public class DefaultModelCriteriaPanel extends AbstractBorderLayoutPanel impleme
         super.onSettingValueChanged(id, oldValue, newValue);
     }
 
-    @Override
     public CriterionPanel getCriterionPanel() {
         return (CriterionPanel) getCenter();
     }
 
-    @Override
     public ModelHierarchyPanel getModelHierarchyPanel() {
         return (ModelHierarchyPanel) getWest();
     }
 
-    @Override
     public void hideHierarchy(boolean hide) {
         if (getModelHierarchyPanel() != null) {
             getRegionByPanel(getWest()).setOpen(!hide);

@@ -60,9 +60,23 @@ import java.util.Map;
  */
 
 public class PropertyBox extends HtmlMacroComponent {
+    public PropertyBox() {
+        this((RenderElement) null);
+    }
+
+    public PropertyBox(PathMetadata pathMetadata) {
+        this(ContextUtil.getEntityFactory().buildRenderElement(pathMetadata));
+    }
+
+    public PropertyBox(RenderElement renderElement) {
+        compose();
+        setRenderElement(renderElement);
+    }
+
     private static final long serialVersionUID = 1L;
     private static final String ON_CLICK_ECHO = Events.ON_CLICK + "Echo";
     public static final int TOOLTIP_LIMIT = -1;
+    private int tooltipLimit = TOOLTIP_LIMIT;
     private final Html html = new Html();
     private RenderElement renderElement;
     private boolean emailHolder;
@@ -92,24 +106,7 @@ public class PropertyBox extends HtmlMacroComponent {
         this.tooltipLimit = tooltipLimit;
     }
 
-    private int tooltipLimit = TOOLTIP_LIMIT;
-
-    public PropertyBox() {
-        this((RenderElement) null);
-    }
-
-    public PropertyBox(PathMetadata pathMetadata) {
-        this(ContextUtil.getEntityFactory().buildRenderElement(pathMetadata));
-    }
-
-
-    public PropertyBox(RenderElement renderElement) {
-        compose();
-        setRenderElement(renderElement);
-    }
-
-
-    public void setRenderElement(RenderElement renderElement){
+    public void setRenderElement(RenderElement renderElement) {
         if (renderElement != null) {
             PropertyMetadata pm = renderElement.getPropertyPath().getLastStep();
             this.renderElement = renderElement;
@@ -148,10 +145,6 @@ public class PropertyBox extends HtmlMacroComponent {
         return entity;
     }
 
-    public void setValue(Object value) {
-        html.setContent(prepareContent(value));
-    }
-
     public void setEntity(Entity entity) {
         this.entity = entity;
         if (this.entity != null) {
@@ -165,6 +158,10 @@ public class PropertyBox extends HtmlMacroComponent {
                 downloadLink.setVisible(false);
             }
         }
+    }
+
+    public void setValue(Object value) {
+        html.setContent(prepareContent(value));
     }
 
     public String getContent() {
@@ -370,15 +367,14 @@ public class PropertyBox extends HtmlMacroComponent {
         return value.toString();
     }
 
+    @Override
+    public String getStyle() {
+        return html.getStyle();
+    }
 
     @Override
     public void setStyle(String style) {
         html.setStyle(style);
-    }
-
-    @Override
-    public String getStyle() {
-        return html.getStyle();
     }
 
     public void initFormat() {
@@ -396,9 +392,30 @@ public class PropertyBox extends HtmlMacroComponent {
         }
     }
 
+    public void disableNavigateLink(boolean disable) {
+        this.disableNavigateLink = disable;
+        if (navigateLink != null && disable) {
+            navigateLink.detach();
+            navigateLink = null;
+        } else if (navigateLink == null && !disable && renderElement != null && renderElement.getPropertyPath()
+                .getLastStep().isAssociationType()) {
+            buildNavigationLink();
+        }
+    }
+
+    private boolean isNavigationAllowed() {
+        Panel panel = ZkUtil.getOwningPanelOfComponent(this);
+        return panel instanceof CommandAware && ((CommandAware) panel).hasCommand(CommandEnum.RELATED_PANELS);
+    }
+
+    @Override
+    public void setParent(Component parent) {
+        super.setParent(parent);
+        disableNavigateLink(ZkUtil.isDialogContained(this) || !isNavigationAllowed());
+    }
+
     private class DownloadLinkListener implements EventListener<Event> {
 
-        @Override
         public void onEvent(Event event) throws Exception {
             if (Events.ON_CLICK.equals(event.getName())) {
                 if (byte[].class.isInstance(event.getTarget().getAttribute("value"))) {
@@ -414,7 +431,6 @@ public class PropertyBox extends HtmlMacroComponent {
 
     private class NavigateLinkListener implements EventListener<Event>, ArbitraryDropdownItems {
 
-        @Override
         public void onEvent(Event event) throws Exception {
             if (Events.ON_CLICK.equals(event.getName())) {
                 if (((MouseEvent) event).getKeys() != (MouseEvent.LEFT_CLICK + MouseEvent.SHIFT_KEY)) {
@@ -438,14 +454,12 @@ public class PropertyBox extends HtmlMacroComponent {
             }
         }
 
-        @Override
         public Map<String, String> getDropdownItems() {
             final Entity bindValue = (Entity) renderElement.getPropertyPath().getValue(entity);
             if (bindValue == null) return Collections.emptyMap();
             return CoreUtil.getRelatedPanelsMap(bindValue.getEntityType(), MutableEntityViewPanel.class);
         }
 
-        @Override
         public void onItemClicked(String key) {
             Panel panel = ZkUtil.getOwningPanelOfComponent(PropertyBox.this);
             if (panel instanceof MessageAware && entity != null) {
@@ -460,28 +474,6 @@ public class PropertyBox extends HtmlMacroComponent {
             }
         }
 
-    }
-
-    public void disableNavigateLink(boolean disable) {
-        this.disableNavigateLink = disable;
-        if (navigateLink != null && disable) {
-            navigateLink.detach();
-            navigateLink = null;
-        } else if (navigateLink == null && !disable && renderElement != null && renderElement.getPropertyPath()
-                .getLastStep().isAssociationType()) {
-            buildNavigationLink();
-        }
-    }
-
-    private boolean isNavigationAllowed() {
-        Panel panel = ZkUtil.getOwningPanelOfComponent(this);
-        return panel instanceof CommandAware && ((CommandAware) panel).hasCommand(CommandEnum.RELATED_PANELS);
-    }
-
-    @Override
-    public void setParent(Component parent) {
-        super.setParent(parent);
-        disableNavigateLink(ZkUtil.isDialogContained(this) || !isNavigationAllowed());
     }
 
 

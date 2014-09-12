@@ -41,7 +41,6 @@ public class DefaultModelOrderingsPanel extends AbstractBorderLayoutPanel implem
 
 // --------------------- Interface TargetType ---------------------
 
-    @Override
     public Class<? extends Entity> getTargetType() {
         if (getOrderByPanel() != null) {
             return getOrderByPanel().getTargetType();
@@ -52,17 +51,6 @@ public class DefaultModelOrderingsPanel extends AbstractBorderLayoutPanel implem
         return null;
     }
 
-    @Override
-    public boolean hasTargetType() {
-        if (getOrderByPanel() != null) {
-            return getOrderByPanel().hasTargetType();
-        }
-        return getModelHierarchyPanel() != null && getModelHierarchyPanel().hasTargetType();
-    }
-
-// --------------------- Interface TargetTypeAware ---------------------
-
-    @Override
     public void setTargetType(Class<? extends Entity> targetType) {
         if (getOrderByPanel() != null) {
             getOrderByPanel().setTargetType(targetType);
@@ -71,6 +59,15 @@ public class DefaultModelOrderingsPanel extends AbstractBorderLayoutPanel implem
             getModelHierarchyPanel().setTargetType(targetType);
             getModelHierarchyPanel().refresh();
         }
+    }
+
+// --------------------- Interface TargetTypeAware ---------------------
+
+    public boolean hasTargetType() {
+        if (getOrderByPanel() != null) {
+            return getOrderByPanel().hasTargetType();
+        }
+        return getModelHierarchyPanel() != null && getModelHierarchyPanel().hasTargetType();
     }
 
 // -------------------------- OTHER METHODS --------------------------
@@ -113,17 +110,14 @@ public class DefaultModelOrderingsPanel extends AbstractBorderLayoutPanel implem
         super.onSettingValueChanged(id, oldValue, newValue);
     }
 
-    @Override
     public OrderByPanel getOrderByPanel() {
         return (OrderByPanel) getCenter();
     }
 
-    @Override
     public ModelHierarchyPanel getModelHierarchyPanel() {
         return (ModelHierarchyPanel) getWest();
     }
 
-    @Override
     public void hideHierarchy(boolean hide) {
         if (getModelHierarchyPanel() != null) {
             getRegionByPanel(getWest()).setOpen(!hide);

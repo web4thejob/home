@@ -113,17 +113,14 @@ import java.util.List;
         }
     }
 
-    @Override
     public Condition getCondition() {
         return condition;
     }
 
-    @Override
     public void setCondition(Condition condition) {
         this.condition = condition;
     }
 
-    @Override
     public String getFlatCondition() {
         if (condition != null) {
             return condition.getKey();
@@ -131,12 +128,10 @@ import java.util.List;
         return null;
     }
 
-    @Override
     public void setFlatCondition(String flatCondition) {
         condition = Condition.fromKey(flatCondition);
     }
 
-    @Override
     public String getFlatPropertyPath() {
         if (flatPropertyPath == null && propertyPath != null) {
             flatPropertyPath = propertyPath.getPath();
@@ -144,13 +139,11 @@ import java.util.List;
         return flatPropertyPath;
     }
 
-    @Override
     public void setFlatPropertyPath(String flatPropertyPath) {
         this.flatPropertyPath = flatPropertyPath;
         this.propertyPath = null;
     }
 
-    @Override
     public String getFlatValue() {
         if (flatValue == null && value != null) {
             flatValue = serializeValue(value);
@@ -158,13 +151,11 @@ import java.util.List;
         return flatValue;
     }
 
-    @Override
     public void setFlatValue(String flatValue) {
         this.flatValue = flatValue;
         this.value = null;
     }
 
-    @Override
     public long getId() {
         return id;
     }
@@ -173,7 +164,6 @@ import java.util.List;
         this.id = id;
     }
 
-    @Override
     public int getIndex() {
         return index;
     }
@@ -182,7 +172,6 @@ import java.util.List;
         this.index = ordering;
     }
 
-    @Override
     public PathMetadata getPropertyPath() {
         if (propertyPath == null && flatPropertyPath != null) {
             if (getQuery() == null) {
@@ -195,13 +184,11 @@ import java.util.List;
         return propertyPath;
     }
 
-    @Override
     public void setPropertyPath(PathMetadata pathMetadata) {
         this.propertyPath = pathMetadata;
         this.flatPropertyPath = null;
     }
 
-    @Override
     public Query getQuery() {
         return query;
     }
@@ -210,7 +197,6 @@ import java.util.List;
         this.query = query;
     }
 
-    @Override
     public Object getValue() {
         if (getPropertyPath() == null) {
             throw new IllegalStateException("property path cannot be null.");
@@ -222,38 +208,31 @@ import java.util.List;
         return value;
     }
 
-    @Override
     public void setValue(Object value) {
         this.value = value;
         this.flatValue = null;
     }
 
-    @Override
     public boolean isLocal() {
         return propertyPath == null || !propertyPath.isMultiStep();
     }
 
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }
 
-    @Override
     public boolean isFixed() {
         return fixed;
     }
 
-    @Override
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
     }
 
-    @Override
     public boolean isMaster() {
         return master;
     }

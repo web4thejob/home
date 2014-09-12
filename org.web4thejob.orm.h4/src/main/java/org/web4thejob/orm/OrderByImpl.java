@@ -40,69 +40,58 @@ import java.io.Serializable;
     private int index;
     private boolean fixed;
 
-    @Override
     public long getId() {
         return id;
-    }
-
-    @Override
-    public int getIndex() {
-        return index;
-    }
-
-    @Override
-    public String getProperty() {
-        return property;
-    }
-
-    @Override
-    public Query getQuery() {
-        return query;
-    }
-
-    @Override
-    public boolean isDescending() {
-        return descending;
-    }
-
-    @Override
-    public boolean isFixed() {
-        return fixed;
-    }
-
-    @Override
-    public void setFixed(boolean fixed) {
-        this.fixed = fixed;
-    }
-
-    @Override
-    public void setDescending(boolean descending) {
-        this.descending = descending;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
     public void setIndex(int ordering) {
         this.index = ordering;
     }
 
-    @Override
+    public String getProperty() {
+        return property;
+    }
+
     public void setProperty(String property) {
         this.property = property;
+    }
+
+    public Query getQuery() {
+        return query;
     }
 
     public void setQuery(Query query) {
         this.query = query;
     }
 
-    @Override
+    public boolean isDescending() {
+        return descending;
+    }
+
+    public void setDescending(boolean descending) {
+        this.descending = descending;
+    }
+
+    public boolean isFixed() {
+        return fixed;
+    }
+
+    public void setFixed(boolean fixed) {
+        this.fixed = fixed;
+    }
+
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }

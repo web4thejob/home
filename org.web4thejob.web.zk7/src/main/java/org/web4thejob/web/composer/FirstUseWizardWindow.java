@@ -67,7 +67,6 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
     public void doAfterCompose(Window comp) throws Exception {
         super.doAfterCompose(comp);
         btnNext.addEventListener(Events.ON_CLICK + "Echo", new EventListener<Event>() {
-            @Override
             public void onEvent(Event event) throws Exception {
                 Clients.clearBusy();
                 if (step.canContinue()) {
@@ -165,7 +164,6 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             checkbox.setSclass("contentText");
             checkbox.setZclass("z-label");
             checkbox.addEventListener(Events.ON_CHECK, new EventListener<CheckEvent>() {
-                @Override
                 public void onEvent(CheckEvent event) throws Exception {
                     FirstUseWizardWindow.this.btnNext.setDisabled(!event.isChecked());
                 }
@@ -289,7 +287,6 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             createSchema.setChecked(true);
             createSchema.setParent(hlayout);
             createSchema.addEventListener(Events.ON_CHECK, new EventListener<CheckEvent>() {
-                @Override
                 public void onEvent(CheckEvent event) throws Exception {
                     schemaSyntax.setDisabled(!event.isChecked());
                 }
@@ -372,7 +369,6 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             test.setStyle("margin-top:20px;");
             test.setAutodisable("self");
             test.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
-                @Override
                 public void onEvent(MouseEvent event) throws Exception {
 
                     if (!validateConnectionInfo()) return;
@@ -414,7 +410,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             if (ContextUtil.getSystemJoblet().isInstalled()) return true;
             if (!validateConnectionInfo()) return false;
 
-            datasource.setProperty(DatasourceProperties.DIALECT, dialect.getSelectedItem().getValue().toString());
+            datasource.setProperty(DatasourceProperties.DIALECT, dialect.getSelectedItem().<Object>getValue().toString());
             datasource.setProperty(DatasourceProperties.DRIVER, driver.getText().trim());
             datasource.setProperty(DatasourceProperties.URL, url.getText().trim());
             datasource.setProperty(DatasourceProperties.USER, user.getText().trim());
@@ -511,7 +507,7 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
                 item.setValue(tokenizer.nextToken());
                 item.setParent(dialects);
 
-                if (item.getValue().equals(def)) {
+                if (item.<Object>getValue().equals(def)) {
                     dialects.setSelectedItem(item);
                 }
             }
@@ -543,7 +539,6 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             a.setSclass("contentLink");
             a.setImage("../img/KEY_32.png");
             a.addEventListener(Events.ON_CLICK, new EventListener<MouseEvent>() {
-                @Override
                 public void onEvent(MouseEvent event) throws Exception {
                     final UserIdentity admin = ContextUtil.getSecurityService().getAdministratorIdentity();
                     PasswordDialog dialog = ContextUtil.getDefaultDialog(PasswordDialog.class, admin, false);
@@ -555,15 +550,14 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
 
     private class FirstUseConfiguration implements MessageListener,
             EventListener<Event>, TransactionCallback<Boolean> {
-        private UserIdentity userIdentity;
-        private String passwd;
-
         public FirstUseConfiguration(UserIdentity userIdentity) {
             this.userIdentity = userIdentity;
             stepContainer.addEventListener(Events.ON_USER, this);
         }
 
-        @Override
+        private UserIdentity userIdentity;
+        private String passwd;
+
         public void onEvent(Event event) throws Exception {
             Clients.clearBusy();
             if (ContextUtil.getTransactionWrapper().execute(this)) {
@@ -573,7 +567,6 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
 
         }
 
-        @Override
         public void processMessage(Message message) {
             if (message.getId() == MessageEnum.AFFIRMATIVE_RESPONSE) {
                 Clients.showBusy(L10nMessages.L10N_MSG_PREPARE_FIRST_USE.toString());
@@ -582,7 +575,6 @@ public class FirstUseWizardWindow extends GenericForwardComposer<Window> {
             }
         }
 
-        @Override
         @SuppressWarnings("unchecked")
         public Boolean doInTransaction(TransactionStatus status) {
             userIdentity.setPassword(ContextUtil.getBean(SecurityService.class).encodePassword(userIdentity,

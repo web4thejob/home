@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ZK6Module extends AbstractModule {
-    @Override
     public int getOrdinal() {
         return 3;
     }

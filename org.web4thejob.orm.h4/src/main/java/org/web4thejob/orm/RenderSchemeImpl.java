@@ -42,6 +42,14 @@ import java.util.Locale;
 
 /*package*/ class RenderSchemeImpl extends AbstractHibernateEntity implements RenderScheme {
 
+    public RenderSchemeImpl() {
+        super();
+    }
+
+    public RenderSchemeImpl(Class<? extends Entity> targetType) {
+        this.targetType = targetType;
+    }
+
     private long id;
     @NotBlank
     private String name;
@@ -60,21 +68,10 @@ import java.util.Locale;
     @UserIdHolder
     private Identity owner;
     private Integer pageSize;
-
     private Class<? extends Entity> targetType;
-
     @SuppressWarnings("unused")
     private int version;
 
-    public RenderSchemeImpl() {
-        super();
-    }
-
-    public RenderSchemeImpl(Class<? extends Entity> targetType) {
-        this.targetType = targetType;
-    }
-
-    @Override
     public RenderElement addElement(PathMetadata propertyPath) {
         final RenderElementImpl element = new RenderElementImpl();
         element.setRenderScheme(this);
@@ -93,12 +90,10 @@ import java.util.Locale;
         return element;
     }
 
-    @Override
     public RenderElement addElement(PropertyMetadata propertyMetadata) {
         return addElement(ContextUtil.getMRS().getPropertyPath(propertyMetadata));
     }
 
-    @Override
     public RenderElement addElement(RenderElement renderElement) {
         RenderElementImpl element = (RenderElementImpl) renderElement.clone();
         element.setRenderScheme(this);
@@ -107,42 +102,62 @@ import java.util.Locale;
         return element;
     }
 
-    @Override
     public int getColSpan() {
         return colSpan;
     }
 
-    @Override
+    public void setColSpan(int colSpan) {
+        this.colSpan = colSpan;
+    }
+
     public List<RenderElement> getElements() {
         return elements;
     }
 
-    @Override
+    public void setElements(List<RenderElement> elements) {
+        this.elements = elements;
+    }
+
     public long getId() {
         return id;
     }
 
-    @Override
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public int getIndex() {
         return index;
     }
 
-    @Override
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     public Locale getLocale() {
         return locale;
     }
 
-    @Override
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
     public String getName() {
         return name;
     }
 
-    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public SchemeType getSchemeType() {
         return schemeType;
     }
 
-    @Override
+    public void setSchemeType(SchemeType schemeType) {
+        this.schemeType = schemeType;
+    }
+
     public Class<? extends Entity> getTargetType() {
         if (targetType == null && flatTargetType != null) {
             targetType = ContextUtil.getBean(EntityFactory.class).toEntityType(flatTargetType);
@@ -150,55 +165,19 @@ import java.util.Locale;
         return targetType;
     }
 
-    @Override
-    public void setColSpan(int colSpan) {
-        this.colSpan = colSpan;
-    }
-
-    public void setElements(List<RenderElement> elements) {
-        this.elements = elements;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    @Override
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    @Override
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public void setSchemeType(SchemeType schemeType) {
-        this.schemeType = schemeType;
-    }
-
     public void setTargetType(Class<? extends Entity> targetType) {
         this.targetType = targetType;
         this.flatTargetType = null;
     }
 
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }
 
-    @Override
     public String getFlatTargetType() {
         if (flatTargetType == null && targetType != null) {
             flatTargetType = targetType.getName();
@@ -227,32 +206,26 @@ import java.util.Locale;
         return sb.toString();
     }
 
-    @Override
     public String getFriendlyName() {
         return friendlyName;
     }
 
-    @Override
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    @Override
-    public void setPageSize(Integer size) {
-        pageSize = size;
-    }
-
-    @Override
     public void setFriendlyName(String friendlyName) {
         this.friendlyName = friendlyName;
     }
 
-    @Override
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer size) {
+        pageSize = size;
+    }
+
     public Identity getOwner() {
         return owner;
     }
 
-    @Override
     public void setOwner(Identity owner) {
         this.owner = owner;
     }

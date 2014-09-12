@@ -35,22 +35,18 @@ public abstract class AbstractComponentController<E extends Entity, B extends Da
     protected C component;
 
 
-    @Override
     public void setBinder(B dataBinder) {
         this.dataBinder = dataBinder;
     }
 
-    @Override
     public void setEntity(E entity) {
         this.entity = entity;
     }
 
-    @Override
     public void setComponent(C component) {
         this.component = component;
     }
 
-    @Override
     public void onDirty(boolean dirty) {
         if (component != null && dataBinder != null && entity != null) {
             arrangeAfterUserChange();

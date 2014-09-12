@@ -34,12 +34,10 @@ public class DefaultMenuitemCommandDecorator extends AbstractClickableCommandDec
         setDisabled(!command.isActive());
     }
 
-    @Override
     public boolean isDisabled() {
         return ((Menuitem) clickable).isDisabled();
     }
 
-    @Override
     public void setDisabled(boolean disabled) {
         ((Menuitem) clickable).setDisabled(disabled);
     }

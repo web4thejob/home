@@ -52,14 +52,13 @@ import java.util.Set;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implements RenderSchemePanel {
-    // --------------------- GETTER / SETTER METHODS ---------------------
-    private final RenderScheme DUMMY_RENDER_SCHEME;
-
     public DefaultRenderSchemePanel() {
         DUMMY_RENDER_SCHEME = ContextUtil.getEntityFactory().buildRenderScheme(RenderElement.class);
     }
 
-    @Override
+    // --------------------- GETTER / SETTER METHODS ---------------------
+    private final RenderScheme DUMMY_RENDER_SCHEME;
+
     public RenderScheme getRenderScheme() {
         if (!hasTargetType() || getListViewPanel() == null) {
             return null;
@@ -80,7 +79,19 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
         return renderScheme;
     }
 
-    @Override
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void setRenderScheme(RenderScheme renderScheme) {
+        if (!hasTargetType() || !getTargetType().equals(renderScheme.getTargetType()) || getListViewPanel() == null) {
+            return;
+        }
+
+        renderAfterLookupChange(renderScheme);
+        for (LookupCommandDecorator decorator : ZkUtil.getLookupDecorators(getCommand(CommandEnum
+                .RENDER_SCHEME_LOOKUP))) {
+            decorator.setLookupSelection(renderScheme);
+        }
+    }
+
     public boolean hasTargetType() {
         return getModelHierarchyPanel() != null && getModelHierarchyPanel().hasTargetType();
     }
@@ -89,7 +100,10 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
         return (ListViewPanel) getCenter();
     }
 
-    @Override
+    // ------------------------ INTERFACE METHODS ------------------------
+
+    // --------------------- Interface CommandAware ---------------------
+
     public Class<? extends Entity> getTargetType() {
         if (getModelHierarchyPanel() != null) {
             return getModelHierarchyPanel().getTargetType();
@@ -97,9 +111,11 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
         return null;
     }
 
-    // ------------------------ INTERFACE METHODS ------------------------
+    // --------------------- Interface LookupCommandOwner ---------------------
 
-    // --------------------- Interface CommandAware ---------------------
+    public void setTargetType(Class<? extends Entity> targetType) {
+        onSettingValueChanged(SettingEnum.TARGET_TYPE, null, targetType);
+    }
 
     @Override
     public Set<CommandEnum> getSupportedCommands() {
@@ -113,9 +129,8 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
         return Collections.unmodifiableSet(supported);
     }
 
-    // --------------------- Interface LookupCommandOwner ---------------------
+    // --------------------- Interface MessageListener ---------------------
 
-    @Override
     public void renderAfterLookupChange(RenderScheme renderScheme) {
         if (renderScheme == null || !hasTargetType() || !getTargetType().equals(renderScheme.getTargetType())) {
             return;
@@ -129,7 +144,8 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
         }
     }
 
-    @Override
+    // --------------------- Interface RenderSchemePanel ---------------------
+
     public void assignLookupDetails(RenderScheme renderScheme) {
         renderScheme.getElements().clear();
         List<? extends Entity> list = getListViewPanel().getList();
@@ -140,8 +156,6 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
             }
         }
     }
-
-    // --------------------- Interface MessageListener ---------------------
 
     @Override
     public void processMessage(Message message) {
@@ -176,35 +190,7 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
         }
     }
 
-    // --------------------- Interface RenderSchemePanel ---------------------
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    @Override
-    public void setRenderScheme(RenderScheme renderScheme) {
-        if (!hasTargetType() || !getTargetType().equals(renderScheme.getTargetType()) || getListViewPanel() == null) {
-            return;
-        }
-
-        renderAfterLookupChange(renderScheme);
-        for (LookupCommandDecorator decorator : ZkUtil.getLookupDecorators(getCommand(CommandEnum
-                .RENDER_SCHEME_LOOKUP))) {
-            decorator.setLookupSelection(renderScheme);
-        }
-    }
-
-    @Override
-    public void setSchemeType(SchemeType schemeType) {
-        setSettingValue(SettingEnum.SCHEME_TYPE, schemeType);
-    }
-
     // --------------------- Interface TargetTypeAware ---------------------
-
-    @Override
-    public void setTargetType(Class<? extends Entity> targetType) {
-        onSettingValueChanged(SettingEnum.TARGET_TYPE, null, targetType);
-    }
-
-    // -------------------------- OTHER METHODS --------------------------
 
     public void addElement(PathMetadata pathMetadata) {
         if (getListViewPanel() != null) {
@@ -220,13 +206,14 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
         }
     }
 
+    // -------------------------- OTHER METHODS --------------------------
+
     private void setDirty() {
         if (hasCommand(CommandEnum.RENDER_SCHEME_LOOKUP)) {
             getCommand(CommandEnum.RENDER_SCHEME_LOOKUP).dispatchMessage(ContextUtil.getMessage(MessageEnum
                     .ENTITY_UPDATED, this));
         }
     }
-
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -269,7 +256,7 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
                 if (scheme == null) {
                     scheme = RenderSchemeUtil.createDefaultRenderScheme(RenderElement.class, SchemeType.LIST_SCHEME,
                             CoreUtil.getUserLocale(), new String[]{RenderElement.FLD_ID,
-                            RenderElement.FLD_RENDER_SCHEME});
+                                    RenderElement.FLD_RENDER_SCHEME});
                     scheme.setName(getClass().getCanonicalName());
                     scheme.setFriendlyName(getClass().getSimpleName());
                     ContextUtil.getDWS().save(scheme);
@@ -324,9 +311,12 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
         return (ModelHierarchyPanel) getWest();
     }
 
-    @Override
     public SchemeType getSchemeType() {
         return getSettingValue(SettingEnum.SCHEME_TYPE, null);
+    }
+
+    public void setSchemeType(SchemeType schemeType) {
+        setSettingValue(SettingEnum.SCHEME_TYPE, schemeType);
     }
 
     @Override

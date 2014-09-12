@@ -37,22 +37,18 @@ import org.web4thejob.security.UserIdentity;
 @Service
 /* package */class EntityFactoryImpl implements EntityFactory {
 
-    @Override
     public PanelDefinition buildPanelDefinition() {
         return new PanelDefinitionImpl();
     }
 
-    @Override
     public Query buildQuery(Class<? extends Entity> entityType) {
         return new QueryImpl(entityType);
     }
 
-    @Override
     public Query buildQuery(String entityName) {
         return new QueryImpl(toEntityType(entityName));
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T extends Parameter> T buildParameter(Class<T> parameterType) {
         try {
@@ -63,24 +59,20 @@ import org.web4thejob.security.UserIdentity;
         }
     }
 
-    @Override
     public RenderScheme buildRenderScheme(Class<? extends Entity> entityType) {
         return new RenderSchemeImpl(entityType);
     }
 
-    @Override
     public RenderScheme buildRenderScheme(String entityName) {
         return new RenderSchemeImpl(toEntityType(entityName));
     }
 
-    @Override
     public RenderElement buildRenderElement(RenderScheme renderScheme) {
         RenderElementImpl renderElement = new RenderElementImpl();
         renderElement.setRenderScheme(renderScheme);
         return renderElement;
     }
 
-    @Override
     public RenderElement buildRenderElement(PathMetadata pathMetadata) {
         RenderElementImpl renderElement = new RenderElementImpl();
         renderElement.setPropertyPath(pathMetadata);
@@ -88,22 +80,18 @@ import org.web4thejob.security.UserIdentity;
     }
 
 
-    @Override
     public UserIdentity buildUserIdentity() {
         return new UserIdentityImpl();
     }
 
-    @Override
     public RoleIdentity buildRoleIdentity() {
         return new RoleIdentityImpl();
     }
 
-    @Override
     public RoleMembers buildRoleMembers() {
         return new RoleMembersImpl();
     }
 
-    @Override
     public Class<? extends Entity> toEntityType(String entityName) {
         EntityMetadata entityMetadata = ContextUtil.getMRS().getEntityMetadata(entityName);
         if (entityMetadata != null) {
@@ -112,7 +100,6 @@ import org.web4thejob.security.UserIdentity;
         return null;
     }
 
-    @Override
     public AuthorizationPolicy buildAuthorizationPolicy() {
         return new AuthorizationPolicyImpl();
     }

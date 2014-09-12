@@ -44,24 +44,6 @@ import java.util.*;
  */
 
 public abstract class AbstractDialog implements Dialog, EventListener<Event> {
-    public static final L10nString L10N_BUTTON_OK = new L10nString(Dialog.class, "button_ok", "OK");
-    public static final L10nString L10N_BUTTON_CANCEL = new L10nString(Dialog.class, "button_cancel", "Cancel");
-    public static final L10nString L10N_BUTTON_CLOSE = new L10nString(Dialog.class, "button_close", "Close");
-
-
-    //protected static final String ON_AFTER_SHOW = "onAfterShow";
-    private static final String ON_OK_ECHO = "onOKEcho";
-    protected final Window window = new Window();
-    protected Panel dialogContent;
-    protected Toolbar dialogButtongs;
-    protected Button btnOK;
-    protected Button btnCancel;
-    protected MessageListener listener;
-    private CommandRenderer commandRenderer;
-    private SortedMap<CommandEnum, Command> commands;
-    private boolean designMode = false;
-    private boolean l10nMode = false;
-
     protected AbstractDialog() {
         window.setPage(Executions.getCurrent().getDesktop().getFirstPage());
         window.setAttribute(ATTRIB_DIALOG, true);
@@ -72,6 +54,22 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         prepareBottomToolbar();
         prepareButtons();
     }
+
+    //protected static final String ON_AFTER_SHOW = "onAfterShow";
+    private static final String ON_OK_ECHO = "onOKEcho";
+    public static final L10nString L10N_BUTTON_OK = new L10nString(Dialog.class, "button_ok", "OK");
+    public static final L10nString L10N_BUTTON_CANCEL = new L10nString(Dialog.class, "button_cancel", "Cancel");
+    public static final L10nString L10N_BUTTON_CLOSE = new L10nString(Dialog.class, "button_close", "Close");
+    protected final Window window = new Window();
+    protected Panel dialogContent;
+    protected Toolbar dialogButtongs;
+    protected Button btnOK;
+    protected Button btnCancel;
+    protected MessageListener listener;
+    private CommandRenderer commandRenderer;
+    private SortedMap<CommandEnum, Command> commands;
+    private boolean designMode = false;
+    private boolean l10nMode = false;
 
     protected boolean isOKReady() {
         return true;
@@ -117,7 +115,6 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         doClose();
     }
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_CANCEL.equals(event.getName())) {
             event.stopPropagation();
@@ -197,7 +194,6 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         //window.addEventListener(ON_AFTER_SHOW, this);
     }
 
-    @Override
     public void show(MessageListener listener) {
         this.listener = listener;
         if (window.getPage() != null) {
@@ -220,7 +216,6 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         // override
     }
 
-    @Override
     public Command getCommand(CommandEnum id) {
         if (commands != null) {
             return commands.get(id);
@@ -228,18 +223,15 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         return null;
     }
 
-    @Override
     public SortedSet<Command> getCommands() {
         if (commands != null) return Collections.unmodifiableSortedSet(new TreeSet<Command>(commands.values()));
         else return Command.EMPTY_COMMANDS_SET;
     }
 
-    @Override
     public boolean hasCommand(CommandEnum id) {
         return commands != null && commands.containsKey(id);
     }
 
-    @Override
     public void process(Command command) throws CommandProcessingException {
         if (CommandEnum.LOCALIZE.equals(command.getId())) {
             Dialog dialog = ContextUtil.getDialog(DefaultLocalizationDialog.class, this);
@@ -249,19 +241,20 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         }
     }
 
-    @Override
+    public boolean isInDesignMode() {
+        return designMode;
+    }
+
     public void setInDesignMode(boolean designMode) {
         if (this.designMode != designMode) {
             this.designMode = designMode;
         }
     }
 
-    @Override
-    public boolean isInDesignMode() {
-        return designMode;
+    public boolean getL10nMode() {
+        return l10nMode;
     }
 
-    @Override
     public void setL10nMode(boolean l10nMode) {
         if (this.l10nMode != l10nMode) {
             this.l10nMode = l10nMode;
@@ -274,11 +267,6 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         }
     }
 
-    @Override
-    public boolean getL10nMode() {
-        return l10nMode;
-    }
-
     private void initCommandRenderer() {
         if (commandRenderer == null) {
             commandRenderer = ContextUtil.getBean(CommandRenderer.class);
@@ -287,7 +275,6 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         }
     }
 
-    @Override
     public Set<CommandEnum> getSupportedCommands() {
         Set<CommandEnum> supported = new HashSet<CommandEnum>(2);
         supported.add(CommandEnum.LOCALIZE);
@@ -325,7 +312,6 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         return command;
     }
 
-    @Override
     public boolean unregisterCommand(CommandEnum id) {
         Command command = getCommand(id);
 
@@ -340,13 +326,11 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         return false;
     }
 
-    @Override
     public void supressCommands(boolean supress) {
         initCommandRenderer();
         commandRenderer.supress(supress);
     }
 
-    @Override
     public boolean isCommandsSupressed() {
         return commandRenderer != null && commandRenderer.isSupressed();
     }
@@ -356,7 +340,6 @@ public abstract class AbstractDialog implements Dialog, EventListener<Event> {
         return L10nUtil.getMessage(getClass(), "friendlyBeanName", getClass().getSimpleName());
     }
 
-    @Override
     public PanelState getPanelState() {
         return PanelState.BUSY;
     }

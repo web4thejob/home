@@ -56,12 +56,6 @@ import java.util.Map;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultNavigationChainPanel extends AbstractZkBindablePanel implements NavigationChainPanel {
-    private static final String ON_CLICK_ECHO = Events.ON_CLICK + "Echo";
-    private Entity targetEntity;
-    private Hbox hbox = new Hbox();
-    private A navigateLink = new A();
-    private Html html = new Html();
-
     public DefaultNavigationChainPanel() {
         ZkUtil.setParentOfChild((Component) base, hbox);
         hbox.setHflex("true");
@@ -80,6 +74,11 @@ public class DefaultNavigationChainPanel extends AbstractZkBindablePanel impleme
         html.setParent(hbox);
         html.setZclass("z-label");
     }
+    private static final String ON_CLICK_ECHO = Events.ON_CLICK + "Echo";
+    private Entity targetEntity;
+    private Hbox hbox = new Hbox();
+    private A navigateLink = new A();
+    private Html html = new Html();
 
     @Override
     protected void arrangeForMasterEntity() {
@@ -158,12 +157,10 @@ public class DefaultNavigationChainPanel extends AbstractZkBindablePanel impleme
         //nothing to do
     }
 
-    @Override
     public boolean hasTargetEntity() {
         return targetEntity != null;
     }
 
-    @Override
     public Entity getTargetEntity() {
         return targetEntity;
     }
@@ -179,7 +176,6 @@ public class DefaultNavigationChainPanel extends AbstractZkBindablePanel impleme
 
     private class NavigateLinkListener implements EventListener<Event>, ArbitraryDropdownItems {
 
-        @Override
         public void onEvent(Event event) throws Exception {
             if (Events.ON_CLICK.equals(event.getName())) {
                 if (((MouseEvent) event).getKeys() != (MouseEvent.LEFT_CLICK + MouseEvent.SHIFT_KEY)) {
@@ -203,14 +199,12 @@ public class DefaultNavigationChainPanel extends AbstractZkBindablePanel impleme
             }
         }
 
-        @Override
         public Map<String, String> getDropdownItems() {
             final Entity bindValue = targetEntity;
             if (bindValue == null) return Collections.emptyMap();
             return CoreUtil.getRelatedPanelsMap(bindValue.getEntityType(), MutableEntityViewPanel.class);
         }
 
-        @Override
         public void onItemClicked(String key) {
             Panel panel = ZkUtil.getOwningPanelOfComponent(navigateLink);
             if (panel instanceof MessageAware && targetEntity != null) {

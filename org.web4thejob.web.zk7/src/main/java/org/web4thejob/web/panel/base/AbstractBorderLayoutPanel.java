@@ -51,14 +51,19 @@ import java.util.*;
 public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel implements CommandMerger {
 // ------------------------------ FIELDS ------------------------------
 
-    protected static final String REGION_SIZE = "25%";
+    protected AbstractBorderLayoutPanel() {
+        ZkUtil.setParentOfChild((Component) base, blayout);
+        blayout.setWidth("100%");
+        blayout.setVflex("true");
+    }
 
     private static final int DEFAULT_CHILDREN_COUNT = 5;
     private static final String[] defaultRegionOrder = {Borderlayout.CENTER, Borderlayout.NORTH, Borderlayout.SOUTH,
             Borderlayout.WEST, Borderlayout.EAST};
-
+    protected static final String REGION_SIZE = "25%";
     private final Borderlayout blayout = new Borderlayout();
     private final SelectEventHandler selectHandler = new SelectEventHandler();
+// --------------------------- CONSTRUCTORS ---------------------------
 
     @Override
     public void dispatchMessage(Message message) {
@@ -67,13 +72,6 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
         } else {
             super.dispatchMessage(message);
         }
-    }
-// --------------------------- CONSTRUCTORS ---------------------------
-
-    protected AbstractBorderLayoutPanel() {
-        ZkUtil.setParentOfChild((Component) base, blayout);
-        blayout.setWidth("100%");
-        blayout.setVflex("true");
     }
 
 // ------------------------ INTERFACE METHODS ------------------------
@@ -212,7 +210,6 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
 
 // --------------------- Interface ParentCapable ---------------------
 
-    @Override
     public boolean accepts(Panel panel) {
         String region;
         if (!panel.hasAttribute(Attributes.ATTRIB_REGION)) {
@@ -477,7 +474,6 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
         subpanels.sort();
     }
 
-    @Override
     public SortedSet<Command> getMergedCommands() {
         SortedSet<Command> mergedCommands = new TreeSet<Command>(super.getCommands());
 
@@ -657,30 +653,6 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
         return subpanels.add(panel);
     }
 
-    private class OpenEventHandler implements EventListener<OpenEvent> {
-
-        @Override
-        public void onEvent(OpenEvent event) throws Exception {
-            if (event.isOpen()) {
-                Panel panel = (Panel) event.getTarget().getAttribute(Attributes.ATTRIB_PANEL);
-                flushCache(panel);
-                event.getTarget().removeEventListener(Events.ON_CLICK, selectHandler);
-            } else {
-                event.getTarget().addEventListener(Events.ON_CLICK, selectHandler);
-            }
-        }
-    }
-
-    private class SelectEventHandler implements EventListener<Event> {
-
-        @Override
-        public void onEvent(Event event) throws Exception {
-            Panel panel = (Panel) event.getTarget().getAttribute(Attributes.ATTRIB_PANEL);
-            flushCache(panel);
-        }
-    }
-
-    @Override
     public Set<CommandAware> getMergedOwners() {
         Set<CommandAware> owners = new HashSet<CommandAware>();
         for (Panel panel : subpanels) {
@@ -707,6 +679,27 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
             return super.toString();
         }
 
+    }
+
+    private class OpenEventHandler implements EventListener<OpenEvent> {
+
+        public void onEvent(OpenEvent event) throws Exception {
+            if (event.isOpen()) {
+                Panel panel = (Panel) event.getTarget().getAttribute(Attributes.ATTRIB_PANEL);
+                flushCache(panel);
+                event.getTarget().removeEventListener(Events.ON_CLICK, selectHandler);
+            } else {
+                event.getTarget().addEventListener(Events.ON_CLICK, selectHandler);
+            }
+        }
+    }
+
+    private class SelectEventHandler implements EventListener<Event> {
+
+        public void onEvent(Event event) throws Exception {
+            Panel panel = (Panel) event.getTarget().getAttribute(Attributes.ATTRIB_PANEL);
+            flushCache(panel);
+        }
     }
 
 

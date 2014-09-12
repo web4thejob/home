@@ -32,8 +32,6 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractListSourceMultiSelectPanel<S, T> extends AbstractMultiSelectPanel<S, T> {
-    protected Listbox sourceBox;
-
     protected AbstractListSourceMultiSelectPanel() {
         super(false, false);
     }
@@ -41,6 +39,8 @@ public abstract class AbstractListSourceMultiSelectPanel<S, T> extends AbstractM
     protected AbstractListSourceMultiSelectPanel(boolean readOnly, boolean excludeUpDown) {
         super(readOnly, excludeUpDown);
     }
+
+    protected Listbox sourceBox;
 
     @Override
     protected void buildSourceBox() {
@@ -91,7 +91,6 @@ public abstract class AbstractListSourceMultiSelectPanel<S, T> extends AbstractM
 
     abstract protected void arrangeSourceHeaders(Listbox listbox);
 
-    @Override
     public void setSourceList(List<S> list) {
         sourceBox.setModel(new ListModelList<S>(list, true));
     }

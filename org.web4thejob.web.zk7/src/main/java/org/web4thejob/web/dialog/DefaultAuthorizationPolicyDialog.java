@@ -57,7 +57,6 @@ public class DefaultAuthorizationPolicyDialog extends AbstractDialog implements 
         authorizationPolicyPanel.render();
     }
 
-    @Override
     public void setAuthorizationMenu(String xml) {
         authorizationMenu = xml;
     }

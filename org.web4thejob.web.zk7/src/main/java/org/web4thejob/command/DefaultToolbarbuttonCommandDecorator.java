@@ -33,38 +33,31 @@ public class DefaultToolbarbuttonCommandDecorator extends AbstractClickableComma
         super(command);
     }
 
-    @Override
     public boolean isDisabled() {
         return ((Toolbarbutton) clickable).isDisabled();
     }
 
-    @Override
     public void setDisabled(boolean disabled) {
         ((Toolbarbutton) clickable).setDisabled(disabled);
     }
 
-    @Override
     protected LabelImageElement getClickable() {
         return new Toolbarbutton();
     }
 
-    @Override
-    public void setHref(String href) {
-        ((Toolbarbutton) clickable).setHref(href);
-    }
-
-    @Override
     public String getHref() {
         return ((Toolbarbutton) clickable).getHref();
     }
 
-    @Override
-    public void setTarget(String target) {
-        ((Toolbarbutton) clickable).setTarget(target);
+    public void setHref(String href) {
+        ((Toolbarbutton) clickable).setHref(href);
     }
 
-    @Override
     public String getTarget() {
         return ((Toolbarbutton) clickable).getTarget();
+    }
+
+    public void setTarget(String target) {
+        ((Toolbarbutton) clickable).setTarget(target);
     }
 }

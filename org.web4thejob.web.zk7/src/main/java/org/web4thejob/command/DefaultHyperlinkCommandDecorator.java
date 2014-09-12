@@ -32,12 +32,10 @@ public class DefaultHyperlinkCommandDecorator extends AbstractClickableCommandDe
         super(command);
     }
 
-    @Override
     public boolean isDisabled() {
         return ((A) clickable).isDisabled();
     }
 
-    @Override
     public void setDisabled(boolean disabled) {
         ((A) clickable).setDisabled(disabled);
     }

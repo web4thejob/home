@@ -43,9 +43,6 @@ import org.zkoss.zul.Vbox;
 public class AuthorizationPolicyEditorBox extends AuthorizationPolicyViewerBox implements EventListener<Event> {
     // --------------------------- CONSTRUCTORS ---------------------------
 
-    private static final long serialVersionUID = 1L;
-    private static final String ON_CLICK_ECHO = Events.ON_CLICK + "Echo";
-
     public AuthorizationPolicyEditorBox() {
         super();
 
@@ -84,11 +81,13 @@ public class AuthorizationPolicyEditorBox extends AuthorizationPolicyViewerBox i
 */
     }
 
+    private static final long serialVersionUID = 1L;
+    private static final String ON_CLICK_ECHO = Events.ON_CLICK + "Echo";
+
     // ------------------------ INTERFACE METHODS ------------------------
 
     // --------------------- Interface EventListener ---------------------
 
-    @Override
     public void onEvent(Event event) throws Exception {
         if (Events.ON_CLICK.equals(event.getName())) {
             Clients.showBusy(null);
@@ -118,7 +117,6 @@ public class AuthorizationPolicyEditorBox extends AuthorizationPolicyViewerBox i
             dialog.setL10nMode(((I18nAware) panel).getL10nMode());
         }
         dialog.show(new MessageListener() {
-            @Override
             public void processMessage(Message message) {
                 if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId()) {
                     setRawValue(message.getArg(MessageArgEnum.ARG_ITEM, String.class));

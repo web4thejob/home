@@ -26,7 +26,6 @@ import org.zkoss.zkplus.databind.TypeConverter;
  * @since 3.3.0
  */
 public class ClassConverter implements TypeConverter {
-    @Override
     public Object coerceToUi(Object val, Component comp) {
         if (val != null) {
             try {
@@ -38,7 +37,6 @@ public class ClassConverter implements TypeConverter {
         return val;
     }
 
-    @Override
     public Object coerceToBean(Object val, Component comp) {
         if (val != null) {
             return ((Class) val).getCanonicalName();

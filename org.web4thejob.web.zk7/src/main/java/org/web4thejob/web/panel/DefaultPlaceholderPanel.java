@@ -206,9 +206,24 @@ public class DefaultPlaceholderPanel extends AbstractZkContentPanel implements P
         }
     }
 
+    private void replace(Panel panel) {
+
+        if (getParent() != null) {
+            getParent().getSubpanels().replace(this, panel);
+            if (panel.getParent() instanceof Panel) {
+                ((Panel) panel.getParent()).render();
+            }
+        } else if (((Component) base).getParent() != null) {
+            Component ref = ((Component) base).getParent();
+            detach();
+            panel.attach(ref);
+            panel.render();
+        }
+
+    }
+
     private class SelectPanelResponse implements MessageListener {
 
-        @Override
         public void processMessage(Message message) {
             if (MessageEnum.AFFIRMATIVE_RESPONSE == message.getId()) {
                 Panel panel;
@@ -237,21 +252,5 @@ public class DefaultPlaceholderPanel extends AbstractZkContentPanel implements P
                 }
             }
         }
-    }
-
-    private void replace(Panel panel) {
-
-        if (getParent() != null) {
-            getParent().getSubpanels().replace(this, panel);
-            if (panel.getParent() instanceof Panel) {
-                ((Panel) panel.getParent()).render();
-            }
-        } else if (((Component) base).getParent() != null) {
-            Component ref = ((Component) base).getParent();
-            detach();
-            panel.attach(ref);
-            panel.render();
-        }
-
     }
 }

@@ -36,7 +36,6 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 
 public abstract class AbstractZkMasterDetailTypeAwarePanel extends AbstractMasterDetailTypeAwarePanel {
 
-    @Override
     public void attach(Object container) {
         if (getParent() != null) throw new IllegalStateException("Cannot attach a child controller.");
 
@@ -65,19 +64,16 @@ public abstract class AbstractZkMasterDetailTypeAwarePanel extends AbstractMaste
 
     }
 
-    @Override
     public void detach() {
         if (getParent() != null) throw new IllegalStateException("Cannot detach a child controller.");
 
         ((Component) base).detach();
     }
 
-    @Override
     public Object getAttribute(String name) {
         return ((Component) base).getAttribute(name);
     }
 
-    @Override
     public boolean hasAttribute(String name) {
         return ((Component) base).hasAttribute(name);
     }
@@ -87,17 +83,14 @@ public abstract class AbstractZkMasterDetailTypeAwarePanel extends AbstractMaste
         return ZkUtil.initBaseComponent(this);
     }
 
-    @Override
     public boolean isAttached() {
         return ((Component) base).getParent() != null;
     }
 
-    @Override
     public Object removeAttribute(String name) {
         return ((Component) base).removeAttribute(name);
     }
 
-    @Override
     public <T> void setAttribute(String name, T value) {
         ((Component) base).setAttribute(name, value);
     }
@@ -115,7 +108,6 @@ public abstract class AbstractZkMasterDetailTypeAwarePanel extends AbstractMaste
         ZkUtil.displayMessage(message, error, (Component) base);
     }
 
-    @Override
     public void hightlightPanel(boolean highlight) {
         ZkUtil.hightlightComponent((HtmlBasedComponent) base, highlight, isPersisted() ? "green" : "rgb(225,79,35)");
         if (hasCommand(CommandEnum.HIGHLIGHT_PANEL)) {
