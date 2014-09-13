@@ -29,7 +29,6 @@ import org.springframework.test.context.ContextLoader;
 
 public class TestWebContextLoader implements ContextLoader {
 
-    @Override
     public ApplicationContext loadContext(String... locations) throws Exception {
 
         final MockServletContext ctx = new MockServletContext("");
@@ -39,7 +38,6 @@ public class TestWebContextLoader implements ContextLoader {
         return loader.initWebApplicationContext(ctx);
     }
 
-    @Override
     public String[] processLocations(Class<?> clazz, String... locations) {
         return locations;
     }

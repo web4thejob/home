@@ -61,12 +61,10 @@ public class MyJobletEntity extends AbstractHibernateEntity {
     }
 
 
-    @Override
     public Serializable getIdentifierValue() {
         return id;
     }
 
-    @Override
     public void setAsNew() {
         id = 0;
     }

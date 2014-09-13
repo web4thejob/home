@@ -44,7 +44,7 @@
 
         <window border="none" width="100%" height="100%">
 
-            <borderlayout width="100%" height="100%">
+            <borderlayout hflex="true" vflex="true">
 
                 <north border="normal" height="50px" splittable="false" collapsible="false" style="border-style: solid;
                         border-bottom-width: 4px; border-color: rgb(245,245,245); background-image:url('img/header_background.png');">
@@ -59,7 +59,7 @@
                 </north>
 
                 <center border="normal">
-                    <window border="none" width="100%" height="100%"
+                    <window border="none" hflex="true" vflex="true"
                         apply="org.web4thejob.web.composer.HostWindow" sclass="w4tj-desktop">
                     </window>
                  </center>

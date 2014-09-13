@@ -39,7 +39,6 @@ import org.zkoss.zul.Window;
 
 public class HostWindow implements Composer<Window>, EventListener<ClientInfoEvent> {
 
-    @Override
     public void doAfterCompose(Window comp) throws Exception {
         Window hostWindow = comp;
         hostWindow.getRoot().addEventListener(Events.ON_CLIENT_INFO, this);
@@ -73,7 +72,6 @@ public class HostWindow implements Composer<Window>, EventListener<ClientInfoEve
         }
     }
 
-    @Override
     public void onEvent(ClientInfoEvent event) throws Exception {
         ContextUtil.getSessionContext().setAttribute(SessionInfoPanel.ATTRIB_CLIENT_INFO, event);
     }

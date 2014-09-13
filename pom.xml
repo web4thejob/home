@@ -86,7 +86,7 @@
         <org.zkoss.version>7.0.3</org.zkoss.version>
         <org.junit.version>4.10</org.junit.version>
         <org.joda.version>2.1</org.joda.version>
-        <org.hsqldb.version>2.2.9</org.hsqldb.version>
+        <org.hsqldb.version>2.3.0-jdk5</org.hsqldb.version>
     </properties>
 
     <build>

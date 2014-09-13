@@ -174,6 +174,11 @@ public class CommandEnum implements Comparable<CommandEnum> {
 
     private synchronized static int addToRegistry(CommandEnum commandEnum) {
         int ordinal;
+
+        if (commandsRegistry == null) {
+            commandsRegistry = new HashMap<String, CommandEnum>();
+        }
+
         commandsRegistry.put(commandEnum.name(), commandEnum);
         ordinal = commandsRegistry.size();
 

@@ -117,7 +117,7 @@ public class ContextUtil implements ApplicationContextAware {
     }
 
     public static <T extends Command> T getSubcommand(CommandEnum id, Command command) {
-        return getSubcommand(id, command, null);
+        return (T) getSubcommand(id, command, null);
     }
 
     @SuppressWarnings("unchecked")

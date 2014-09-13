@@ -19,7 +19,6 @@
 package org.web4thejob.web.util;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
 import org.web4thejob.orm.Entity;
 import org.web4thejob.orm.EntityMetadata;
@@ -34,7 +33,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 
 import static org.imgscalr.Scalr.*;
@@ -49,9 +47,13 @@ public class MediaUtil {
     public static final int THUMBNAIL_HEIGHT = 32;
 
 
-    public static final byte[] signMedia(String name, byte[] media) {
-        byte[] mediaFormat = Arrays.copyOf(StringUtils.getFilenameExtension(name).toLowerCase().getBytes(),
-                MEDIA_TYPE_SIGNATURE);
+    public static byte[] signMedia(String name, byte[] media) {
+//        not working in java 5
+//        byte[] mediaFormat = Arrays.copyOf(StringUtils.getFilenameExtension(name).toLowerCase().getBytes(),
+//                MEDIA_TYPE_SIGNATURE);
+
+        byte[] mediaFormat = ArrayUtils.clone(ArrayUtils.subarray(media, 0, MEDIA_TYPE_SIGNATURE));
+
         return ArrayUtils.addAll(mediaFormat, media);
     }
 

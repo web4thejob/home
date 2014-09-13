@@ -32,17 +32,14 @@ import java.util.Collection;
 @Scope("prototype")
 public class DummyLayoutPanel extends AbstractZkLayoutPanel {
 
-    @Override
     public boolean accepts(Panel panel) {
         return true;
     }
 
-    @Override
     protected Collection<Panel> getRenderedOrderOfChildren() {
         return subpanels;
     }
 
-    @Override
     protected boolean isActive(Panel panel) {
         return true;
     }

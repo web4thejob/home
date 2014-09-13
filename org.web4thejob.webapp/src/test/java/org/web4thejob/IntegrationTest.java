@@ -74,7 +74,6 @@ public class IntegrationTest implements IntegrationTestHook {
         return new DefaultSelenium("localhost", 4444, "*firefox", url);
     }
 
-    @Override
     public void doHook(Object... args) {
         //Assert.assertNotNull(Executions.getCurrent());
 
