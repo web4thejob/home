@@ -48,21 +48,23 @@ import org.zkoss.zul.*;
 @org.springframework.stereotype.Component
 @Scope("prototype")
 public class DefaultUserMenuPanel extends AbstractZkContentPanel implements UserMenuPanel, EventListener<Event> {
+    private static final String ON_PANEL_LOAD = "onPanelLoad";
+
     public DefaultUserMenuPanel() {
         ZkUtil.setParentOfChild((Component) base, treeMenu);
         treeMenu.setSclass("w4tj-desktop-menu");
-        //treeMenu.setHflex("true");
+        treeMenu.setHflex("true");
         treeMenu.setVflex("true");
         treeMenu.setSpan(true);
 
         Treecols treecols = new Treecols();
         treecols.setSizable(true);
         treecols.setParent(treeMenu);
-        new Treecol().setParent(treecols);
+        Treecol treecol = new Treecol();
+        treecol.setHflex("min");
+        treecol.setParent(treecols);
         new Treechildren().setParent(treeMenu);
     }
-
-    private static final String ON_PANEL_LOAD = "onPanelLoad";
     private final Tree treeMenu = new Tree();
     private boolean rendered;
 
