@@ -55,6 +55,14 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         EventListener<Event> {
     // ------------------------------ FIELDS ------------------------------
 
+    private static final String ITEM_ROOT = "root";
+    public static final L10nString L10N_HEADER_PANELS = new L10nString(DefaultMenuAuthorizationPanel.class,
+            "list_header_panels", "Panels");
+    public static final L10nString L10N_TREE_ITEM_ROOT = new L10nString(DefaultMenuAuthorizationPanel.class,
+            "tree_item_root", "Start Menu");
+    public static final L10nString L10N_COLUMN_ITEMS = new L10nString(DefaultMenuAuthorizationPanel.class,
+            "tree_col_menu_items", "Menu items");
+
     public DefaultMenuAuthorizationPanel() {
         this(true);
     }
@@ -89,7 +97,9 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
         Treecols treecols = new Treecols();
         treecols.setSizable(true);
         treecols.setParent(tree);
-        new Treecol(L10N_COLUMN_ITEMS.toString()).setParent(treecols);
+        Treecol treecol = new Treecol(L10N_COLUMN_ITEMS.toString());
+        treecol.setParent(treecols);
+        treecol.setHflex("min");
 
         new Treechildren().setParent(tree);
         rootItem = getNewTreeitem(L10N_TREE_ITEM_ROOT.toString(), null);
@@ -120,14 +130,6 @@ public class DefaultMenuAuthorizationPanel extends AbstractZkContentPanel implem
 
         arrangeForState(PanelState.READY);
     }
-
-    private static final String ITEM_ROOT = "root";
-    public static final L10nString L10N_HEADER_PANELS = new L10nString(DefaultMenuAuthorizationPanel.class,
-            "list_header_panels", "Panels");
-    public static final L10nString L10N_TREE_ITEM_ROOT = new L10nString(DefaultMenuAuthorizationPanel.class,
-            "tree_item_root", "Start Menu");
-    public static final L10nString L10N_COLUMN_ITEMS = new L10nString(DefaultMenuAuthorizationPanel.class,
-            "tree_col_menu_items", "Menu items");
     private final Treeitem rootItem;
     private final Tree tree;
 
