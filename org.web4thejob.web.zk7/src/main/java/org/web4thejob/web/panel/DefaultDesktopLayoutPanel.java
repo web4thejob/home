@@ -65,8 +65,8 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
     @Override
     public Set<CommandEnum> getSupportedCommands() {
         Set<CommandEnum> supported = new HashSet<CommandEnum>(super.getSupportedCommands());
-        supported.add(CommandEnum.USER_DROPDOWN);
         supported.add(CommandEnum.TOOLS_DROPDOWN);
+        supported.add(CommandEnum.USER_DROPDOWN);
         return Collections.unmodifiableSet(supported);
     }
 
@@ -204,8 +204,8 @@ public class DefaultDesktopLayoutPanel extends AbstractBorderLayoutPanel impleme
     protected void registerCommands() {
         super.registerCommands();
 
-        registerCommand(ContextUtil.getDefaultCommand(CommandEnum.USER_DROPDOWN, this));
         registerCommand(ContextUtil.getDefaultCommand(CommandEnum.TOOLS_DROPDOWN, this));
+        registerCommand(ContextUtil.getDefaultCommand(CommandEnum.USER_DROPDOWN, this));
 
         if (getCommandRenderer() != null) {
             getCommandRenderer().setAlign("end");

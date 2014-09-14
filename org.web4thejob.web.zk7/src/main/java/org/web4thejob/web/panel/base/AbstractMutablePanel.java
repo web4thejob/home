@@ -543,20 +543,21 @@ public abstract class AbstractMutablePanel extends AbstractZkBindablePanel imple
         statusHolderProp = entityMetadata.getAnnotatedProperty(StatusHolder
                 .class);
 
-        registerCommand(ContextUtil.getDefaultCommand(CommandEnum.REFRESH, this));
-
         if (!isMasterDetail()) {
             registerCommand(ContextUtil.getDefaultCommand(CommandEnum.QUERY, this));
         }
+        registerCommand(ContextUtil.getDefaultCommand(CommandEnum.REFRESH, this));
 
         if (!ContextUtil.getMRS().getEntityMetadata(getTargetType()).isReadOnly()) {
-            if (!entityMetadata.isDenyUpdate()) {
-                registerCommand(ContextUtil.getDefaultCommand(CommandEnum.UPDATE, this));
-            }
             if (!entityMetadata.isTableSubset()) {
                 if (!entityMetadata.isDenyAddNew()) {
                     registerCommand(ContextUtil.getDefaultCommand(CommandEnum.ADDNEW, this));
                 }
+            }
+            if (!entityMetadata.isDenyUpdate()) {
+                registerCommand(ContextUtil.getDefaultCommand(CommandEnum.UPDATE, this));
+            }
+            if (!entityMetadata.isTableSubset()) {
                 if (!entityMetadata.isDenyDelete()) {
                     registerCommand(ContextUtil.getDefaultCommand(CommandEnum.DELETE, this));
                 }

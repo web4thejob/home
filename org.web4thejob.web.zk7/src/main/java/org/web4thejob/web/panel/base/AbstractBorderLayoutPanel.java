@@ -51,16 +51,16 @@ import java.util.*;
 public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel implements CommandMerger {
 // ------------------------------ FIELDS ------------------------------
 
+    private static final int DEFAULT_CHILDREN_COUNT = 5;
+    private static final String[] defaultRegionOrder = {Borderlayout.CENTER, Borderlayout.NORTH, Borderlayout.SOUTH,
+            Borderlayout.WEST, Borderlayout.EAST};
+    protected static final String REGION_SIZE = "25%";
+
     protected AbstractBorderLayoutPanel() {
         ZkUtil.setParentOfChild((Component) base, blayout);
         blayout.setWidth("100%");
         blayout.setVflex("true");
     }
-
-    private static final int DEFAULT_CHILDREN_COUNT = 5;
-    private static final String[] defaultRegionOrder = {Borderlayout.CENTER, Borderlayout.NORTH, Borderlayout.SOUTH,
-            Borderlayout.WEST, Borderlayout.EAST};
-    protected static final String REGION_SIZE = "25%";
     private final Borderlayout blayout = new Borderlayout();
     private final SelectEventHandler selectHandler = new SelectEventHandler();
 // --------------------------- CONSTRUCTORS ---------------------------
@@ -517,7 +517,7 @@ public abstract class AbstractBorderLayoutPanel extends AbstractZkLayoutPanel im
                 } else {
                     if (panel instanceof SettingAware) {
                         ((CommandAware) panel).supressCommands(((SettingAware) panel).getSettingValue(SettingEnum
-                                .SUPRESS_COMMANDS, false));
+                                .SUPPRESS_COMMANDS, false));
                     } else {
                         ((CommandAware) panel).supressCommands(false);
                     }

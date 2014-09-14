@@ -294,9 +294,9 @@ public class DefaultTabbedEntityViewPanel extends AbstractMutablePanel implement
 
     @Override
     protected void arrangeForTargetType() {
+        super.arrangeForTargetType();
         registerCommand(ContextUtil.getDefaultCommand(CommandEnum.CONFIGURE_HEADERS, this));
         registerCommand(ContextUtil.getDefaultCommand(CommandEnum.PRINT, this));
-        super.arrangeForTargetType();
 
         setBaseRenderScheme(getRenderScheme(getTargetType()));
         arrangeForRenderSchemes();

@@ -4,7 +4,7 @@
     <parent>
         <artifactId>web4thejob</artifactId>
         <groupId>org.web4thejob</groupId>
-        <version>3.6.0-J5-SNAPSHOT</version>
+        <version>3.7.0-jdk5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

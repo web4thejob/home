@@ -222,7 +222,7 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
         if (!hasCenter() && getSettingValue(SettingEnum.CENTER_ENABLED, false)) {
             setCenter(ContextUtil.getDefaultPanel(ListViewPanel.class));
             setSettingValue(SettingEnum.CENTER_MERGE_COMMANDS, false);
-            getListViewPanel().setSettingValue(SettingEnum.SUPRESS_COMMANDS, true);
+            getListViewPanel().setSettingValue(SettingEnum.SUPPRESS_COMMANDS, true);
             getListViewPanel().setInMemoryMode(true);
             getCenter().render();
         } else if (hasCenter() && !getSettingValue(SettingEnum.CENTER_ENABLED, false)) {
@@ -233,7 +233,7 @@ public class DefaultRenderSchemePanel extends AbstractBorderLayoutPanel implemen
             setWest(ContextUtil.getDefaultPanel(ModelHierarchyPanel.class));
             getModelHierarchyPanel().allowOneToMany(false);
             setSettingValue(SettingEnum.WEST_MERGE_COMMANDS, true);
-            getModelHierarchyPanel().setSettingValue(SettingEnum.SUPRESS_COMMANDS, false);
+            getModelHierarchyPanel().setSettingValue(SettingEnum.SUPPRESS_COMMANDS, false);
             getModelHierarchyPanel().supressCommands(true);
             getWest().render();
         } else if (hasWest() && !getSettingValue(SettingEnum.WEST_ENABLED, false)) {

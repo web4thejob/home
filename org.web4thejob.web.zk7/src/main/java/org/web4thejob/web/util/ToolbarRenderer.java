@@ -43,7 +43,7 @@ import java.util.*;
 @Scope("prototype")
 public class ToolbarRenderer implements CommandRenderer {
     // ------------------------------ FIELDS ------------------------------
-    private static final CommandsSorter COMMANDS_SORTER = new CommandsSorter();
+    private static final CommandsEnumSorter COMMANDS_ENUM_SORTER = new CommandsEnumSorter();
     private final Set<CommandAware> commandOwners = new LinkedHashSet<CommandAware>(0);
     private Component container;
     private Toolbar toolbar;
@@ -325,7 +325,7 @@ public class ToolbarRenderer implements CommandRenderer {
 
 
     private SortedMap<CommandEnum, List<Command>> mergeCommands() {
-        SortedMap<CommandEnum, List<Command>> map = new TreeMap<CommandEnum, List<Command>>(COMMANDS_SORTER);
+        SortedMap<CommandEnum, List<Command>> map = new TreeMap<CommandEnum, List<Command>>(COMMANDS_ENUM_SORTER);
 
         for (CommandAware owner : commandOwners) {
             if (owner instanceof PlaceholderPanel && !owner.equals(getPrimaryOwner())) {
@@ -357,11 +357,20 @@ public class ToolbarRenderer implements CommandRenderer {
         return map;
     }
 
-    private static class CommandsSorter implements Comparator<CommandEnum> {
+    private static class CommandsEnumSorter implements Comparator<CommandEnum> {
 
         public int compare(CommandEnum o1, CommandEnum o2) {
             Integer i1 = (o1.getSubcommands().isEmpty() ? 10000 : 0) + o1.ordinal();
             Integer i2 = (o2.getSubcommands().isEmpty() ? 10000 : 0) + o2.ordinal();
+            return i1.compareTo(i2);
+        }
+    }
+
+    private static class CommandsSorter implements Comparator<Command> {
+
+        public int compare(Command o1, Command o2) {
+            Integer i1 = o1.getRenderOrder();
+            Integer i2 = o2.getRenderOrder();
             return i1.compareTo(i2);
         }
     }

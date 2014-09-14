@@ -33,32 +33,7 @@ import java.util.*;
  */
 
 public class SettingEnum implements Comparable<SettingEnum> {
-    SettingEnum(String name, Class<?> type) {
-        this(name, type, SettingsDialog.L10N_CATEGORY_0000_GENERAL);
-    }
-
-    SettingEnum(String name, Class<?> type, L10nString category) {
-        this(name, type, null, category);
-    }
-
-    SettingEnum(String name, Class<?> type, Class<?> subType, L10nString category) {
-        this.name = name;
-        this.type = type;
-        this.subType = subType;
-        this.category = category;
-
-        this.ordinal = addToRegistry(this);
-    }
-
-    SettingEnum(String name, Class<?> type, Class<?> subType) {
-        this.name = name;
-        this.type = type;
-        this.subType = subType;
-        this.category = SettingsDialog.L10N_CATEGORY_0000_GENERAL;
-
-        this.ordinal = addToRegistry(this);
-    }
-
+    private static final Map<String, SettingEnum> settingsRegistry = new HashMap<String, SettingEnum>();
     public static final SettingEnum OBSOLETE_SETTING_PLACEHOLDER = new SettingEnum("OBSOLETE_SETTING_PLACEHOLDER",
             String.class);
     public static final SettingEnum TARGET_TYPE = new SettingEnum("TARGET_TYPE", Class.class, Entity.class);
@@ -68,7 +43,7 @@ public class SettingEnum implements Comparable<SettingEnum> {
     public static final SettingEnum HTML_PROPERTY = new SettingEnum("HTML_PROPERTY", String.class);
     public static final SettingEnum URL_PROPERTY = new SettingEnum("URL_PROPERTY", String.class);
     public static final SettingEnum MEDIA_PROPERTY = new SettingEnum("MEDIA_PROPERTY", String.class);
-    public static final SettingEnum SUPRESS_COMMANDS = new SettingEnum("SUPRESS_COMMANDS", Boolean.class);
+    public static final SettingEnum SUPPRESS_COMMANDS = new SettingEnum("SUPPRESS_COMMANDS", Boolean.class);
     public static final SettingEnum SCHEME_TYPE = new SettingEnum("SCHEME_TYPE", SchemeType.class);
     public static final SettingEnum PANEL_STYLE = new SettingEnum("PANEL_STYLE", String.class);
     public static final SettingEnum ASSUME_DETAIL_BEHAVIOR = new SettingEnum("ASSUME_DETAIL_BEHAVIOR", Boolean.class);
@@ -179,7 +154,32 @@ public class SettingEnum implements Comparable<SettingEnum> {
             SettingsDialog.L10N_CATEGORY_2400_EAST);
     public static final SettingEnum EAST_CHILD_INDEX = new SettingEnum("EAST_CHILD_INDEX", Integer.class,
             SettingsDialog.L10N_CATEGORY_2400_EAST);
-    private static Map<String, SettingEnum> settingsRegistry = new HashMap<String, SettingEnum>();
+
+    SettingEnum(String name, Class<?> type) {
+        this(name, type, SettingsDialog.L10N_CATEGORY_0000_GENERAL);
+    }
+
+    SettingEnum(String name, Class<?> type, L10nString category) {
+        this(name, type, null, category);
+    }
+
+    SettingEnum(String name, Class<?> type, Class<?> subType, L10nString category) {
+        this.name = name;
+        this.type = type;
+        this.subType = subType;
+        this.category = category;
+
+        this.ordinal = addToRegistry(this);
+    }
+
+    SettingEnum(String name, Class<?> type, Class<?> subType) {
+        this.name = name;
+        this.type = type;
+        this.subType = subType;
+        this.category = SettingsDialog.L10N_CATEGORY_0000_GENERAL;
+
+        this.ordinal = addToRegistry(this);
+    }
     private final String name;
     private final L10nString category;
     private final Class<?> type;
@@ -187,11 +187,11 @@ public class SettingEnum implements Comparable<SettingEnum> {
     private final int ordinal;
 
     private synchronized static int addToRegistry(SettingEnum settingEnum) {
-        int ordinal;
+        if (settingsRegistry.containsKey(settingEnum.name)) {
+            return settingsRegistry.get(settingEnum.name).ordinal();
+        }
         settingsRegistry.put(settingEnum.name(), settingEnum);
-        ordinal = settingsRegistry.size();
-
-        return ordinal;
+        return settingsRegistry.size();
     }
 
     public static Collection<SettingEnum> values() {
@@ -202,6 +202,16 @@ public class SettingEnum implements Comparable<SettingEnum> {
 
     public static SettingEnum valueOf(String name) {
         return settingsRegistry.get(name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof SettingEnum && name.equals(((SettingEnum) obj).name());
     }
 
     public String name() {

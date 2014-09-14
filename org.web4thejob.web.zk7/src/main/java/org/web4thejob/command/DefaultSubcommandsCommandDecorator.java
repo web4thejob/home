@@ -97,7 +97,7 @@ public class DefaultSubcommandsCommandDecorator extends AbstractCommandDecorator
             Command subcommand = parent.getOwner().getCommand(id);
             if (subcommand != null) {
 
-                if (id.isRequiresStartSeparator() && subcommand.getId() != parent.getId().getSubcommands().first() &&
+                if (id.isRequiresStartSeparator() && subcommand.getId() != parent.getId().getSubcommands().get(0) &&
                         !Menuseparator.class.isInstance(container.getLastChild())) {
                     addSeparator(container);
                 }
@@ -125,7 +125,8 @@ public class DefaultSubcommandsCommandDecorator extends AbstractCommandDecorator
                     commandDecorator.render();
                 }
 
-                if (id.isRequiresEndSeparator() && subcommand.getId() != parent.getId().getSubcommands().last() &&
+                int subcsize = parent.getId().getSubcommands().size();
+                if (id.isRequiresEndSeparator() && subcsize > 0 && subcommand.getId() != parent.getId().getSubcommands().get(subcsize - 1) &&
                         !Menuseparator.class.isInstance(container.getLastChild())) {
                     addSeparator(container);
                 }

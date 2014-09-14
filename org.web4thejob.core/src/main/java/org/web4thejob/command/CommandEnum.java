@@ -29,47 +29,8 @@ import java.util.*;
  */
 
 public class CommandEnum implements Comparable<CommandEnum> {
-    CommandEnum(String name) {
-        this(name, CATEGORY_DEFAULT, false, false, null, null);
-    }
-
-    CommandEnum(String name, Object value) {
-        this(name, CATEGORY_DEFAULT, false, false, null, value);
-    }
-
-    CommandEnum(String name, String category) {
-        this(name, category, false, false, null, null);
-    }
-
-    CommandEnum(String name, String category, boolean requiresStartSeparator, boolean requiresEndSeparator) {
-        this(name, category, requiresStartSeparator, requiresEndSeparator, null, null);
-    }
-
-    CommandEnum(String name, String category, boolean requiresStartSeparator, boolean requiresEndSeparator,
-                CommandEnum[] subcommands) {
-        this(name, category, requiresStartSeparator, requiresEndSeparator, subcommands, null);
-    }
-
-    CommandEnum(String name, String category, boolean requiresStartSeparator, boolean requiresEndSeparator,
-                CommandEnum[] subcommands, Object value) {
-        this.name = name;
-        this.category = category;
-        this.requiresStartSeparator = requiresStartSeparator;
-        this.requiresEndSeparator = requiresEndSeparator;
-        this.value = value;
-        this.ordinal = addToRegistry(this);
-
-        if (subcommands != null) {
-            SortedSet<CommandEnum> ref = new TreeSet<CommandEnum>();
-            Collections.addAll(ref, subcommands);
-            this.subcommands = Collections.unmodifiableSortedSet(ref);
-        } else {
-            this.subcommands = null;
-        }
-    }
-
-    private static final SortedSet<CommandEnum> EMPTY_SUBCOMMANDS = Collections.unmodifiableSortedSet(new
-            TreeSet<CommandEnum>());
+    private static final Map<String, CommandEnum> commandsRegistry = new HashMap<String, CommandEnum>();
+    private static final List<CommandEnum> EMPTY_SUBCOMMANDS = Collections.unmodifiableList(new ArrayList<CommandEnum>());
     public static final CommandEnum DESIGN_PANEL_ENTITY_VIEW = new CommandEnum("DESIGN_PANEL_ENTITY_VIEW");
     public static final CommandEnum DESIGN_PANEL_HTML_VIEW = new CommandEnum("DESIGN_PANEL_HTML_VIEW");
     public static final CommandEnum DESIGN_PANEL_BORDERED_VIEW = new CommandEnum("DESIGN_PANEL_BORDERED_VIEW");
@@ -122,8 +83,8 @@ public class CommandEnum implements Comparable<CommandEnum> {
             CommandEnum.CATEGORY_DEFAULT, true, false);
     public static final CommandEnum TOOLS_DROPDOWN = new CommandEnum("TOOLS_DROPDOWN", CommandEnum.CATEGORY_DEFAULT,
             false, false,
-            new CommandEnum[]{DESIGN_MODE, LOCALIZATION_MODE,
-                    DESIGN_PANEL, REFRESH_CONTEXT});
+            new CommandEnum[]{DESIGN_PANEL, DESIGN_MODE, LOCALIZATION_MODE,
+                    REFRESH_CONTEXT});
     public static final CommandEnum BROWSE_WIKI = new CommandEnum("BROWSE_WIKI",
             CommandEnum.CATEGORY_DEFAULT, false, false, null, "http://wiki.web4thejob.org");
     public static final CommandEnum REQUEST_SUPPORT = new CommandEnum("REQUEST_SUPPORT",
@@ -135,7 +96,7 @@ public class CommandEnum implements Comparable<CommandEnum> {
     public static final CommandEnum LOGOUT = new CommandEnum("LOGOUT", CommandEnum.CATEGORY_DEFAULT, true, true);
     public static final CommandEnum USER_DROPDOWN = new CommandEnum("USER_DROPDOWN", CommandEnum.CATEGORY_DEFAULT,
             false, false,
-            new CommandEnum[]{SESSION_INFO, SAVE_DESKTOP,
+            new CommandEnum[]{SAVE_DESKTOP, SESSION_INFO,
                     CHANGE_PASSWORD, COMMUNITY, ABOUT, LOGOUT});
     public static final CommandEnum REMOVE = new CommandEnum("REMOVE", CommandEnum.CATEGORY_DEFAULT, true, true);
     public static final CommandEnum CLEAR = new CommandEnum("CLEAR", CommandEnum.CATEGORY_DEFAULT, true, true);
@@ -163,24 +124,60 @@ public class CommandEnum implements Comparable<CommandEnum> {
     public static final CommandEnum RENDER_SCHEME_LOOKUP = new CommandEnum("RENDER_SCHEME_LOOKUP",
             CommandEnum.CATEGORY_DEFAULT, true, true,
             new CommandEnum[]{REFRESH, ADDNEW, UPDATE, DELETE});
-    private static Map<String, CommandEnum> commandsRegistry = new HashMap<String, CommandEnum>();
+
+    CommandEnum(String name) {
+        this(name, CATEGORY_DEFAULT, false, false, null, null);
+    }
+
+    CommandEnum(String name, Object value) {
+        this(name, CATEGORY_DEFAULT, false, false, null, value);
+    }
+
+    CommandEnum(String name, String category) {
+        this(name, category, false, false, null, null);
+    }
+
+    CommandEnum(String name, String category, boolean requiresStartSeparator, boolean requiresEndSeparator) {
+        this(name, category, requiresStartSeparator, requiresEndSeparator, null, null);
+    }
+
+    CommandEnum(String name, String category, boolean requiresStartSeparator, boolean requiresEndSeparator,
+                CommandEnum[] subcommands) {
+        this(name, category, requiresStartSeparator, requiresEndSeparator, subcommands, null);
+    }
+
+    CommandEnum(String name, String category, boolean requiresStartSeparator, boolean requiresEndSeparator,
+                CommandEnum[] subcommands, Object value) {
+        this.name = name;
+        this.category = category;
+        this.requiresStartSeparator = requiresStartSeparator;
+        this.requiresEndSeparator = requiresEndSeparator;
+        this.value = value;
+        this.ordinal = addToRegistry(this);
+
+        if (subcommands != null) {
+            List<CommandEnum> ref = new ArrayList<CommandEnum>();
+            Collections.addAll(ref, subcommands);
+            this.subcommands = Collections.unmodifiableList(ref);
+        } else {
+            this.subcommands = null;
+        }
+    }
     private final String category;
     private final boolean requiresEndSeparator;
     private final boolean requiresStartSeparator;
-    private final SortedSet<CommandEnum> subcommands;
+    private final List<CommandEnum> subcommands;
     private final Object value;
     private final String name;
-    private final int ordinal;
+    private int ordinal;
 
     private synchronized static int addToRegistry(CommandEnum commandEnum) {
-        int ordinal;
-
-        if (commandsRegistry == null) {
-            commandsRegistry = new HashMap<String, CommandEnum>();
+        if (commandsRegistry.containsKey(commandEnum.name())) {
+            return commandsRegistry.get(commandEnum.name()).ordinal();
         }
 
         commandsRegistry.put(commandEnum.name(), commandEnum);
-        ordinal = commandsRegistry.size();
+        int ordinal = commandsRegistry.size();
 
         if (!commandEnum.getClass().equals(CommandEnum.class)) {
             //this command comes from an extension module so offset its ordinal order
@@ -201,7 +198,17 @@ public class CommandEnum implements Comparable<CommandEnum> {
         return commandsRegistry.get(name);
     }
 
-    public SortedSet<CommandEnum> getSubcommands() {
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof CommandEnum && name.equals(((CommandEnum) obj).name());
+    }
+
+    public List<CommandEnum> getSubcommands() {
         if (subcommands != null) return subcommands;
         else return EMPTY_SUBCOMMANDS;
     }

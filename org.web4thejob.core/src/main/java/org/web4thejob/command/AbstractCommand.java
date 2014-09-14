@@ -48,6 +48,7 @@ public abstract class AbstractCommand implements Command {
     private Object value;
     private boolean active = false;
     private boolean registered = false;
+    private int renderOrder;
 
     private static String toLocalizedName(CommandEnum id) {
         return L10nUtil.getMessage(id.getClass(), id.name(), id.name());
@@ -242,6 +243,14 @@ public abstract class AbstractCommand implements Command {
 
     public Set<MessageAware> getListeners() {
         return Collections.unmodifiableSet(listeners);
+    }
+
+    public int getRenderOrder() {
+        return renderOrder;
+    }
+
+    public void setRenderOrder(int ordinal) {
+        this.renderOrder = ordinal;
     }
 
 }

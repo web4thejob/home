@@ -113,10 +113,10 @@ public class DefaultMutableEntityViewPanel extends AbstractMutablePanel implemen
 
     @Override
     protected void arrangeForTargetType() {
+        super.arrangeForTargetType();
         registerCommand(ContextUtil.getDefaultCommand(CommandEnum.CONFIGURE_HEADERS, this));
         registerCommand(ContextUtil.getDefaultCommand(CommandEnum.PRINT, this));
         registerCommand(ContextUtil.getDefaultCommand(CommandEnum.RELATED_PANELS, this));
-        super.arrangeForTargetType();
         arrangeForRenderScheme();
     }
 

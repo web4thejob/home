@@ -472,13 +472,9 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
 
     @Override
     protected void arrangeForTargetType() {
-        registerCommand(ContextUtil.getDefaultCommand(CommandEnum.CONFIGURE_HEADERS, this));
         registerCommand(ContextUtil.getDefaultCommand(CommandEnum.QUERY, this));
         registerCommand(ContextUtil.getDefaultCommand(CommandEnum.REFRESH, this));
-        registerCommand(ContextUtil.getDefaultCommand(CommandEnum.PRINT, this));
-        if (!ZkUtil.isDialogContained(listbox)) {
-            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.RELATED_PANELS, this));
-        }
+
         EntityMetadata entityMetadata = ContextUtil.getMRS().getEntityMetadata(getTargetType());
         if (!entityMetadata.isReadOnly()) {
             if (!entityMetadata.isDenyAddNew()) {
@@ -492,10 +488,16 @@ public class DefaultListViewPanel extends AbstractZkBindablePanel implements Lis
             }
         }
 
+        if (!ZkUtil.isDialogContained(listbox)) {
+            registerCommand(ContextUtil.getDefaultCommand(CommandEnum.RELATED_PANELS, this));
+        }
+        registerCommand(ContextUtil.getDefaultCommand(CommandEnum.PRINT, this));
+        registerCommand(ContextUtil.getDefaultCommand(CommandEnum.CONFIGURE_HEADERS, this));
+
         RenderScheme renderScheme = null;
         if (StringUtils.hasText(getSettingValue(SettingEnum.RENDER_SCHEME_FOR_VIEW, ""))) {
             renderScheme = RenderSchemeUtil.getRenderScheme(getSettingValue(SettingEnum
-                    .RENDER_SCHEME_FOR_VIEW, ""),
+                            .RENDER_SCHEME_FOR_VIEW, ""),
                     getTargetType(), SchemeType.LIST_SCHEME);
         }
         if (renderScheme == null) {

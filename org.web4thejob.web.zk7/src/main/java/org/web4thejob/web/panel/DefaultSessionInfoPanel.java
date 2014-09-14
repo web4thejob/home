@@ -47,12 +47,32 @@ import java.util.Locale;
 public class DefaultSessionInfoPanel extends AbstractZkContentPanel implements SessionInfoPanel {
 // ------------------------------ FIELDS ------------------------------
 
+    public DefaultSessionInfoPanel() {
+        ZkUtil.setParentOfChild((Component) base, grid);
+//        grid.setWidth("100%");
+        grid.setVflex("true");
+        grid.setSpan(true);
+        new Columns().setParent(grid);
+        new Rows().setParent(grid);
+
+        final Column col1 = new Column(L10N_COLUMN_ATTRIBUTE.toString());
+        col1.setParent(grid.getColumns());
+        col1.setWidth("30%");
+
+        final Column col2 = new Column(L10N_COLUMN_VALUE.toString());
+        col2.setParent(grid.getColumns());
+
+        prepareContent();
+    }
+
     public static final L10nString L10N_COLUMN_ATTRIBUTE = new L10nString(DefaultSessionInfoPanel
             .class, "column_attribute", "Attribute");
     public static final L10nString L10N_COLUMN_VALUE = new L10nString(DefaultSessionInfoPanel.class, "column_value",
             "Value");
     public static final L10nString L10N_LABEL_USER_LOCALE = new L10nString(DefaultSessionInfoPanel.class,
             "label_user_locale", "User locale");
+    public static final L10nString L10N_LABEL_SERVER_JVM = new L10nString(DefaultSessionInfoPanel.class,
+            "label_server_jvm", "Server JVM");
     public static final L10nString L10N_LABEL_SERVER_LOCALE = new L10nString(DefaultSessionInfoPanel.class,
             "label_server_locale", "Server locale");
     public static final L10nString L10N_LABEL_SERVER_CHARSET = new L10nString(DefaultSessionInfoPanel.class,
@@ -76,27 +96,8 @@ public class DefaultSessionInfoPanel extends AbstractZkContentPanel implements S
     public static final L10nString L10N_LABEL_SESSION_ACCESSED_TIME = new L10nString(DefaultSessionInfoPanel.class,
             "label_session_accessed_time", "Session accessed time");
 
+    // --------------------------- CONSTRUCTORS ---------------------------
     private final Grid grid = new Grid();
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
-    public DefaultSessionInfoPanel() {
-        ZkUtil.setParentOfChild((Component) base, grid);
-//        grid.setWidth("100%");
-        grid.setVflex("true");
-        grid.setSpan(true);
-        new Columns().setParent(grid);
-        new Rows().setParent(grid);
-
-        final Column col1 = new Column(L10N_COLUMN_ATTRIBUTE.toString());
-        col1.setParent(grid.getColumns());
-        col1.setWidth("30%");
-
-        final Column col2 = new Column(L10N_COLUMN_VALUE.toString());
-        col2.setParent(grid.getColumns());
-
-        prepareContent();
-    }
 
     private void prepareContent() {
         grid.getRows().getChildren().clear();
@@ -109,6 +110,13 @@ public class DefaultSessionInfoPanel extends AbstractZkContentPanel implements S
         label.setParent(row);
 
         if (ContextUtil.getSessionContext().getSecurityContext().isAdministrator()) {
+            row = new Row();
+            row.setParent(grid.getRows());
+            label = new Label(L10N_LABEL_SERVER_JVM.toString());
+            label.setParent(row);
+            label = new Label(System.getProperty("java.version"));
+            label.setParent(row);
+
             row = new Row();
             row.setParent(grid.getRows());
             label = new Label(L10N_LABEL_SERVER_LOCALE.toString());

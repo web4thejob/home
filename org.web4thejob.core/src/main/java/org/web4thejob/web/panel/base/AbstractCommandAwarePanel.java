@@ -53,15 +53,15 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
         DesignModeAware, I18nAware {
 // ------------------------------ FIELDS ------------------------------
 
-    protected AbstractCommandAwarePanel() {
-        registerCommands();
-    }
-
     protected static final CommandsSorter COMMANDS_SORTER = new CommandsSorter();
     public static final L10nString L10N_UNAUTHORIZED_ACCESS = new L10nString(AbstractCommandAwarePanel.class,
             "message_unauthorized_access", "Unauthorized access error");
     public static final L10nString L10N_UNEXPECTED_ERROR = new L10nString(AbstractCommandAwarePanel.class,
             "message_unexpected_error", "Unexpected error occured");
+
+    protected AbstractCommandAwarePanel() {
+        registerCommands();
+    }
     protected PanelState state = PanelState.UNDEFINED;
     protected PanelState prevState;
     private CommandRenderer commandRenderer;
@@ -302,7 +302,7 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
 
     @Override
     protected <T extends Serializable> void onSettingValueChanged(SettingEnum id, T oldValue, T newValue) {
-        if (SettingEnum.SUPRESS_COMMANDS.equals(id)) {
+        if (SettingEnum.SUPPRESS_COMMANDS.equals(id)) {
             supressCommands((Boolean) newValue);
         }
         super.onSettingValueChanged(id, oldValue, newValue);
@@ -407,6 +407,7 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
             }
 
             commands.put(command.getId(), command);
+            command.setRenderOrder(commands.size());
             command.setRegistered(true);
             for (CommandEnum id : command.getId().getSubcommands()) {
                 Subcommand subcommand = ContextUtil.getSubcommand(id, command);
@@ -455,7 +456,7 @@ public abstract class AbstractCommandAwarePanel extends AbstractSettingAwarePane
     @Override
     protected void registerSettings() {
         super.registerSettings();
-        registerSetting(SettingEnum.SUPRESS_COMMANDS, false);
+        registerSetting(SettingEnum.SUPPRESS_COMMANDS, false);
     }
 
 // -------------------------- INNER CLASSES --------------------------

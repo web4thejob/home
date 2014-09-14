@@ -59,9 +59,9 @@ public interface Command extends InitializingBean, SecuredResource, Comparable<C
 
     public Object getValue();
 
-    public void setHighlighted(boolean highlighted);
-
     public void setValue(Object value);
+
+    public void setHighlighted(boolean highlighted);
 
     public <T> void setArg(String key, T value);
 
@@ -72,5 +72,9 @@ public interface Command extends InitializingBean, SecuredResource, Comparable<C
     public <T> T removeArg(String key);
 
     public void removeArgs();
+
+    public int getRenderOrder();
+
+    public void setRenderOrder(int ordinal);
 
 }
