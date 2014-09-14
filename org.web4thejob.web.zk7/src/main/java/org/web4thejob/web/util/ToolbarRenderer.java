@@ -44,6 +44,7 @@ import java.util.*;
 public class ToolbarRenderer implements CommandRenderer {
     // ------------------------------ FIELDS ------------------------------
     private static final CommandsEnumSorter COMMANDS_ENUM_SORTER = new CommandsEnumSorter();
+    private static final CommandsSorter COMMANDS_SORTER = new CommandsSorter();
     private final Set<CommandAware> commandOwners = new LinkedHashSet<CommandAware>(0);
     private Component container;
     private Toolbar toolbar;
@@ -86,14 +87,22 @@ public class ToolbarRenderer implements CommandRenderer {
             toolbar.setStyle("border-width: 0;");
         }
 
+        //get the commands grouped and sorted by CommandEnum id
         SortedMap<CommandEnum, List<Command>> map = mergeCommands();
 
+        //now re-sort them by Command.renderOrder()
+        SortedMap<Command, List<Command>> mapFinal = new TreeMap<Command, List<Command>>(COMMANDS_SORTER);
         for (final CommandEnum id : map.keySet()) {
+            //use the 1st command of the map value (ie List<Command>) as key
+            mapFinal.put(map.get(id).get(0), map.get(id));
+        }
+
+        for (final Command cmdkey : mapFinal.keySet()) {
             CommandDecorator commandDecorator = null;
-            if (map.get(id).size() == 1) {
-                commandDecorator = getDecorator(map.get(id).get(0));
+            if (mapFinal.get(cmdkey).size() == 1) {
+                commandDecorator = getDecorator(cmdkey); //cmdKey == mapFinal.get(cmdKey).get(0)
             } else {
-                for (Command command : map.get(id)) {
+                for (Command command : mapFinal.get(cmdkey)) {
                     if (commandDecorator == null) {
                         commandDecorator = new DefaultDropdownCommandDecorator(command);
                     } else {
@@ -102,7 +111,7 @@ public class ToolbarRenderer implements CommandRenderer {
                 }
             }
 
-            if (id.isRequiresStartSeparator() && id != map.firstKey() && !isPreviousSeparator()) {
+            if (cmdkey.getId().isRequiresStartSeparator() && cmdkey.getId() != map.firstKey() && !isPreviousSeparator()) {
                 addSeparator();
             }
 
@@ -112,7 +121,7 @@ public class ToolbarRenderer implements CommandRenderer {
                 commandDecorator.render();
             }
 
-            if (id.isRequiresEndSeparator() && id != map.lastKey()) {
+            if (cmdkey.getId().isRequiresEndSeparator() && cmdkey.getId() != map.lastKey()) {
                 addSeparator();
             }
 
@@ -371,7 +380,11 @@ public class ToolbarRenderer implements CommandRenderer {
         public int compare(Command o1, Command o2) {
             Integer i1 = o1.getRenderOrder();
             Integer i2 = o2.getRenderOrder();
-            return i1.compareTo(i2);
+
+            if (i1 != i2)
+                return i1.compareTo(i2);
+            else
+                return ((Integer) o1.getId().ordinal()).compareTo(o2.getId().ordinal());
         }
     }
 

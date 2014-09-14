@@ -71,7 +71,7 @@ public class CommandEnum implements Comparable<CommandEnum> {
             true, true,
             new CommandEnum[]{DESIGN_PANEL_ENTITY_VIEW,
                     DESIGN_PANEL_LIST_VIEW, DESIGN_PANEL_HTML_VIEW, DESIGN_PANEL_IFRAME_VIEW,
-                    DESIGN_PANEL_TABBED_VIEW, DESIGN_PANEL_BORDERED_VIEW, DESIGN_PANEL_OTHER});
+                    DESIGN_PANEL_BORDERED_VIEW, DESIGN_PANEL_TABBED_VIEW, DESIGN_PANEL_OTHER});
     public static final CommandEnum SAVE_DESKTOP = new CommandEnum("SAVE_DESKTOP", CommandEnum.CATEGORY_DEFAULT,
             true, true);
     public static final CommandEnum SAVE_PANEL = new CommandEnum("SAVE_PANEL", CommandEnum.CATEGORY_DEFAULT, true,
@@ -163,6 +163,7 @@ public class CommandEnum implements Comparable<CommandEnum> {
             this.subcommands = null;
         }
     }
+
     private final String category;
     private final boolean requiresEndSeparator;
     private final boolean requiresStartSeparator;
