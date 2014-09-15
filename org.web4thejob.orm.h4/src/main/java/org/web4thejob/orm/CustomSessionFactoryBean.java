@@ -36,6 +36,7 @@ import org.web4thejob.util.CoreUtil;
 import org.web4thejob.util.converter.JobletScanner;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,10 +62,15 @@ public class CustomSessionFactoryBean extends LocalSessionFactoryBean implements
         }
 
         try {
+
             Configuration configuration = new Configuration();
             configuration.setProperties(getHibernateProperties());
 
-            SchemaExport myDatabaseExporter = new SchemaExport(configuration);
+            Connection connection = null;
+            if (getDataSource() != null) {
+                connection = getDataSource().getConnection();
+            }
+            SchemaExport myDatabaseExporter = new SchemaExport(configuration, connection);
 
             for (String schema : FileUtils.readLines(applicationContext.getResource(SCHEMA_FILE).getFile())) {
                 if (StringUtils.hasText(schema)) {
