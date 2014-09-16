@@ -18,7 +18,20 @@
 
 package org.web4thejob.security;
 
+import nu.xom.Element;
+import org.springframework.util.StringUtils;
 import org.web4thejob.context.ContextUtil;
+import org.web4thejob.orm.Entity;
+import org.web4thejob.orm.Path;
+import org.web4thejob.orm.PropertyMetadata;
+import org.web4thejob.orm.query.Condition;
+import org.web4thejob.orm.query.Query;
+import org.web4thejob.util.XMLUtil;
+import org.web4thejob.web.panel.AuthorizationPolicyPanel;
+import org.web4thejob.web.panel.MenuAuthorizationPanel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Veniamin Isaias
@@ -57,6 +70,52 @@ public class FullAccessSecurityContext implements SecurityContext {
     }
 
     public String getAuthorizationMenu() {
-        return null;
+        //we return the menu of admin
+        //copy of org.web4thejob.security.SpringSecurityContext.getAuthorizationElements()
+        Element userMenu = new Element("uid_" + getUserIdentity().getId());
+
+        for (Element element : getAuthorizationElements()) {
+            if (element.getLocalName().equals(MenuAuthorizationPanel.ROOT_ELEMENT)) {
+                if (element.getChildElements().size() != 1) {
+                    throw new IllegalArgumentException();
+                }
+
+                Element startMenu = element.getChildElements().get(0);
+                for (int i = 0; i < startMenu.getChildElements().size(); i++) {
+                    userMenu.appendChild(startMenu.getChildElements().get(i).copy());
+                }
+            }
+        }
+
+        return userMenu.toXML();
     }
+
+    private List<Element> getAuthorizationElements() {
+        List<Element> elements = new ArrayList<Element>();
+
+        Query query = ContextUtil.getEntityFactory().buildQuery(RoleIdentity.class);
+        query.addCriterion(new Path(RoleIdentity.FLD_USERS).append(RoleMembers.FLD_USER).append(UserIdentity.FLD_ID),
+                Condition.EQ, ((getUserIdentity() != null) ? getUserIdentity().getId() : -1));
+        query.addOrderBy(new Path(RoleIdentity.FLD_INDEX));
+        PropertyMetadata propertyMetadata = ContextUtil.getMRS().getPropertyMetadata(RoleIdentity.class,
+                RoleIdentity.FLD_AUTHORIZATION_POLICY);
+
+        for (Entity role : ContextUtil.getDRS().findByQuery(query)) {
+            AuthorizationPolicy policy = propertyMetadata.getValue(role);
+            if (policy != null && StringUtils.hasText(policy.getDefinition())) {
+                Element rootElement = XMLUtil.getRootElement(policy.getDefinition());
+                if (rootElement == null || !rootElement.getLocalName().equals(AuthorizationPolicyPanel
+                        .ROOT_ELEMENT)) {
+                    throw new IllegalArgumentException();
+                }
+
+                for (int i = 0; i < rootElement.getChildElements().size(); i++) {
+                    elements.add(rootElement.getChildElements().get(i));
+                }
+            }
+        }
+
+        return elements;
+    }
+
 }
