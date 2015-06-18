@@ -33,8 +33,6 @@ import java.util.*;
  */
 
 public class SettingEnum implements Comparable<SettingEnum> {
-    private static Map<String, SettingEnum> settingsRegistry = new HashMap<String, SettingEnum>();
-
     public static final SettingEnum OBSOLETE_SETTING_PLACEHOLDER = new SettingEnum("OBSOLETE_SETTING_PLACEHOLDER",
             String.class);
     public static final SettingEnum TARGET_TYPE = new SettingEnum("TARGET_TYPE", Class.class, Entity.class);
@@ -50,7 +48,6 @@ public class SettingEnum implements Comparable<SettingEnum> {
     public static final SettingEnum ASSUME_DETAIL_BEHAVIOR = new SettingEnum("ASSUME_DETAIL_BEHAVIOR", Boolean.class);
     public static final SettingEnum MOLD = new SettingEnum("MOLD", String.class);
     public static final SettingEnum SCLASS = new SettingEnum("SCLASS", String.class);
-
     public static final SettingEnum RENDER_SCHEME_FOR_VIEW = new SettingEnum("RENDER_SCHEME_FOR_VIEW", String.class);
     public static final SettingEnum RENDER_SCHEME_FOR_UPDATE = new SettingEnum("RENDER_SCHEME_FOR_UPDATE",
             String.class);
@@ -61,7 +58,6 @@ public class SettingEnum implements Comparable<SettingEnum> {
     public static final SettingEnum RUN_QUERY_ON_STARTUP = new SettingEnum("RUN_QUERY_ON_STARTUP", Boolean.class);
     public static final SettingEnum TARGET_URL = new SettingEnum("TARGET_URL", String.class);
     public static final SettingEnum DISPATCH_DOUBLE_CLICK = new SettingEnum("DISPATCH_DOUBLE_CLICK", Boolean.class);
-
     public static final SettingEnum CHILDREN_COUNT = new SettingEnum("CHILDREN_COUNT", Integer.class,
             SettingsDialog.L10N_CATEGORY_1000_TABS);
     public static final SettingEnum HONOR_ADOPTION_REQUEST = new SettingEnum("HONOR_ADOPTION_REQUEST", Boolean.class,
@@ -80,8 +76,6 @@ public class SettingEnum implements Comparable<SettingEnum> {
     public static final SettingEnum DISABLE_CROSS_TAB_BINDING = new SettingEnum("DISABLE_CROSS_TAB_BINDING",
             Boolean.class,
             SettingsDialog.L10N_CATEGORY_1000_TABS);
-
-
     public static final SettingEnum NORTH_ENABLED = new SettingEnum("NORTH_ENABLED", Boolean.class,
             SettingsDialog.L10N_CATEGORY_2000_NORTH);
     public static final SettingEnum NORTH_OPEN = new SettingEnum("NORTH_OPEN", Boolean.class,
@@ -99,7 +93,6 @@ public class SettingEnum implements Comparable<SettingEnum> {
             SettingsDialog.L10N_CATEGORY_2000_NORTH);
     public static final SettingEnum NORTH_CHILD_INDEX = new SettingEnum("NORTH_CHILD_INDEX", Integer.class,
             SettingsDialog.L10N_CATEGORY_2000_NORTH);
-
     public static final SettingEnum SOUTH_ENABLED = new SettingEnum("SOUTH_ENABLED", Boolean.class,
             SettingsDialog.L10N_CATEGORY_2100_SOUTH);
     public static final SettingEnum SOUTH_OPEN = new SettingEnum("SOUTH_OPEN", Boolean.class,
@@ -117,7 +110,6 @@ public class SettingEnum implements Comparable<SettingEnum> {
             SettingsDialog.L10N_CATEGORY_2100_SOUTH);
     public static final SettingEnum SOUTH_CHILD_INDEX = new SettingEnum("SOUTH_CHILD_INDEX", Integer.class,
             SettingsDialog.L10N_CATEGORY_2100_SOUTH);
-
     public static final SettingEnum CENTER_ENABLED = new SettingEnum("CENTER_ENABLED", Boolean.class,
             SettingsDialog.L10N_CATEGORY_2200_CENTER);
     public static final SettingEnum CENTER_MERGE_COMMANDS = new SettingEnum("CENTER_MERGE_COMMANDS", Boolean.class,
@@ -127,7 +119,6 @@ public class SettingEnum implements Comparable<SettingEnum> {
             SettingsDialog.L10N_CATEGORY_2200_CENTER);
     public static final SettingEnum CENTER_CHILD_INDEX = new SettingEnum("CENTER_CHILD_INDEX", Integer.class,
             SettingsDialog.L10N_CATEGORY_2200_CENTER);
-
     public static final SettingEnum WEST_ENABLED = new SettingEnum("WEST_ENABLED", Boolean.class,
             SettingsDialog.L10N_CATEGORY_2300_WEST);
     public static final SettingEnum WEST_OPEN = new SettingEnum("WEST_OPEN", Boolean.class,
@@ -145,7 +136,6 @@ public class SettingEnum implements Comparable<SettingEnum> {
             SettingsDialog.L10N_CATEGORY_2300_WEST);
     public static final SettingEnum WEST_CHILD_INDEX = new SettingEnum("WEST_CHILD_INDEX", Integer.class,
             SettingsDialog.L10N_CATEGORY_2300_WEST);
-
     public static final SettingEnum EAST_ENABLED = new SettingEnum("EAST_ENABLED", Boolean.class,
             SettingsDialog.L10N_CATEGORY_2400_EAST);
     public static final SettingEnum EAST_OPEN = new SettingEnum("EAST_OPEN", Boolean.class,
@@ -163,21 +153,14 @@ public class SettingEnum implements Comparable<SettingEnum> {
             SettingsDialog.L10N_CATEGORY_2400_EAST);
     public static final SettingEnum EAST_CHILD_INDEX = new SettingEnum("EAST_CHILD_INDEX", Integer.class,
             SettingsDialog.L10N_CATEGORY_2400_EAST);
-
-    private final String name;
-    private final L10nString category;
-    private final Class<?> type;
-    private final Class<?> subType;
-    private final int ordinal;
+    private static Map<String, SettingEnum> settingsRegistry = new HashMap<String, SettingEnum>();
 
     SettingEnum(String name, Class<?> type) {
         this(name, type, SettingsDialog.L10N_CATEGORY_0000_GENERAL);
     }
-
     SettingEnum(String name, Class<?> type, L10nString category) {
         this(name, type, null, category);
     }
-
     SettingEnum(String name, Class<?> type, Class<?> subType, L10nString category) {
         this.name = name;
         this.type = type;
@@ -186,7 +169,6 @@ public class SettingEnum implements Comparable<SettingEnum> {
 
         this.ordinal = addToRegistry(this);
     }
-
     SettingEnum(String name, Class<?> type, Class<?> subType) {
         this.name = name;
         this.type = type;
@@ -196,12 +178,38 @@ public class SettingEnum implements Comparable<SettingEnum> {
         this.ordinal = addToRegistry(this);
     }
 
-    private synchronized static int addToRegistry(SettingEnum settingEnum) {
-        int ordinal;
-        settingsRegistry.put(settingEnum.name(), settingEnum);
-        ordinal = settingsRegistry.size();
+    private final String name;
+    private final L10nString category;
+    private final Class<?> type;
+    private final Class<?> subType;
+    private final int ordinal;
 
-        return ordinal;
+    private synchronized static int addToRegistry(SettingEnum settingEnum) {
+        if (settingsRegistry.containsKey(settingEnum.name)) {
+            return settingsRegistry.get(settingEnum.name).ordinal();
+        }
+        settingsRegistry.put(settingEnum.name(), settingEnum);
+        return settingsRegistry.size();
+    }
+
+    public static Collection<SettingEnum> values() {
+        List<SettingEnum> list = new ArrayList<SettingEnum>(settingsRegistry.values());
+        Collections.sort(list);
+        return Collections.unmodifiableList(list);
+    }
+
+    public static SettingEnum valueOf(String name) {
+        return settingsRegistry.get(name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof SettingEnum && name.equals(((SettingEnum) obj).name());
     }
 
     public String name() {
@@ -223,16 +231,6 @@ public class SettingEnum implements Comparable<SettingEnum> {
     @Override
     public int compareTo(SettingEnum o) {
         return Integer.valueOf(ordinal).compareTo(o.ordinal());
-    }
-
-    public static Collection<SettingEnum> values() {
-        List<SettingEnum> list = new ArrayList<SettingEnum>(settingsRegistry.values());
-        Collections.sort(list);
-        return Collections.unmodifiableList(list);
-    }
-
-    public static SettingEnum valueOf(String name) {
-        return settingsRegistry.get(name);
     }
 
     public int ordinal() {

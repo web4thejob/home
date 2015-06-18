@@ -44,24 +44,44 @@ import java.util.Collections;
 public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel implements LayoutPanel {
 // ------------------------------ FIELDS ------------------------------
 
-    protected final Subpanels subpanels = new SubpanelHolder(this);
     private final MessageCache messageCache = new MessageCache();
+    protected final Subpanels subpanels = new SubpanelHolder(this);
 
 // --------------------- GETTER / SETTER METHODS ---------------------
+
+    protected static boolean isContained(ParentCapable parent, Panel child) {
+        boolean contained = false;
+
+        for (Panel subpanel : parent.getSubpanels()) {
+            if (subpanel instanceof ParentCapable) {
+                contained = isContained((ParentCapable) subpanel, child);
+            } else {
+                contained = subpanel.equals(child);
+            }
+
+            if (contained) {
+                break;
+            }
+        }
+
+        return contained;
+    }
+
+// ------------------------ CANONICAL METHODS ------------------------
 
     @Override
     public Subpanels getSubpanels() {
         return subpanels;
     }
 
-// ------------------------ CANONICAL METHODS ------------------------
-
-    protected abstract Collection<Panel> getRenderedOrderOfChildren();
-
 // ------------------------ INTERFACE METHODS ------------------------
 
 
 // --------------------- Interface DesignModeAware ---------------------
+
+    protected abstract Collection<Panel> getRenderedOrderOfChildren();
+
+// --------------------- Interface I18nAware ---------------------
 
     @Override
     public void setInDesignMode(boolean designMode) {
@@ -73,7 +93,7 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
         }
     }
 
-// --------------------- Interface I18nAware ---------------------
+// --------------------- Interface LayoutPanel ---------------------
 
     @Override
     public void setL10nMode(boolean l10nMode) {
@@ -85,7 +105,7 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
         }
     }
 
-// --------------------- Interface LayoutPanel ---------------------
+// --------------------- Interface MessageListener ---------------------
 
     @Override
     public boolean unregisterCommand(CommandEnum id, boolean recursive) {
@@ -103,8 +123,6 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
 
         return result;
     }
-
-// --------------------- Interface MessageListener ---------------------
 
     @Override
     public void processMessage(Message message) {
@@ -157,8 +175,11 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
                             }
                             break;
                         case ENTITY_DESELECTED:
-                            messageCache.put((MessageListener) panel, message);
-                            ((MessageListener) panel).processMessage(message);
+                            if (isActive(panel)) {
+                                ((MessageListener) panel).processMessage(message);
+                            } else {
+                                messageCache.put((MessageListener) panel, message);
+                            }
                             break;
                         case ENTITY_DELETED:
                             messageCache.put((MessageListener) panel, message);
@@ -173,11 +194,11 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
         }
     }
 
+// --------------------- Interface Panel ---------------------
+
     protected boolean cancelDispatchForSubpanel(Panel panel, Message message) {
         return false;
     }
-
-// --------------------- Interface Panel ---------------------
 
     @Override
     public void render() {
@@ -186,6 +207,8 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
         }
         super.render();
     }
+
+// --------------------- Interface ParentCapable ---------------------
 
     @Override
     public String toSpringXml() {
@@ -226,12 +249,12 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
         }
     }
 
-// --------------------- Interface ParentCapable ---------------------
-
     @Override
     public Collection<Panel> getChildren() {
         return Collections.unmodifiableCollection(subpanels);
     }
+
+// --------------------- Interface SettingAware ---------------------
 
     @Override
     public void setChildren(Collection<Panel> panels) {
@@ -242,7 +265,7 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
         subpanels.addAll(panels);
     }
 
-// --------------------- Interface SettingAware ---------------------
+// -------------------------- OTHER METHODS --------------------------
 
     @Override
     public void hideSetting(SettingEnum id, boolean hide) {
@@ -253,8 +276,6 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
             }
         }
     }
-
-// -------------------------- OTHER METHODS --------------------------
 
     protected void afterAdd(Panel panel) {
         // override
@@ -295,24 +316,6 @@ public abstract class AbstractLayoutPanel extends AbstractCommandAwarePanel impl
     }
 
     protected abstract boolean isActive(Panel panel);
-
-    protected static boolean isContained(ParentCapable parent, Panel child) {
-        boolean contained = false;
-
-        for (Panel subpanel : parent.getSubpanels()) {
-            if (subpanel instanceof ParentCapable) {
-                contained = isContained((ParentCapable) subpanel, child);
-            } else {
-                contained = subpanel.equals(child);
-            }
-
-            if (contained) {
-                break;
-            }
-        }
-
-        return contained;
-    }
 
     @Override
     public void setUnsavedSettings(boolean unsavedSettings) {

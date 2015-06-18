@@ -45,15 +45,14 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
         InitializingBean {
 // ------------------------------ FIELDS ------------------------------
 
-    private final Map<SettingEnum, Setting<?>> settings = new HashMap<SettingEnum, Setting<?>>();
-    private int index;
-    private boolean unsavedSettings;
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
     protected AbstractSettingAwarePanel() {
         registerSettings();
     }
+    private final Map<SettingEnum, Setting<?>> settings = new HashMap<SettingEnum, Setting<?>>();
+    private int index;
+
+// --------------------------- CONSTRUCTORS ---------------------------
+private boolean unsavedSettings;
 
     protected void registerSettings() {
         registerSetting(SettingEnum.PANEL_NAME, null);
@@ -94,6 +93,15 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
 
 // --------------------- Interface Panel ---------------------
 
+    @Override
+    public void setSettings(Set<Setting<?>> settings) {
+        for (final Setting<?> setting : new TreeSet<Setting<?>>(settings)) {
+            if (this.settings.containsKey(setting.getId())) {
+                setSettingValue(setting.getId(), setting.getValue());
+            }
+        }
+        afterSettingsSet();
+    }
 
     @Override
     public int getIndex() {
@@ -101,15 +109,16 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
     }
 
     @Override
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    @Override
     public boolean isPersisted() {
         return getBeanName() != null && getBeanName().startsWith(getClass().getCanonicalName()) && getBeanName()
                 .contains("-panel_");
     }
-
-    @Override
-    public void setIndex(int index) {
-        this.index = index;
-    }
+// --------------------- Interface SettingAware ---------------------
 
     @Override
     public String toSpringXml() {
@@ -125,7 +134,12 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
             final Element set = new Element("set", BEANS_NAMESPACE);
             prop.appendChild(set);
 
-            for (final Setting<?> setting : settings.values()) {
+            for (final Setting<?> setting : new TreeSet<Setting<?>>(settings.values())) {
+
+                //no need to save settings with no values
+                String value = setting.coerceToString();
+                if (value == null || value.trim().length() == 0) continue;
+
                 String targetClassName;
                 if (setting instanceof Advised) {
                     targetClassName = ((Advised) setting).getTargetSource().getTargetClass().getName();
@@ -133,6 +147,7 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
                     targetClassName = setting.getClass().getName();
                 }
 
+                //this is the ctor for the DefaultSetting
                 final Element item = new Element("bean", BEANS_NAMESPACE);
                 set.appendChild(item);
                 item.addAttribute(new Attribute("class", targetClassName));
@@ -140,12 +155,26 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
 
                 final Element arg1 = new Element("constructor-arg", BEANS_NAMESPACE);
                 item.appendChild(arg1);
-                arg1.addAttribute(new Attribute("value", setting.getId().name()));
+
+                //this is the ctor for the SettingEnum
+                final Element settingEnum = new Element("bean", BEANS_NAMESPACE);
+                settingEnum.addAttribute(new Attribute("class", SettingEnum.class.getCanonicalName()));
+                settingEnum.addAttribute(new Attribute("scope", "prototype"));
+                arg1.appendChild(settingEnum);
+                final Element arg1_1 = new Element("constructor-arg", BEANS_NAMESPACE);
+                arg1_1.addAttribute(new Attribute("value", setting.getId().name()));
+                arg1_1.addAttribute(new Attribute("type", String.class.getCanonicalName()));
+                settingEnum.appendChild(arg1_1);
+                final Element arg1_2 = new Element("constructor-arg", BEANS_NAMESPACE);
+                arg1_2.addAttribute(new Attribute("value", setting.getType().getCanonicalName()));
+                arg1_2.addAttribute(new Attribute("type", Class.class.getCanonicalName()));
+                settingEnum.appendChild(arg1_2);
+
 
                 final Element arg2 = new Element("constructor-arg", BEANS_NAMESPACE);
                 item.appendChild(arg2);
-                String value = setting.coerceToString();
-                arg2.addAttribute(new Attribute("value", (value == null ? "" : value)));
+                arg2.addAttribute(new Attribute("value", value));
+                arg2.addAttribute(new Attribute("type", String.class.getCanonicalName()));
             }
 
             return bean.toXML();
@@ -154,9 +183,6 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
             throw new RuntimeException(e);
         }
     }
-
-// --------------------- Interface SettingAware ---------------------
-
 
     protected Setting<?> getSetting(SettingEnum id) {
         return settings.get(id);
@@ -177,16 +203,6 @@ public abstract class AbstractSettingAwarePanel extends AbstractMessageAwarePane
     @Override
     public boolean hasSetting(SettingEnum id) {
         return settings.containsKey(id);
-    }
-
-    @Override
-    public void setSettings(Set<Setting<?>> settings) {
-        for (final Setting<?> setting : new TreeSet<Setting<?>>(settings)) {
-            if (this.settings.containsKey(setting.getId())) {
-                setSettingValue(setting.getId(), setting.getValue());
-            }
-        }
-        afterSettingsSet();
     }
 
     @Override
