@@ -33,6 +33,8 @@ import java.util.*;
  */
 
 public class SettingEnum implements Comparable<SettingEnum> {
+    private static Map<String, SettingEnum> settingsRegistry = new HashMap<String, SettingEnum>();
+
     public static final SettingEnum OBSOLETE_SETTING_PLACEHOLDER = new SettingEnum("OBSOLETE_SETTING_PLACEHOLDER",
             String.class);
 
@@ -154,7 +156,6 @@ public class SettingEnum implements Comparable<SettingEnum> {
             SettingsDialog.L10N_CATEGORY_2400_EAST);
     public static final SettingEnum EAST_CHILD_INDEX = new SettingEnum("EAST_CHILD_INDEX", Integer.class,
             SettingsDialog.L10N_CATEGORY_2400_EAST);
-    private static Map<String, SettingEnum> settingsRegistry = new HashMap<String, SettingEnum>();
 
     SettingEnum(String name, Class<?> type) {
         this(name, type, SettingsDialog.L10N_CATEGORY_0000_GENERAL);
