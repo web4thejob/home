@@ -1,0 +1,42 @@
+<?page title="web4thejob.org" contentType="text/html;charset=UTF-8"?>
+<?link rel="shortcut icon" type="image/x-icon" href="../favicon.ico"?>
+<zk>
+    <window title="Test Mail Sender" border="normal" width="100%" height="100%"
+            apply="org.web4thejob.mail.TestMailSenderController">
+
+
+        <grid width="60%" oddRowSclass="dummy">
+            <columns>
+                <column width="100px"/>
+                <column/>
+            </columns>
+            <rows>
+                <row>
+                    <label value="From:"/>
+                    <textbox id="from" hflex="1" placeholder="admin@web4thejob.org" focus="true" constraint="no empty"/>
+                </row>
+                <row>
+                    <label value="To:"/>
+                    <textbox id="to" hflex="1" placeholder="johndoe@someserver.com" constraint="no empty"/>
+                </row>
+                <row>
+                    <label value="Subject:"/>
+                    <textbox id="subject" hflex="1" value="Test Mail"/>
+                </row>
+                <row>
+                    <cell colspan="2">
+                        <textbox id="body" hflex="1" multiline="true" rows="5" value="This is a test mail..."/>
+                    </cell>
+                </row>
+                <row>
+                    <cell colspan="2" align="right">
+                        <button id="send" label="Send"/>
+                    </cell>
+                </row>
+
+            </rows>
+
+
+        </grid>
+    </window>
+</zk>

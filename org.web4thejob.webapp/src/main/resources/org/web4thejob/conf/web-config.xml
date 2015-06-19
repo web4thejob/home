@@ -23,6 +23,7 @@
 
     <bean class="org.web4thejob.context.DefaultSessionContext" scope="session"/>
     <bean class="org.web4thejob.web.panel.DefaultDesktopLayoutPanel" scope="prototype"/>
+    <bean class="org.springframework.mail.javamail.JavaMailSenderImpl"/>
 
     <bean id="messageSource"
           class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
