@@ -4,39 +4,73 @@
     <window title="Test Mail Sender" border="normal" width="100%" height="100%"
             apply="org.web4thejob.mail.TestMailSenderController">
 
+        <hbox hflex="1" pack="center">
+            <grid width="600px" oddRowSclass="dummy">
+                <columns>
+                    <column width="100px"/>
+                    <column/>
+                </columns>
+                <rows>
+                    <row>
+                        <label value="From:"/>
+                        <textbox id="from" hflex="1" placeholder="admin@web4thejob.org" focus="true"
+                                 constraint="no empty"/>
+                    </row>
+                    <row>
+                        <label value="To:"/>
+                        <textbox id="to" hflex="1" placeholder="johndoe@someserver.com" constraint="no empty"/>
+                    </row>
+                    <row>
+                        <label value="Subject:"/>
+                        <textbox id="subject" hflex="1" value="Test Mail"/>
+                    </row>
+                    <row>
+                        <cell colspan="2">
+                            <textbox id="body" hflex="1" multiline="true" rows="5" value="This is a test mail..."/>
+                        </cell>
+                    </row>
+                    <row>
+                        <cell colspan="2" align="left">
+                            <button id="send" label="Send"/>
+                        </cell>
+                    </row>
+                </rows>
+            </grid>
 
-        <grid width="60%" oddRowSclass="dummy">
-            <columns>
-                <column width="100px"/>
-                <column/>
-            </columns>
-            <rows>
-                <row>
-                    <label value="From:"/>
-                    <textbox id="from" hflex="1" placeholder="admin@web4thejob.org" focus="true" constraint="no empty"/>
-                </row>
-                <row>
-                    <label value="To:"/>
-                    <textbox id="to" hflex="1" placeholder="johndoe@someserver.com" constraint="no empty"/>
-                </row>
-                <row>
-                    <label value="Subject:"/>
-                    <textbox id="subject" hflex="1" value="Test Mail"/>
-                </row>
-                <row>
-                    <cell colspan="2">
-                        <textbox id="body" hflex="1" multiline="true" rows="5" value="This is a test mail..."/>
-                    </cell>
-                </row>
-                <row>
-                    <cell colspan="2" align="right">
-                        <button id="send" label="Send"/>
-                    </cell>
-                </row>
+            <grid width="300px" oddRowSclass="dummy">
+                <columns>
+                    <column width="100px"/>
+                    <column/>
+                </columns>
+                <rows>
+                    <row>
+                        <label value="Host:"/>
+                        <textbox id="host" hflex="1" value="smtp-mail.outlook.com"
+                                 constraint="no empty"/>
+                    </row>
+                    <row>
+                        <label value="Port:"/>
+                        <intbox id="port" width="50px" value="587"/>
+                    </row>
+                    <row>
+                        <label value="User Name:"/>
+                        <textbox id="username" hflex="1"/>
+                    </row>
+                    <row>
+                        <label value="Password:"/>
+                        <textbox id="password" hflex="1" type="password"/>
+                    </row>
+                    <row>
+                        <label value="TLS/SSL:"/>
+                        <checkbox id="tls" checked="true"/>
+                    </row>
+                </rows>
+            </grid>
 
-            </rows>
-
-
-        </grid>
+        </hbox>
     </window>
+    <style>
+        .z-row-content,.z-row-inner,.z-rows,.z-row,.z-grid-odd,.z-grid-body,.z-grid-header,.z-cell { background:
+        transparent !important; border: none !important; }
+    </style>
 </zk>

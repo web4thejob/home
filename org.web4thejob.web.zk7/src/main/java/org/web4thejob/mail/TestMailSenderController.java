@@ -6,6 +6,8 @@ import org.web4thejob.context.ContextUtil;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -21,6 +23,16 @@ public class TestMailSenderController extends SelectorComposer<Window> {
     @Wire
     private Textbox body;
 
+    @Wire
+    private Textbox host;
+    @Wire
+    private Intbox port;
+    @Wire
+    private Textbox username;
+    @Wire
+    private Textbox password;
+    @Wire
+    private Checkbox tls;
 
     @Override
     public void doAfterCompose(Window comp) throws Exception {
@@ -30,17 +42,19 @@ public class TestMailSenderController extends SelectorComposer<Window> {
     @Listen("onClick=#send")
     public void send() {
 
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
 
         JavaMailSenderImpl mailSender = ContextUtil.getBean(JavaMailSenderImpl.class);
-        mailSender.setHost("smtp-mail.outlook.com");
-        mailSender.setPort(587);
-        mailSender.setUsername("bissaias@hotmail.com");
-        mailSender.setPassword("polika25");
-        mailSender.setJavaMailProperties(props);
+        mailSender.setHost(host.getValue());
+        mailSender.setPort(port.getValue());
+        mailSender.setUsername(username.getValue());
+        mailSender.setPassword(password.getValue());
 
+        if (tls.isChecked()) {
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            mailSender.setJavaMailProperties(props);
+        }
 
         SimpleMailMessage msg = new SimpleMailMessage();
 
